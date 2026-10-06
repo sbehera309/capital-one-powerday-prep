@@ -1,0 +1,47 @@
+/* Custom Utility Styles & Animations */
+
+pre code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+button, input, select { touch-action: manipulation; }
+
+.perspective-1000 { perspective: 1000px; }
+.flashcard-inner { transition: transform 0.6s; transform-style: preserve-3d; }
+.flashcard-inner.flipped { transform: rotateY(180deg); }
+.flashcard-front, .flashcard-back { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flashcard-back { transform: rotateY(180deg); }
+
+.node-active {
+  border-color: #3b82f6 !important;
+  background-color: rgba(59, 130, 246, 0.25) !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  transform: scale(1.02);
+}
+
+@keyframes flowDash {
+  0% { stroke-dashoffset: 24; }
+  100% { stroke-dashoffset: 0; }
+}
+
+.flow-line {
+  stroke: #334155;
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  transition: all 0.3s ease;
+}
+
+.flow-line-active {
+  stroke: #3b82f6;
+  stroke-width: 3;
+  stroke-dasharray: 6 4;
+  animation: flowDash 0.6s linear infinite;
+  filter: drop-shadow(0px 0px 6px rgba(59, 130, 246, 0.9));
+}

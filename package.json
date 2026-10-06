@@ -1,8 +1,9 @@
 {
   "name": "capital-one-powerday-prep",
   "version": "1.0.0",
-  "description": "Capital One PowerDay Engineering Compendium - Tech Case & System Design Prep App",
-  "main": "index.html",
+  "description": "Capital One PowerDay Engineering Compendium - Modular Tech Case & System Design Prep App",
+  "type": "module",
+  "main": "src/js/app.js",
   "scripts": {
     "start": "npx serve ."
   },
