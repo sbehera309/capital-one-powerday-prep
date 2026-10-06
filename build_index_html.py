@@ -269,11 +269,11 @@ def get_all_customer_transactions(account_id: str):
 	rows, err := db.QueryContext(ctx, query, args...)
 	return parseRows(rows), err
 }''',
-                "solution_java": '''public List<Transaction> fetchCustomerHistory(String accountId, Instant lastDate, String lastId, int limit) {
+                "solution_java": '''public List&lt;Transaction&gt; fetchCustomerHistory(String accountId, Instant lastDate, String lastId, int limit) {
     String sql = "SELECT id, amount, merchant, created_at FROM transactions WHERE account_id = ?";
-    List<Object> params = new ArrayList<>(List.of(accountId));
-    if (lastDate != null && lastId != null) {
-        sql += " AND (created_at, id) < (?, ?)";
+    List&lt;Object&gt; params = new ArrayList&lt;&gt;(List.of(accountId));
+    if (lastDate != null &amp;&amp; lastId != null) {
+        sql += " AND (created_at, id) &lt; (?, ?)";
         params.add(lastDate);
         params.add(lastId);
     }
@@ -1083,7 +1083,7 @@ def calculate_profit(amount: float) -> float:
 
                   <!-- CONNECTING SVG FLOW LINES BETWEEN ROW 1 & ROW 2 -->
                   <div class="w-full h-8 relative my-1">
-                    <svg class="w-full h-full absolute inset-0" preserveAspectRatio="none" viewBox="0 0 400 30">
+                    <svg class="w-full h-full absolute inset-0 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 30">
                       <path id="{q_id}-line-0-1" class="flow-line" d="M 200 0 L 200 30" />
                     </svg>
                   </div>
@@ -1111,7 +1111,7 @@ def calculate_profit(amount: float) -> float:
 
                   <!-- CONNECTING SVG FLOW LINES BETWEEN ROW 2 & ROW 3 -->
                   <div class="w-full h-8 relative my-1">
-                    <svg class="w-full h-full absolute inset-0" preserveAspectRatio="none" viewBox="0 0 400 30">
+                    <svg class="w-full h-full absolute inset-0 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 30">
                       <path id="{q_id}-line-1-2" class="flow-line" d="M 200 0 L 100 30 M 200 0 L 300 30" />
                     </svg>
                   </div>
