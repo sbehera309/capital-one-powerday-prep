@@ -62,7 +62,7 @@
         </div>
       </div>
 
-      <!-- Scrollable Mobile/Desktop Main Navigation Bar -->
+      <!-- Main Navigation Bar -->
       <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 border-t border-slate-800 pt-2.5">
         <button onclick="switchTab('tech-cases')" id="tab-btn-tech-cases" class="flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white shadow-xs flex items-center gap-1.5 min-h-[38px]">
           <span>📋</span> <span>Tech Cases</span>
@@ -88,7 +88,7 @@
     <!-- Global Search Bar -->
     <div class="bg-slate-850 border border-slate-800 p-2.5 sm:p-3 rounded-xl shadow-xs">
       <div class="relative">
-        <input type="text" id="searchInput" onkeyup="filterContent()" placeholder="Search cases, Serverless, NoSQL, Kafka, Redis Lua, formulas..." 
+        <input type="text" id="searchInput" onkeyup="filterContent()" placeholder="Search cases, Redis Lua, Flink, Kafka, formulas..." 
                class="w-full pl-9 pr-4 py-2 text-xs rounded-lg border border-slate-700 bg-slate-950 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[40px]">
         <svg class="w-4 h-4 absolute left-3 top-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -98,7 +98,6 @@
 
     <!-- TAB 1: TECHNICAL CASES -->
     <div id="tab-tech-cases" class="tab-content space-y-4">
-      
       <div class="block lg:hidden bg-slate-850 border border-slate-800 p-3 rounded-xl shadow-xs space-y-2">
         <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Select Case Study:</label>
         <select id="mobile-case-select" onchange="selectCase(this.value)" class="w-full p-2.5 text-xs rounded-lg border border-slate-700 bg-slate-950 text-slate-100 font-semibold min-h-[44px]">
@@ -111,7 +110,6 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        
         <div class="hidden lg:block lg:col-span-1 space-y-2">
           <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2 mb-2">Technical Case Studies</h3>
           
@@ -162,7 +160,6 @@
         </div>
 
         <div class="lg:col-span-3 space-y-6">
-          
           <div id="case-1" class="case-detail-pane space-y-4 sm:space-y-6">
             <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
@@ -301,41 +298,484 @@ public class CustomerDataStore {
 
             </div>
           </div>
-
-          <div id="case-2" class="case-detail-pane hidden space-y-4 sm:space-y-6">
-            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
-              <h2 class="text-lg font-bold text-white">Virtual Card Generation (Serverless vs Containerized TCO)</h2>
-              <p class="text-xs text-slate-400">See Case 2 full details above or toggle language for code fixes.</p>
-            </div>
-          </div>
-          <div id="case-3" class="case-detail-pane hidden space-y-4 sm:space-y-6">
-            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
-              <h2 class="text-lg font-bold text-white">3-Boolean Security Alert Logic</h2>
-              <p class="text-xs text-slate-400">See Case 3 full truth table & De Morgan refactoring above.</p>
-            </div>
-          </div>
-          <div id="case-4" class="case-detail-pane hidden space-y-4 sm:space-y-6">
-            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
-              <h2 class="text-lg font-bold text-white">Mainframe to Kafka Streaming Migration</h2>
-              <p class="text-xs text-slate-400">See Case 4 ROI breakdown & dual-write strategy above.</p>
-            </div>
-          </div>
-          <div id="case-5" class="case-detail-pane hidden space-y-4 sm:space-y-6">
-            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
-              <h2 class="text-lg font-bold text-white">Mobile Payments Startup Unit Economics</h2>
-              <p class="text-xs text-slate-400">See Case 5 unit economics & break-even math above.</p>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: SYSTEM DESIGN -->
+    <!-- TAB 2: SYSTEM DESIGN (EXPANDED IN-DEPTH) -->
     <div id="tab-system-design" class="tab-content hidden space-y-4">
-      <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
-        <h2 class="text-lg font-bold text-white">System Design Interview Modules (Questions 1-8)</h2>
-        <p class="text-xs text-slate-400">Explore architectural blueprints, Redis Lua atomicity, SQS priority queues, and CDC OLAP pipelines.</p>
+      
+      <!-- Mobile Quick Selector for System Design -->
+      <div class="block lg:hidden bg-slate-850 border border-slate-800 p-3 rounded-xl shadow-xs space-y-2">
+        <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Select System Design Question:</label>
+        <select id="mobile-sys-select" onchange="selectSysQ(this.value)" class="w-full p-2.5 text-xs rounded-lg border border-slate-700 bg-slate-950 text-slate-100 font-semibold min-h-[44px]">
+          <option value="sys-q1">Q1: Credit Card Account Management & Payment Portal (2025-2026)</option>
+          <option value="sys-q2">Q2: Credit Limit Concurrent Throttler & Atomic Balance (2025-2026)</option>
+          <option value="sys-q3">Q3: Distributed In-Memory Rate Limiter for Banking APIs (Late 2024-2025)</option>
+          <option value="sys-q4">Q4: Real-Time POS Transaction Ingestion & Fraud (Mid 2024-2025)</option>
+          <option value="sys-q5">Q5: Peer-to-Peer Payment / Money Transfer Service (2024-2025)</option>
+          <option value="sys-q6">Q6: Enterprise Multi-Channel Notification Engine (2024)</option>
+          <option value="sys-q7">Q7: Distributed Banking Cache Architecture (Early 2024)</option>
+          <option value="sys-q8">Q8: Smart Meter Telemetry Ingestion 10M Meters (2023-2024)</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- Sidebar Navigation (Desktop lg+) -->
+        <div class="hidden lg:block lg:col-span-1 space-y-2">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2 mb-2">System Design Questions</h3>
+          
+          <button onclick="selectSysQ('sys-q1')" id="nav-sys-q1" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item active-nav border-blue-500 bg-blue-500/10">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-blue-400">Question 1</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 font-semibold">2025–2026</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Payment Portal & Ledger</div>
+            <div class="text-[11px] text-slate-400">ACH Asynchrony & Debezium CDC</div>
+          </button>
+
+          <button onclick="selectSysQ('sys-q2')" id="nav-sys-q2" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-400">Question 2</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-semibold">2025–2026</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Credit Limit Throttler</div>
+            <div class="text-[11px] text-slate-400">Redis Lua Distributed Atomicity</div>
+          </button>
+
+          <button onclick="selectSysQ('sys-q3')" id="nav-sys-q3" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-amber-400">Question 3</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 font-semibold">Late 2024</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Distributed Rate Limiter</div>
+            <div class="text-[11px] text-slate-400">ZSET Sliding Window Counter</div>
+          </button>
+
+          <button onclick="selectSysQ('sys-q4')" id="nav-sys-q4" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-purple-400">Question 4</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 font-semibold">Mid 2024</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Real-Time POS Fraud</div>
+            <div class="text-[11px] text-slate-400">Fast/Slow Path & Flink Travel</div>
+          </button>
+
+          <button onclick="selectSysQ('sys-q5')" id="nav-sys-q5" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-rose-400">Question 5</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-400 font-semibold">2024–2025</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Peer-to-Peer Transfer</div>
+            <div class="text-[11px] text-slate-400">Zelle Double Entry & Saga</div>
+          </button>
+
+          <button onclick="selectSysQ('sys-q6')" id="nav-sys-q6" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-indigo-400">Question 6</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400 font-semibold">2024</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Multi-Channel Alerts</div>
+            <div class="text-[11px] text-slate-400">SQS Priority & DLQ Retries</div>
+          </button>
+
+          <button onclick="selectSysQ('sys-q7')" id="nav-sys-q7" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-cyan-400">Question 7</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-semibold">Early 2024</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Banking Cache Arch</div>
+            <div class="text-[11px] text-slate-400">Cache Stampede SETNX Lock</div>
+          </button>
+
+          <button onclick="selectSysQ('sys-q8')" id="nav-sys-q8" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-teal-400">Question 8</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-400 font-semibold">2023–2024</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Smart Meter Telemetry</div>
+            <div class="text-[11px] text-slate-400">10M Meters, TimescaleDB & Athena</div>
+          </button>
+        </div>
+
+        <!-- System Design Detail Content -->
+        <div class="lg:col-span-3 space-y-6">
+          
+          <!-- SYS Q1 -->
+          <div id="sys-q1" class="sys-detail-pane space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">System Design Question 1</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Credit Card Account Management & Payment Portal</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] font-medium text-slate-400">Reported Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">2025 – 2026 PowerDay Loops (Lead & Senior SWE)</div>
+                </div>
+              </div>
+
+              <!-- Prompt Block -->
+              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
+                <span class="text-xs font-bold text-blue-400 uppercase">Exact Interview Prompt</span>
+                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
+                  "Design a credit card account management application for a bank. The application must support customer credit card applications, viewing balance and real-time transaction activity, making monthly statement payments (minimum vs. custom balance), and generating daily, weekly, and monthly spending analytics."
+                </p>
+              </div>
+
+              <!-- SLAs & Core Requirements -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                  <span class="font-bold text-blue-400 uppercase">SLA & Availability</span>
+                  <p class="text-slate-400">Sub-second balance views with <strong>99.99% availability</strong>.</p>
+                </div>
+                <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                  <span class="font-bold text-emerald-400 uppercase">Double-Debit Prevention</span>
+                  <p class="text-slate-400">Zero double-debits on monthly payments during asynchronous ACH clearance (1–3 business days).</p>
+                </div>
+                <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                  <span class="font-bold text-purple-400 uppercase">OLTP / OLAP Isolation</span>
+                  <p class="text-slate-400">Spending analytics queries must not impact primary transactional database performance.</p>
+                </div>
+              </div>
+
+              <!-- High-Level Data Flow -->
+              <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl font-mono text-xs overflow-x-auto space-y-1 custom-scrollbar">
+                <span class="text-[11px] font-bold text-blue-400 font-sans uppercase">High-Level Data Flow Architecture</span>
+                <pre class="text-slate-200 text-[11px] sm:text-xs">
+[Client Mobile / Web] ──► [API Gateway (JWT Auth, SETNX Idempotency Check)]
+                                │
+                                ▼
+                   [Card Account Microservice]
+                   ┌────────────┼────────────┐
+                   ▼            ▼            ▼
+             [App Svc]    [Payment Svc]  [Analytics Svc]
+                │               │              │
+                ▼               ▼              ▼
+          [Underwriting DB] [Ledger DB]  [ClickHouse OLAP]
+                                │              ▲
+                                └─► [Debezium CDC] ──► [Kafka] ──┘</pre>
+              </div>
+
+              <!-- Deep-Dive Component Blueprint -->
+              <div class="space-y-3 text-xs">
+                <h3 class="text-sm font-bold text-white uppercase">Detailed Component Blueprint & Solutions</h3>
+                
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+                  <strong class="text-blue-400 block">1. ACH Payment Asynchrony & Idempotency Engine</strong>
+                  <p class="text-slate-400 leading-relaxed">
+                    Payment submissions include an <code>Idempotency-Key</code> header validated in Redis via <code>SETNX payment:{key} "PROCESSING" EX 86400</code>. Since ACH transfers require 1–3 business days to settle over the NACHA network, payment records are inserted into Aurora PostgreSQL with status <code>SCHEDULED_ACH</code>. The customer's available credit line is conditionally updated immediately to provide instant feedback, while the ledger entry awaits final NACHA settlement.
+                  </p>
+                </div>
+
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+                  <strong class="text-emerald-400 block">2. Separating OLTP from OLAP via Change Data Capture (CDC)</strong>
+                  <p class="text-slate-400 leading-relaxed">
+                    To prevent heavy aggregation queries (<code>SUM(...) GROUP BY category</code>) from locking OLTP transactional databases, we use <strong>Debezium CDC</strong>. Debezium reads Aurora PostgreSQL Write-Ahead Logs (WAL) in real-time and streams row updates into a Kafka topic (<code>account-transactions</code>). Micro-batch sink connectors ingest these events into a columnar OLAP database (<strong>ClickHouse or Amazon Redshift</strong>), enabling sub-second spending analytics dashboards without touching the primary ledger DB.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q2 -->
+          <div id="sys-q2" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">System Design Question 2</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Credit Limit Concurrent Throttler & Atomic Balance Reservation</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] font-medium text-slate-400">Reported Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">2025 – 2026 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
+                <span class="text-xs font-bold text-emerald-400 uppercase">Exact Interview Prompt</span>
+                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
+                  "Design a system that tracks a customer's available credit in real time across multiple concurrent authorized users (e.g., primary cardholder and authorized users swiping cards simultaneously). If an account has a $1,000 credit limit and two transactions of $600 occur at the exact same millisecond, exactly one must approve and one must decline."
+                </p>
+              </div>
+
+              <div class="bg-emerald-500/10 border border-emerald-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
+                <h4 class="font-bold text-emerald-400">Architecture Solution: Redis Lua Distributed Atomicity</h4>
+                <p class="text-slate-400 leading-relaxed">
+                  <strong>The Concurrency Problem:</strong> Reading balance in application memory → validating limit → writing back creates a race condition where both concurrent $600 transactions see $1,000 available credit and both approve ($1,200 total spend!).<br>
+                  <strong>The Solution:</strong> Maintain active available credit in an in-memory Redis cluster partitioned by <code>account_id</code>. Execute balance validation and decrement atomically inside an embedded Lua script. Because Redis executes Lua scripts on a single-threaded server loop, race conditions are mathematically impossible.
+                </p>
+                <pre class="bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-slate-200 overflow-x-auto text-[11px] sm:text-xs"><code>-- KEYS[1] = account:{account_id}:available_credit
+-- ARGV[1] = transaction_amount
+local available = tonumber(redis.call('GET', KEYS[1]))
+local amount = tonumber(ARGV[1])
+if available and available >= amount then
+    redis.call('DECRBY', KEYS[1], amount)
+    return 1 -- APPROVED
+else
+    return 0 -- DECLINED (INSUFFICIENT_CREDIT)
+end</code></pre>
+              </div>
+
+              <!-- Multi-Language Implementation -->
+              <div class="rounded-xl border border-slate-800 bg-slate-950 p-4">
+                <span class="text-xs font-bold text-white mb-2 block">Multi-Language Production Service Integration</span>
+                <div class="code-block lang-python">
+                  <pre class="text-xs text-slate-200"><code>class CreditReservationService:
+    def __init__(self, redis_client: redis.Redis):
+        self.r = redis_client
+        self._script = self.r.register_script(LUA_SCRIPT)
+
+    def reserve_credit(self, account_id: str, amount: float) -> bool:
+        key = f"account:{account_id}:available_credit"
+        return self._script(keys=[key], args=[int(amount)]) == 1</code></pre>
+                </div>
+                <div class="code-block lang-go hidden">
+                  <pre class="text-xs text-slate-200"><code>func (s *CreditReservationService) ReserveCredit(ctx context.Context, accountID string, amount int64) (bool, error) {
+	key := "account:" + accountID + ":available_credit"
+	res, err := s.rdb.Eval(ctx, reserveLuaScript, []string{key}, amount).Result()
+	return res.(int64) == 1, err
+}</code></pre>
+                </div>
+                <div class="code-block lang-java hidden">
+                  <pre class="text-xs text-slate-200"><code>public boolean reserveCredit(String accountId, long amount) {
+    String key = "account:" + accountId + ":available_credit";
+    Object result = jedis.eval(LUA_SCRIPT, Collections.singletonList(key), Collections.singletonList(String.valueOf(amount)));
+    return Long.valueOf(1).equals(result);
+}</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q3 -->
+          <div id="sys-q3" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">System Design Question 3</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Distributed In-Memory Rate Limiter for Banking APIs</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] font-medium text-slate-400">Reported Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">Late 2024 – 2025 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
+                <span class="text-xs font-bold text-amber-400 uppercase">Exact Interview Prompt</span>
+                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
+                  "Design a low-latency distributed rate limiter to protect customer-facing APIs from brute-force login attacks, automated scraping, and DDoS attempts. SLA Constraint: Overhead &lt; 5ms; limit each API key or IP address to 100 requests per minute."
+                </p>
+              </div>
+
+              <div class="bg-amber-500/10 border border-amber-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
+                <h4 class="font-bold text-amber-400">Solution: Redis Sorted Set (ZSET) Sliding Window Counter</h4>
+                <p class="text-slate-400 leading-relaxed">
+                  <strong>Why Fixed Window Fails:</strong> Fixed window rate limiters allow double the allowed request volume across window boundaries (e.g., 100 requests at 00:59 and 100 requests at 01:01).<br>
+                  <strong>ZSET Sliding Window:</strong> Uses timestamps as elements and scores in Redis Sorted Sets. Purges elements older than <code>now - 60s</code> before counting active requests.
+                </p>
+                <pre class="bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-slate-200 overflow-x-auto text-[11px] sm:text-xs"><code>local key = KEYS[1]
+local now = tonumber(ARGV[1])
+local window = tonumber(ARGV[2])
+local limit = tonumber(ARGV[3])
+local clearBefore = now - window
+
+redis.call('ZREMRANGEBYSCORE', key, 0, clearBefore)
+local currentRequests = redis.call('ZCARD', key)
+if currentRequests < limit then
+    redis.call('ZADD', key, now, now)
+    redis.call('EXPIRE', key, math.ceil(window / 1000))
+    return 1 -- ALLOWED (HTTP 200)
+else
+    return 0 -- RATE LIMITED (HTTP 429)
+end</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q4 -->
+          <div id="sys-q4" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">System Design Question 4</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Real-Time POS Transaction Ingestion & Fraud Detection</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] font-medium text-slate-400">Reported Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">Mid 2024 – 2025 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
+                <span class="text-xs font-bold text-purple-400 uppercase">Exact Interview Prompt & Constraints</span>
+                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
+                  "Design the authorization pipeline that ingests point-of-sale credit card swipe authorizations, evaluates limits and fraud heuristics, and returns an approval or decline in under 100ms. Scale: 10,000 writes/sec peak load; P99 latency &lt; 80ms."
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1.5">
+                  <strong class="text-blue-400 uppercase">1. Synchronous Fast Path (&lt; 50ms SLA)</strong>
+                  <p class="text-slate-400 leading-relaxed">
+                    Queries Redis Cluster to verify card status (Active vs Frozen), available credit, and 1-minute local frequency (<code>INCR velocity:{card_id}:1min</code>). If valid, decrements credit in Redis and immediately returns HTTP 200 APPROVED to the POS terminal.
+                  </p>
+                </div>
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1.5">
+                  <strong class="text-purple-400 uppercase">2. Asynchronous Slow Path (Kafka + Flink)</strong>
+                  <p class="text-slate-400 leading-relaxed">
+                    Emits transaction events to Kafka topic <code>txn-authorizations</code> partitioned by <code>account_id</code>. Apache Flink windowed stream processing evaluates "Impossible Travel" anomalies over a 10-minute sliding window:<br>
+                    <code class="text-purple-400 font-mono">Velocity Speed = Distance(Loc2, Loc1) / (Time2 - Time1)</code><br>
+                    If speed &gt; 600 mph, emits a high-priority security event and sets card state to RESTRICTED in Redis.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q5 -->
+          <div id="sys-q5" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">System Design Question 5</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Peer-to-Peer Payment / Money Transfer Service (Zelle / Venmo)</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] font-medium text-slate-400">Reported Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">2024 – 2025 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
+                <span class="text-xs font-bold text-rose-400 uppercase">Exact Interview Prompt</span>
+                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
+                  "Design a real-time money transfer system where User A sends $100 to User B via email or phone number. Non-Functional Requirements: Strict ACID consistency on ledger updates, sub-second processing, and zero double-spending during network retries."
+                </p>
+              </div>
+
+              <div class="bg-rose-500/10 border border-rose-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
+                <h4 class="font-bold text-rose-400">Double-Entry Append-Only Bookkeeping & Saga Pattern</h4>
+                <p class="text-slate-400 leading-relaxed">
+                  <strong>Rule 1:</strong> Never mutate balance columns with <code>UPDATE accounts SET balance = balance - 100</code>.<br>
+                  <strong>Rule 2:</strong> Insert immutable paired DEBIT and CREDIT ledger rows inside a single database transaction:
+                </p>
+                <pre class="bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-slate-200 overflow-x-auto text-[11px] sm:text-xs"><code>BEGIN TRANSACTION;
+SELECT balance FROM accounts WHERE account_id = 'A' FOR UPDATE;
+-- Verify balance >= 100
+INSERT INTO ledger_entries (entry_id, transaction_id, account_id, amount, currency, entry_type)
+VALUES 
+  (gen_random_uuid(), 'tx-123', 'A', -100.00, 'USD', 'DEBIT'),
+  (gen_random_uuid(), 'tx-123', 'B', 100.00, 'USD', 'CREDIT');
+COMMIT;</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q6 -->
+          <div id="sys-q6" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">System Design Question 6</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Enterprise Multi-Channel Notification Engine</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] font-medium text-slate-400">Reported Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">2024 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
+                <span class="text-xs font-bold text-indigo-400 uppercase">Exact Interview Prompt</span>
+                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
+                  "Design an event-driven system that triggers real-time alerts (SMS, Email, Push Notifications) for card transactions, account changes, and security events. Core Requirements: User notification preference filtering, priority queuing (fraud alerts within 2 seconds; marketing delayed), and isolation against third-party provider failures."
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                  <strong class="text-indigo-400">1. Priority Queuing & Dynamic Scaling</strong>
+                  <p class="text-slate-400 leading-relaxed">Allocate separate SQS queues partitioned by urgency: <code>fraud-sms-queue</code> (&lt;2s SLA), <code>transaction-push-queue</code>, and <code>marketing-email-queue</code>. Worker pools scale independently via CloudWatch metrics.</p>
+                </div>
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                  <strong class="text-rose-400">2. Circuit Breakers & Dead-Letter Queues (DLQ)</strong>
+                  <p class="text-slate-400 leading-relaxed">Wrap external provider API invocations in circuit breakers. If Twilio/SendGrid returns HTTP 429 or 503, workers release messages with exponential backoff visibility timeout (<code>2^retry × 5s</code>). Route to <code>sms-dlq</code> after 3 failed attempts.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q7 -->
+          <div id="sys-q7" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">System Design Question 7</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Distributed Banking Cache Architecture</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] font-medium text-slate-400">Reported Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">Early 2024 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
+                <span class="text-xs font-bold text-cyan-400 uppercase">Exact Interview Prompt</span>
+                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
+                  "Design a distributed caching layer for mobile banking APIs serving customer balances and transaction summaries. Address cache stampedes, invalidation policies, and read-your-own-writes consistency."
+                </p>
+              </div>
+
+              <div class="bg-cyan-500/10 border border-cyan-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
+                <h4 class="font-bold text-cyan-400">Core Architecture Principles</h4>
+                <ul class="space-y-1.5 text-slate-400 list-disc pl-4 leading-relaxed">
+                  <li><strong>1. Caching Pattern: Cache-Aside with Write-Through Invalidation:</strong> On account mutation, write directly to primary DB, then immediately evict or update Redis key within the same transaction.</li>
+                  <li><strong>2. Mitigating Cache Stampedes (Dog-Piling):</strong> Use Distributed Mutex Locking (<code>SETNX lock:account:{id}</code>). If a high-traffic cache key expires, only the first worker thread is permitted to query the database and rebuild cache; all other threads wait 50ms and retry reading cache.</li>
+                  <li><strong>3. Read-Your-Own-Writes Consistency:</strong> Return monotonic <code>mutation_version</code> token in mutation headers. If an incoming read hits a replica with an older version, bypass cache and force a read from primary DB.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q8 -->
+          <div id="sys-q8" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">System Design Question 8</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Smart Meter Telemetry Ingestion (Electric Utility Data)</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] font-medium text-slate-400">Reported Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">2023 – Early 2024 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
+                <span class="text-xs font-bold text-teal-400 uppercase">Exact Interview Prompt</span>
+                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
+                  "10 million smart meters transmit electricity usage metrics every 15 minutes. Design a scalable telemetry ingestion pipeline that supports customer dashboards and long-term analytics."
+                </p>
+              </div>
+
+              <div class="bg-teal-500/10 border border-teal-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
+                <h4 class="font-bold text-teal-400">Math & Tiered Storage Blueprint</h4>
+                <div class="space-y-1 font-mono text-[11px] text-slate-400">
+                  <p>• Daily Writes = 10,000,000 × (24 × 60 / 15) = 10M × 96 = <strong>960 Million events/day</strong></p>
+                  <p>• Ingestion Throughput = 960,000,000 / 86,400 ≈ <strong>11,111 RPS</strong></p>
+                  <p>• Daily Data Volume (200 B payload) = 960M × 200 B ≈ <strong>192 GB/day</strong></p>
+                </div>
+                <p class="text-slate-400 leading-relaxed mt-2">
+                  <strong>Tiered Storage Architecture:</strong> Ingest via AWS IoT Core (MQTT) → Kinesis Data Streams → <strong>Hot Storage (0–30 Days):</strong> Time-Series DB (TimescaleDB / InfluxDB) partitioned by meter_id → <strong>Cold Storage (Historical Archival):</strong> Compress and store raw data in Amazon S3 (Apache Parquet format) queried on-demand via Amazon Athena.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
 
@@ -396,7 +836,6 @@ public class CustomerDataStore {
           <p class="text-xs text-slate-400">Essential trade-offs, DB selection rules, serverless TCO comparison, and caching strategies for Capital One loops.</p>
         </div>
 
-        <!-- 1. AWS Serverless vs Containerized -->
         <div class="bg-slate-950 p-4 sm:p-5 rounded-xl border border-slate-800 space-y-3">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2">
             <h3 class="text-sm font-bold text-amber-400 uppercase flex items-center gap-2">
@@ -406,7 +845,6 @@ public class CustomerDataStore {
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <!-- Serverless -->
             <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
               <span class="font-bold text-amber-400 block border-b border-slate-800 pb-1">Serverless (AWS Lambda + DynamoDB)</span>
               <div class="space-y-1 text-[11px] text-slate-400">
@@ -416,7 +854,6 @@ public class CustomerDataStore {
               </div>
             </div>
 
-            <!-- Containerized -->
             <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
               <span class="font-bold text-emerald-400 block border-b border-slate-800 pb-1">Containerized (ECS Fargate + Aurora PG)</span>
               <div class="space-y-1 text-[11px] text-slate-400">
@@ -428,7 +865,6 @@ public class CustomerDataStore {
           </div>
         </div>
 
-        <!-- 2. Relational vs NoSQL vs Columnar -->
         <div class="bg-slate-950 p-4 sm:p-5 rounded-xl border border-slate-800 space-y-3">
           <div class="border-b border-slate-800 pb-2">
             <h3 class="text-sm font-bold text-blue-400 uppercase flex items-center gap-2">
@@ -476,32 +912,6 @@ public class CustomerDataStore {
           </div>
         </div>
 
-        <!-- 3. Messaging: Kafka vs SQS -->
-        <div class="bg-slate-950 p-4 sm:p-5 rounded-xl border border-slate-800 space-y-3">
-          <div class="border-b border-slate-800 pb-2">
-            <h3 class="text-sm font-bold text-purple-400 uppercase flex items-center gap-2">
-              <span>📩</span> <span>3. Event Streaming vs Task Queuing (Kafka vs AWS SQS)</span>
-            </h3>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1.5">
-              <span class="font-bold text-purple-400 block">Apache Kafka / AWS MSK (Event Stream)</span>
-              <p class="text-[11px] text-slate-400"><strong>Properties:</strong> Immutable append-only commit log, message replayability, pub/sub multi-consumer model.</p>
-              <p class="text-[11px] text-slate-400"><strong>Ordering Guarantee:</strong> Guaranteed ordering per partition key (e.g. <code>account_id</code>).</p>
-              <p class="text-[11px] text-emerald-400 font-semibold">Use in Q4 (POS Fraud) & Q1 (Debezium CDC to Analytics).</p>
-            </div>
-
-            <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1.5">
-              <span class="font-bold text-indigo-400 block">Amazon SQS (Task Queue)</span>
-              <p class="text-[11px] text-slate-400"><strong>Properties:</strong> Point-to-point worker queues, individual message deletion, visibility timeout backoff.</p>
-              <p class="text-[11px] text-slate-400"><strong>Failure Isolation:</strong> Native Dead-Letter Queues (DLQ) after retry threshold (2^retry × 5s).</p>
-              <p class="text-[11px] text-emerald-400 font-semibold">Use in Q6 (Multi-Channel Notifications: Fraud SMS vs Marketing Email).</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. Fast Mental Math Anchors -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 text-xs">
           <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
             <h3 class="font-bold text-blue-400 uppercase">RPS Conversion Anchors</h3>
