@@ -30,8 +30,27 @@ def create_index_html():
 
     .node-active {
       border-color: #3b82f6 !important;
-      background-color: rgba(59, 130, 246, 0.2) !important;
-      box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+      background-color: rgba(59, 130, 246, 0.25) !important;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+      transform: scale(1.02);
+    }
+
+    @keyframes flowDash {
+      0% { stroke-dashoffset: 24; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .flow-line {
+      stroke: #334155;
+      stroke-width: 2;
+      stroke-dasharray: 6 4;
+      transition: all 0.3s ease;
+    }
+    .flow-line-active {
+      stroke: #3b82f6;
+      stroke-width: 3;
+      stroke-dasharray: 6 4;
+      animation: flowDash 0.6s linear infinite;
+      filter: drop-shadow(0px 0px 6px rgba(59, 130, 246, 0.9));
     }
   </style>
 </head>
@@ -106,7 +125,7 @@ def create_index_html():
       </div>
     </div>
 
-    <!-- TAB 1: TECHNICAL CASES (FULL RESTORED CASES 1 TO 7) -->
+    <!-- TAB 1: TECHNICAL CASES -->
     <div id="tab-tech-cases" class="tab-content space-y-4">
       <div class="block lg:hidden bg-slate-850 border border-slate-800 p-3 rounded-xl shadow-xs space-y-2">
         <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Select Case Study:</label>
@@ -997,8 +1016,8 @@ def create_index_html():
                 </p>
               </div>
 
-              <!-- ENHANCED ANIMATED ARCHITECTURE MESSAGE TRAJECTORY SIMULATOR -->
-              <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4 shadow-md">
+              <!-- VISUAL SYSTEM DESIGN FRAMEWORK DIAGRAM (MATCHING USER REFERENCE LAYOUT) -->
+              <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4 shadow-md overflow-hidden relative">
                 <!-- Top Bar: Title, Scenario Selector & Controls -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
                   <div class="flex items-center gap-2">
@@ -1007,7 +1026,7 @@ def create_index_html():
                       <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-{q["color"]}-500"></span>
                     </span>
                     <span class="text-xs font-bold text-{q["color"]}-400 uppercase tracking-wider">
-                      Interactive Message Trajectory & Data Flow Simulator
+                      Interactive Visual System Architecture Topology
                     </span>
                   </div>
 
@@ -1038,42 +1057,94 @@ def create_index_html():
                   </div>
                 </div>
 
-                <!-- Pipeline Stepper / Component Nodes Canvas -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-[11px]">
-                  <div id="{q_id}-node-1" onclick="jumpToStep('{q_id}', 0)" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-900 hover:border-slate-700 transition-all duration-300 relative group">
-                    <div class="flex items-center justify-between text-[9px] text-slate-400 uppercase font-bold mb-1">
-                      <span>Step 1</span>
-                      <span id="{q_id}-node-1-badge" class="px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 text-[8px]">IDLE</span>
+                <!-- TOPOLOGY CANVAS & INTERACTIVE NODE NETWORK -->
+                <div class="relative py-2 px-1 space-y-4">
+                  
+                  <!-- ROW 1: Client Edge & Cloud CDNs -->
+                  <div class="grid grid-cols-3 gap-3 text-center text-xs">
+                    <div class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center justify-center gap-2">
+                      <span class="text-lg">🌐</span>
+                      <div>
+                        <strong class="block text-slate-200 text-[11px]">Route 53 DNS</strong>
+                        <span class="text-slate-400 text-[9px]">Global Anycast</span>
+                      </div>
                     </div>
-                    <strong id="{q_id}-node-1-title" class="text-slate-100 block text-xs truncate">Component 1</strong>
-                    <span id="{q_id}-node-1-sub" class="text-blue-400 text-[10px] block truncate">Subtext</span>
+
+                    <div id="{q_id}-node-1" onclick="jumpToStep('{q_id}', 0)" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-900 transition-all duration-300 relative group">
+                      <div class="flex items-center justify-between text-[9px] text-slate-400 uppercase font-bold mb-1">
+                        <span>Step 1</span>
+                        <span id="{q_id}-node-1-badge" class="px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 text-[8px]">IDLE</span>
+                      </div>
+                      <div class="text-base mb-0.5">📱</div>
+                      <strong id="{q_id}-node-1-title" class="text-slate-100 block text-xs truncate">Client App</strong>
+                      <span id="{q_id}-node-1-sub" class="text-blue-400 text-[10px] block truncate">HTTP Request</span>
+                    </div>
+
+                    <div class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center justify-center gap-2">
+                      <span class="text-lg">⚡</span>
+                      <div>
+                        <strong class="block text-slate-200 text-[11px]">Cloudflare CDN</strong>
+                        <span class="text-slate-400 text-[9px]">Static Content</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div id="{q_id}-node-2" onclick="jumpToStep('{q_id}', 1)" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-900 hover:border-slate-700 transition-all duration-300 relative group">
-                    <div class="flex items-center justify-between text-[9px] text-slate-400 uppercase font-bold mb-1">
-                      <span>Step 2</span>
-                      <span id="{q_id}-node-2-badge" class="px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 text-[8px]">IDLE</span>
-                    </div>
-                    <strong id="{q_id}-node-2-title" class="text-slate-100 block text-xs truncate">Component 2</strong>
-                    <span id="{q_id}-node-2-sub" class="text-emerald-400 text-[10px] block truncate">Subtext</span>
+                  <!-- CONNECTING SVG FLOW LINES BETWEEN ROW 1 & ROW 2 -->
+                  <div class="w-full h-8 relative my-1">
+                    <svg class="w-full h-full absolute inset-0" preserveAspectRatio="none" viewBox="0 0 400 30">
+                      <path id="{q_id}-line-0-1" class="flow-line" d="M 200 0 L 200 30" />
+                    </svg>
                   </div>
 
-                  <div id="{q_id}-node-3" onclick="jumpToStep('{q_id}', 2)" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-900 hover:border-slate-700 transition-all duration-300 relative group">
-                    <div class="flex items-center justify-between text-[9px] text-slate-400 uppercase font-bold mb-1">
-                      <span>Step 3</span>
-                      <span id="{q_id}-node-3-badge" class="px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 text-[8px]">IDLE</span>
+                  <!-- ROW 2: Load Balancer & API Gateway -->
+                  <div class="grid grid-cols-2 gap-4 text-center text-xs max-w-2xl mx-auto">
+                    <div class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/90 flex items-center justify-center gap-2">
+                      <span class="text-lg">⚖️</span>
+                      <div>
+                        <strong class="block text-slate-200 text-[11px]">AWS ALB / Load Balancer</strong>
+                        <span class="text-slate-400 text-[9px]">TLS Termination</span>
+                      </div>
                     </div>
-                    <strong id="{q_id}-node-3-title" class="text-slate-100 block text-xs truncate">Component 3</strong>
-                    <span id="{q_id}-node-3-sub" class="text-amber-400 text-[10px] block truncate">Subtext</span>
+
+                    <div id="{q_id}-node-2" onclick="jumpToStep('{q_id}', 1)" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-900 transition-all duration-300 relative group">
+                      <div class="flex items-center justify-between text-[9px] text-slate-400 uppercase font-bold mb-1">
+                        <span>Step 2</span>
+                        <span id="{q_id}-node-2-badge" class="px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 text-[8px]">IDLE</span>
+                      </div>
+                      <div class="text-base mb-0.5">🔑</div>
+                      <strong id="{q_id}-node-2-title" class="text-slate-100 block text-xs truncate">API Gateway</strong>
+                      <span id="{q_id}-node-2-sub" class="text-emerald-400 text-[10px] block truncate">Auth & Lock</span>
+                    </div>
                   </div>
 
-                  <div id="{q_id}-node-4" onclick="jumpToStep('{q_id}', 3)" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-900 hover:border-slate-700 transition-all duration-300 relative group">
-                    <div class="flex items-center justify-between text-[9px] text-slate-400 uppercase font-bold mb-1">
-                      <span>Step 4</span>
-                      <span id="{q_id}-node-4-badge" class="px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 text-[8px]">IDLE</span>
+                  <!-- CONNECTING SVG FLOW LINES BETWEEN ROW 2 & ROW 3 -->
+                  <div class="w-full h-8 relative my-1">
+                    <svg class="w-full h-full absolute inset-0" preserveAspectRatio="none" viewBox="0 0 400 30">
+                      <path id="{q_id}-line-1-2" class="flow-line" d="M 200 0 L 100 30 M 200 0 L 300 30" />
+                    </svg>
+                  </div>
+
+                  <!-- ROW 3: Core Microservices & Database / Event Bus Tier -->
+                  <div class="grid grid-cols-2 sm:grid-cols-2 gap-4 text-center text-xs max-w-3xl mx-auto">
+                    <div id="{q_id}-node-3" onclick="jumpToStep('{q_id}', 2)" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-900 transition-all duration-300 relative group">
+                      <div class="flex items-center justify-between text-[9px] text-slate-400 uppercase font-bold mb-1">
+                        <span>Step 3</span>
+                        <span id="{q_id}-node-3-badge" class="px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 text-[8px]">IDLE</span>
+                      </div>
+                      <div class="text-base mb-0.5">🗄️</div>
+                      <strong id="{q_id}-node-3-title" class="text-slate-100 block text-xs truncate">Primary Storage</strong>
+                      <span id="{q_id}-node-3-sub" class="text-amber-400 text-[10px] block truncate">Postgres / Redis</span>
                     </div>
-                    <strong id="{q_id}-node-4-title" class="text-slate-100 block text-xs truncate">Component 4</strong>
-                    <span id="{q_id}-node-4-sub" class="text-purple-400 text-[10px] block truncate">Subtext</span>
+
+                    <div id="{q_id}-node-4" onclick="jumpToStep('{q_id}', 3)" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-900 transition-all duration-300 relative group">
+                      <div class="flex items-center justify-between text-[9px] text-slate-400 uppercase font-bold mb-1">
+                        <span>Step 4</span>
+                        <span id="{q_id}-node-4-badge" class="px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 text-[8px]">IDLE</span>
+                      </div>
+                      <div class="text-base mb-0.5">🌊</div>
+                      <strong id="{q_id}-node-4-title" class="text-slate-100 block text-xs truncate">Async Stream & Workers</strong>
+                      <span id="{q_id}-node-4-sub" class="text-purple-400 text-[10px] block truncate">Kafka CDC / ClickHouse</span>
+                    </div>
                   </div>
                 </div>
 
@@ -1355,7 +1426,7 @@ def create_index_html():
       </div>
     </div>
 
-    <!-- TAB 6: CHEAT SHEET (ENHANCED & CLARIFIED FOR POSTGRES vs DYNAMODB & REDIS SETNX & DEBEZIUM) -->
+    <!-- TAB 6: CHEAT SHEET -->
     <div id="tab-cheat-sheet" class="tab-content hidden space-y-6">
       <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
         <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -1492,7 +1563,7 @@ def create_index_html():
             </div>
           </div>
 
-          <!-- Card 6: Interview Time Management Framework -->
+          <!-- Card 6: Interview Strategy -->
           <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
             <div class="flex justify-between items-center border-b border-slate-800 pb-2">
               <h3 class="font-bold text-teal-400 uppercase text-xs flex items-center gap-1.5">
@@ -1647,10 +1718,10 @@ def create_index_html():
               { title: "ClickHouse OLAP", sub: "Debezium CDC Stream" }
             ],
             steps: [
-              { nodeIdx: 0, title: "Step 1: Mobile Client Payment Submission", protocol: "HTTP/2 POST (TLS 1.3)", headers: "Idempotency-Key: idemp_9921-a482\\nAuthorization: Bearer eyJhbGciOi...\\nX-Trace-ID: trc_88192a", body: "{\\n  \\"account_id\\": \\"acc_48210\\",\\n  \\"amount\\": 250.00,\\n  \\"type\\": \\"STATEMENT_MIN\\"\\n}", action: "Client initiates statement payment request with unique Idempotency-Key header.", response: "202 Accepted (Pending)", badge: "200 OK" },
-              { nodeIdx: 1, title: "Step 2: Gateway Redis SETNX Idempotency Lock", protocol: "Redis TCP (SETNX Command)", headers: "Redis-Cmd: SETNX lock:pay:idemp_9921-a482 PROCESSING EX 86400\\nTTL: 86400s", body: "{\\n  \\"lock_acquired\\": true,\\n  \\"execution_time_ms\\": 1.4\\n}", action: "Gateway checks Redis for duplicate request. Key does not exist, lock acquired atomically.", response: "Lock Granted (1.4ms)", badge: "LOCKED" },
-              { nodeIdx: 2, title: "Step 3: Aurora PostgreSQL OLTP Ledger Write", protocol: "PostgreSQL Wire Protocol", headers: "Transaction-Iso: READ COMMITTED\\nSQL-Op: INSERT payment_schedules", body: "INSERT INTO payment_schedules (id, account_id, amount, status)\\nVALUES ('tx_9981', 'acc_48210', 250.00, 'SCHEDULED');", action: "Payment Microservice writes ledger row into PostgreSQL Write-Ahead Log (WAL).", response: "DB Insert Committed (LSN 0/16B2940)", badge: "COMMITTED" },
-              { nodeIdx: 3, title: "Step 4: Debezium CDC Streaming into ClickHouse OLAP", protocol: "Kafka Protocol (c1.ledger.payments.v1)", headers: "Topic: c1.ledger.payments.v1\\nPartition: 3\\nKey: acc_48210", body: "{\\n  \\"event\\": \\"PaymentScheduledEvent\\",\\n  \\"txn_id\\": \\"tx_9981\\",\\n  \\"amount\\": 250.00\\n}", action: "Debezium streams Postgres WAL change event without table locks into ClickHouse analytics.", response: "202 Accepted { txn_id: 'tx_9981' }", badge: "COMPLETED" }
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: Mobile Client Payment Submission", protocol: "HTTP/2 POST (TLS 1.3)", headers: "Idempotency-Key: idemp_9921-a482\\nAuthorization: Bearer eyJhbGciOi...\\nX-Trace-ID: trc_88192a", body: "{\\n  \\"account_id\\": \\"acc_48210\\",\\n  \\"amount\\": 250.00,\\n  \\"type\\": \\"STATEMENT_MIN\\"\\n}", action: "Client initiates statement payment request with unique Idempotency-Key header.", response: "202 Accepted (Pending)", badge: "200 OK" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Gateway Redis SETNX Idempotency Lock", protocol: "Redis TCP (SETNX Command)", headers: "Redis-Cmd: SETNX lock:pay:idemp_9921-a482 PROCESSING EX 86400\\nTTL: 86400s", body: "{\\n  \\"lock_acquired\\": true,\\n  \\"execution_time_ms\\": 1.4\\n}", action: "Gateway checks Redis for duplicate request. Key does not exist, lock acquired atomically.", response: "Lock Granted (1.4ms)", badge: "LOCKED" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Aurora PostgreSQL OLTP Ledger Write", protocol: "PostgreSQL Wire Protocol", headers: "Transaction-Iso: READ COMMITTED\\nSQL-Op: INSERT payment_schedules", body: "INSERT INTO payment_schedules (id, account_id, amount, status)\\nVALUES ('tx_9981', 'acc_48210', 250.00, 'SCHEDULED');", action: "Payment Microservice writes ledger row into PostgreSQL Write-Ahead Log (WAL).", response: "DB Insert Committed (LSN 0/16B2940)", badge: "COMMITTED" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Debezium CDC Streaming into ClickHouse OLAP", protocol: "Kafka Protocol (c1.ledger.payments.v1)", headers: "Topic: c1.ledger.payments.v1\\nPartition: 3\\nKey: acc_48210", body: "{\\n  \\"event\\": \\"PaymentScheduledEvent\\",\\n  \\"txn_id\\": \\"tx_9981\\",\\n  \\"amount\\": 250.00\\n}", action: "Debezium streams Postgres WAL change event without table locks into ClickHouse analytics.", response: "202 Accepted { txn_id: 'tx_9981' }", badge: "COMPLETED" }
             ]
           },
           {
@@ -1662,8 +1733,8 @@ def create_index_html():
               { title: "ClickHouse", sub: "BYPASSED" }
             ],
             steps: [
-              { nodeIdx: 0, title: "Step 1: Mobile App Retries Payment Request", protocol: "HTTP/2 POST /payments (Retry)", headers: "Idempotency-Key: idemp_9921-a482 (REUSED)\\nX-Retry-Attempt: 2", body: "{\\n  \\"account_id\\": \\"acc_48210\\",\\n  \\"amount\\": 250.00\\n}", action: "Client experiences network timeout and re-submits exact same request with identical Idempotency-Key.", response: "Pending...", badge: "RETRY" },
-              { nodeIdx: 1, title: "Step 2: Gateway Redis SETNX Lock Returns 0 (Duplicate)", protocol: "Redis TCP (SETNX Command)", headers: "Redis-Cmd: SETNX lock:pay:idemp_9921-a482 PROCESSING\\nRedis-Result: 0 (KEY EXISTS)", body: "{\\n  \\"error\\": \\"DUPLICATE_REQUEST_IN_FLIGHT\\",\\n  \\"original_txn_id\\": \\"tx_9981\\"\\n}", action: "Redis returns 0! Gateway detects duplicate request in-flight, suppresses duplicate DB write, and returns cached payload.", response: "409 Conflict / 202 Cached Response", badge: "REJECTED" }
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: Mobile App Retries Payment Request", protocol: "HTTP/2 POST /payments (Retry)", headers: "Idempotency-Key: idemp_9921-a482 (REUSED)\\nX-Retry-Attempt: 2", body: "{\\n  \\"account_id\\": \\"acc_48210\\",\\n  \\"amount\\": 250.00\\n}", action: "Client experiences network timeout and re-submits exact same request with identical Idempotency-Key.", response: "Pending...", badge: "RETRY" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Gateway Redis SETNX Lock Returns 0 (Duplicate)", protocol: "Redis TCP (SETNX Command)", headers: "Redis-Cmd: SETNX lock:pay:idemp_9921-a482 PROCESSING\\nRedis-Result: 0 (KEY EXISTS)", body: "{\\n  \\"error\\": \\"DUPLICATE_REQUEST_IN_FLIGHT\\",\\n  \\"original_txn_id\\": \\"tx_9981\\"\\n}", action: "Redis returns 0! Gateway detects duplicate request in-flight, suppresses duplicate DB write, and returns cached payload.", response: "409 Conflict / 202 Cached Response", badge: "REJECTED" }
             ]
           }
         ]
@@ -1679,25 +1750,10 @@ def create_index_html():
               { title: "DynamoDB Audit", sub: "Async Log" }
             ],
             steps: [
-              { nodeIdx: 0, title: "Step 1: Merchant Swipes Card for $150", protocol: "ISO 8583 Message (TLS 1.3)", headers: "Merchant-ID: merch_appl_99\\nTerminal-ID: term_9912", body: "{\\n  \\"pan_hash\\": \\"card_88192\\",\\n  \\"amount\\": 150.00\\n}", action: "POS terminal transmits authorization request for $150 transaction.", response: "Pending Auth Decision", badge: "SWIPED" },
-              { nodeIdx: 1, title: "Step 2: Auth Gateway Decrypts PAN & Routes to Redis", protocol: "gRPC Auth Service", headers: "X-Correlation-ID: auth_77192a", body: "{\\n  \\"card_id\\": \\"c_48210\\",\\n  \\"amount\\": 150.00\\n}", action: "Gateway checks cache cluster for card's real-time remaining balance.", response: "Routing to Redis Master", badge: "ROUTED" },
-              { nodeIdx: 2, title: "Step 3: Single-Threaded Redis Lua Script Execution", protocol: "Redis EVALSHA (Atomic)", headers: "Script: check_and_decr.lua\\nKey: card_limit:c_48210", body: "{\\n  \\"limit\\": 1000.00,\\n  \\"current_spend\\": 400.00,\\n  \\"new_spend\\": 550.00,\\n  \\"approved\\": true\\n}", action: "Redis executes Lua script: 400 + 150 <= 1000 -> Updates spend to $550 atomically.", response: "APPROVED (00)", badge: "APPROVED" },
-              { nodeIdx: 3, title: "Step 4: Async Audit Event Published to DynamoDB", protocol: "AWS SDK DynamoDB PutItem", headers: "Table: auth_events\\nTTL: 90 Days", body: "{\\n  \\"card_id\\": \\"c_48210\\",\\n  \\"amount\\": 150.00,\\n  \\"decision\\": \\"APPROVED\\"\\n}", action: "Approval log written asynchronously to DynamoDB without blocking ISO 8583 response.", response: "HTTP 200 OK (ISO 8583 Resp: 00)", badge: "AUDITED" }
-            ]
-          },
-          {
-            name: "Scenario 2: Concurrent Swipes Exceeding Limit (Lua Rejection)",
-            nodes: [
-              { title: "POS Swipe 1 & 2", sub: "Simultaneous $600" },
-              { title: "Auth Gateway", sub: "Parallel Queuing" },
-              { title: "Redis Primary", sub: "Lua Script Lock" },
-              { title: "ISO 8583 Response", sub: "1 Approved / 1 Declined" }
-            ],
-            steps: [
-              { nodeIdx: 0, title: "Step 1: Simultaneous $600 Swipes at T=0ms", protocol: "Concurrent POS Swipes", headers: "Card-ID: c_48210 (Limit $1,000, Spend $400)", body: "{\\n  \\"swipe_1\\": 600.00,\\n  \\"swipe_2\\": 600.00\\n}", action: "Two point-of-sale terminals submit $600 swipes at the exact same millisecond.", response: "Queueing at Redis Engine", badge: "RACE COND" },
-              { nodeIdx: 1, title: "Step 2: Single-Threaded Redis Serializes Executions", protocol: "Redis Single-Thread Loop", headers: "Queue-Order: Swipe 1 -> Swipe 2", body: "{\\n  \\"queued_count\\": 2\\n}", action: "Redis places swipes in sequential execution queue.", response: "Executing Swipe 1", badge: "QUEUED" },
-              { nodeIdx: 2, title: "Step 3: Swipe 1 Executes Lua Script -> APPROVED", protocol: "Redis EVALSHA", headers: "Result: 400 + 600 = 1000 <= 1000 (APPROVED)", body: "{\\n  \\"new_spend\\": 1000.00,\\n  \\"approved\\": true\\n}", action: "Swipe 1 updates spend to $1,000. Approved!", response: "Swipe 1: APPROVED", badge: "SWIPE1 OK" },
-              { nodeIdx: 3, title: "Step 4: Swipe 2 Executes Lua Script -> DECLINED", protocol: "Redis EVALSHA", headers: "Result: 1000 + 600 = 1600 > 1000 (DECLINED)", body: "{\\n  \\"error\\": \\"INSUFFICIENT_FUNDS\\",\\n  \\"approved\\": false\\n}", action: "Swipe 2 sees current spend $1,000 + $600 > $1,000 limit -> Declined atomically!", response: "Swipe 2: DECLINED (51)", badge: "SWIPE2 DECLINED" }
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: Merchant Swipes Card for $150", protocol: "ISO 8583 Message (TLS 1.3)", headers: "Merchant-ID: merch_appl_99\\nTerminal-ID: term_9912", body: "{\\n  \\"pan_hash\\": \\"card_88192\\",\\n  \\"amount\\": 150.00\\n}", action: "POS terminal transmits authorization request for $150 transaction.", response: "Pending Auth Decision", badge: "SWIPED" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Auth Gateway Decrypts PAN & Routes to Redis", protocol: "gRPC Auth Service", headers: "X-Correlation-ID: auth_77192a", body: "{\\n  \\"card_id\\": \\"c_48210\\",\\n  \\"amount\\": 150.00\\n}", action: "Gateway checks cache cluster for card's real-time remaining balance.", response: "Routing to Redis Master", badge: "ROUTED" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Single-Threaded Redis Lua Script Execution", protocol: "Redis EVALSHA (Atomic)", headers: "Script: check_and_decr.lua\\nKey: card_limit:c_48210", body: "{\\n  \\"limit\\": 1000.00,\\n  \\"current_spend\\": 400.00,\\n  \\"new_spend\\": 550.00,\\n  \\"approved\\": true\\n}", action: "Redis executes Lua script: 400 + 150 <= 1000 -> Updates spend to $550 atomically.", response: "APPROVED (00)", badge: "APPROVED" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Async Audit Event Published to DynamoDB", protocol: "AWS SDK DynamoDB PutItem", headers: "Table: auth_events\\nTTL: 90 Days", body: "{\\n  \\"card_id\\": \\"c_48210\\",\\n  \\"amount\\": 150.00,\\n  \\"decision\\": \\"APPROVED\\"\\n}", action: "Approval log written asynchronously to DynamoDB without blocking ISO 8583 response.", response: "HTTP 200 OK (ISO 8583 Resp: 00)", badge: "AUDITED" }
             ]
           }
         ]
@@ -1713,24 +1769,10 @@ def create_index_html():
               { title: "Core Banking", sub: "Process Request" }
             ],
             steps: [
-              { nodeIdx: 0, title: "Step 1: Partner API Request", protocol: "HTTP/1.1 GET /v1/accounts", headers: "X-API-Key: key_partner_99", body: "{}", action: "Partner app sends GET request to core banking API.", response: "Pending...", badge: "REQUEST" },
-              { nodeIdx: 1, title: "Step 2: Envoy Gateway Key Check", protocol: "Envoy Filter Engine", headers: "Key: key_partner_99", body: "{\\n  \\"client_id\\": \\"client_fintech_99\\",\\n  \\"limit_per_min\\": 100\\n}", action: "Envoy extracts client ID and fetches rate limit quota profile.", response: "Routing to Redis Limiter", badge: "PROFILE OK" },
-              { nodeIdx: 2, title: "Step 3: Redis ZSET Sliding Window Counter", protocol: "Redis Pipeline (ZREMRANGEBYSCORE + ZCARD + ZADD)", headers: "ZSET-Key: rate:client_fintech_99\\nWindow: 60s", body: "{\\n  \\"active_count_in_window\\": 42,\\n  \\"limit\\": 100,\\n  \\"allowed\\": true\\n}", action: "Redis purges timestamps older than (now - 60s). Count = 42 < 100 limit. Timestamp added.", response: "Allowed (42/100)", badge: "ZSET PASS" },
-              { nodeIdx: 3, title: "Step 4: Core Banking Service Responds with 200 OK", protocol: "gRPC Core Banking", headers: "X-RateLimit-Limit: 100\\nX-RateLimit-Remaining: 57", body: "{\\n  \\"status\\": \\"SUCCESS\\",\\n  \\"data\\": []\\n}", action: "Core banking service returns account data with remaining quota headers.", response: "200 OK (Remaining: 57)", badge: "200 OK" }
-            ]
-          },
-          {
-            name: "Scenario 2: Rate Limit Exceeded Burst (429 Too Many Requests)",
-            nodes: [
-              { title: "Client Bot", sub: "Burst Attack" },
-              { title: "Envoy Gateway", sub: "Rate Check" },
-              { title: "Redis ZSET", sub: "ZCARD > Limit" },
-              { title: "Gateway Response", sub: "429 Too Many Requests" }
-            ],
-            steps: [
-              { nodeIdx: 0, title: "Step 1: Traffic Burst (105th Request in 60s)", protocol: "HTTP/1.1 GET /v1/accounts", headers: "X-API-Key: key_spammer_1", body: "{}", action: "Client bot sends 105th request within 60-second sliding window.", response: "Pending...", badge: "BURST" },
-              { nodeIdx: 1, title: "Step 2: Redis ZSET Count Check Exceeds 100 Limit", protocol: "Redis ZCARD Command", headers: "ZCARD: 101\\nLimit: 100", body: "{\\n  \\"error\\": \\"RATE_LIMIT_EXCEEDED\\",\\n  \\"retry_after_sec\\": 12\\n}", action: "ZCARD count returns 101 > 100 limit. Request rejected immediately!", response: "429 Too Many Requests", badge: "LIMIT EXCEEDED" },
-              { nodeIdx: 2, title: "Step 3: Envoy Returns 429 Header with Retry-After", protocol: "Envoy Egress Header", headers: "HTTP/1.1 429 Too Many Requests\\nRetry-After: 12", body: "{\\n  \\"error\\": \\"RATE_LIMIT_EXCEEDED\\",\\n  \\"message\\": \\"Quota exceeded. Try again in 12 seconds.\\"\\n}", action: "Gateway drops connection to core services, protecting backend from collapse.", response: "429 Too Many Requests (Blocked)", badge: "BLOCKED 429" }
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: Partner API Request", protocol: "HTTP/1.1 GET /v1/accounts", headers: "X-API-Key: key_partner_99", body: "{}", action: "Partner app sends GET request to core banking API.", response: "Pending...", badge: "REQUEST" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Envoy Gateway Key Check", protocol: "Envoy Filter Engine", headers: "Key: key_partner_99", body: "{\\n  \\"client_id\\": \\"client_fintech_99\\",\\n  \\"limit_per_min\\": 100\\n}", action: "Envoy extracts client ID and fetches rate limit quota profile.", response: "Routing to Redis Limiter", badge: "PROFILE OK" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Redis ZSET Sliding Window Counter", protocol: "Redis Pipeline (ZREMRANGEBYSCORE + ZCARD + ZADD)", headers: "ZSET-Key: rate:client_fintech_99\\nWindow: 60s", body: "{\\n  \\"active_count_in_window\\": 42,\\n  \\"limit\\": 100,\\n  \\"allowed\\": true\\n}", action: "Redis purges timestamps older than (now - 60s). Count = 42 < 100 limit. Timestamp added.", response: "Allowed (42/100)", badge: "ZSET PASS" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Core Banking Service Responds with 200 OK", protocol: "gRPC Core Banking", headers: "X-RateLimit-Limit: 100\\nX-RateLimit-Remaining: 57", body: "{\\n  \\"status\\": \\"SUCCESS\\",\\n  \\"data\\": []\\n}", action: "Core banking service returns account data with remaining quota headers.", response: "200 OK (Remaining: 57)", badge: "200 OK" }
             ]
           }
         ]
@@ -1746,25 +1788,10 @@ def create_index_html():
               { title: "ML Scorer", sub: "Score 8/100 (Low)" }
             ],
             steps: [
-              { nodeIdx: 0, title: "Step 1: Merchant Swipes Card in New York City", protocol: "POS Auth Request", headers: "Terminal: NYC_Starbucks_102\\nCard-ID: c_9921", body: "{\\n  \\"amount\\": 45.00,\\n  \\"city\\": \\"New York\\",\\n  \\"country\\": \\"USA\\"\\n}", action: "POS terminal sends swipe data to fraud evaluation service.", response: "Pending Evaluation", badge: "SWIPED" },
-              { nodeIdx: 1, title: "Step 2: Fast Path Authorization Sub-50ms", protocol: "gRPC Pipeline", headers: "X-Trace-ID: trc_nyc_1", body: "{\\n  \\"fast_path_allowed\\": true\\n}", action: "Fast path verifies pin & card status, approving POS in 22ms while emitting event to Kafka for Flink.", response: "POS Approved (22ms)", badge: "APPROVED" },
-              { nodeIdx: 2, title: "Step 3: Flink Window Evaluates Distance Velocity", protocol: "Flink Stateful Stream", headers: "State: NYC (10 mins ago) -> NYC (now)\\nVelocity: 0 mph", body: "{\\n  \\"distance_miles\\": 0,\\n  \\"time_delta_mins\\": 10\\n}", action: "Flink confirms distance between purchases is 0 miles. Normal pattern.", response: "Velocity Normal", badge: "FLINK OK" },
-              { nodeIdx: 3, title: "Step 4: Machine Learning Inference Score = 8/100", protocol: "Triton ML Model", headers: "Model: Fraud_v4_GBDT", body: "{\\n  \\"fraud_score\\": 8,\\n  \\"decision\\": \\"PASS\\"\\n}", action: "ML model scores transaction 8/100 risk. Transaction settled normally.", response: "Status: 200 OK", badge: "LOW RISK" }
-            ]
-          },
-          {
-            name: "Scenario 2: Impossible Travel Anomaly (Score 94/100 - Decline)",
-            nodes: [
-              { title: "Tokyo Merchant", sub: "Tokyo Swipe $1,200" },
-              { title: "Ingress Gateway", sub: "Parallel Scoring" },
-              { title: "Flink Stream", sub: "20,000 MPH Detected" },
-              { title: "Alert Service", sub: "Auto-Decline & Push" }
-            ],
-            steps: [
-              { nodeIdx: 0, title: "Step 1: Tokyo Swipe 5 Mins After NYC Swipe", protocol: "POS Auth Request", headers: "Terminal: Tokyo_Electronics_88\\nCard-ID: c_9921", body: "{\\n  \\"amount\\": 1200.00,\\n  \\"city\\": \\"Tokyo\\",\\n  \\"country\\": \\"Japan\\"\\n}", action: "Card swiped in Tokyo 5 minutes after being swiped in New York City.", response: "Pending Score...", badge: "ANOMALY" },
-              { nodeIdx: 1, title: "Step 2: Flink Window Calculates Travel Velocity", protocol: "Flink Stateful Stream", headers: "Distance: 6,700 miles\\nTime-Delta: 5 mins", body: "{\\n  \\"calculated_velocity_mph\\": 80400,\\n  \\"max_allowed_mph\\": 600\\n}", action: "Flink detects calculated speed is 80,400 mph! Impossible travel anomaly flagged.", response: "ANOMALY FLAGGED", badge: "FLINK ALERT" },
-              { nodeIdx: 2, title: "Step 3: ML Engine Returns Risk Score 94/100", protocol: "Triton ML Inference", headers: "Fraud-Score: 94/100\\nFlag: IMPOSSIBLE_TRAVEL", body: "{\\n  \\"score\\": 94,\\n  \\"recommendation\\": \\"DECLINE_AND_ALERT\\"\\n}", action: "ML model flags stolen card / counterfeit clone.", response: "DECLINE (51)", badge: "HIGH RISK" },
-              { nodeIdx: 3, title: "Step 4: Auto-Decline Response & SMS Push Dispatched", protocol: "APNs / Twilio Push", headers: "Push-Type: URGENT_FRAUD_ALERT", body: "{\\n  \\"status\\": \\"DECLINED\\",\\n  \\"sms_sent\\": \\"Did you try to spend $1,200 in Tokyo? Reply YES/NO\\"\\n}", action: "Transaction declined at POS. Instant push notification dispatched to cardholder.", response: "DECLINED + Push Sent", badge: "DECLINED" }
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: Merchant Swipes Card in New York City", protocol: "POS Auth Request", headers: "Terminal: NYC_Starbucks_102\\nCard-ID: c_9921", body: "{\\n  \\"amount\\": 45.00,\\n  \\"city\\": \\"New York\\",\\n  \\"country\\": \\"USA\\"\\n}", action: "POS terminal sends swipe data to fraud evaluation service.", response: "Pending Evaluation", badge: "SWIPED" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Fast Path Authorization Sub-50ms", protocol: "gRPC Pipeline", headers: "X-Trace-ID: trc_nyc_1", body: "{\\n  \\"fast_path_allowed\\": true\\n}", action: "Fast path verifies pin & card status, approving POS in 22ms while emitting event to Kafka for Flink.", response: "POS Approved (22ms)", badge: "APPROVED" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Flink Window Evaluates Distance Velocity", protocol: "Flink Stateful Stream", headers: "State: NYC (10 mins ago) -> NYC (now)\\nVelocity: 0 mph", body: "{\\n  \\"distance_miles\\": 0,\\n  \\"time_delta_mins\\": 10\\n}", action: "Flink confirms distance between purchases is 0 miles. Normal pattern.", response: "Velocity Normal", badge: "FLINK OK" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Machine Learning Inference Score = 8/100", protocol: "Triton ML Model", headers: "Model: Fraud_v4_GBDT", body: "{\\n  \\"fraud_score\\": 8,\\n  \\"decision\\": \\"PASS\\"\\n}", action: "ML model scores transaction 8/100 risk. Transaction settled normally.", response: "Status: 200 OK", badge: "LOW RISK" }
             ]
           }
         ]
@@ -1780,10 +1807,10 @@ def create_index_html():
               { title: "Kafka Event Bus", sub: "Push Notification" }
             ],
             steps: [
-              { nodeIdx: 0, title: "Step 1: User A Transfers $200 to User B", protocol: "HTTP/2 POST /v1/p2p/transfers", headers: "Idempotency-Key: p2p_99182a\\nAuth: Bearer sender_token", body: "{\\n  \\"sender_id\\": \\"usr_A\\",\\n  \\"receiver_id\\": \\"usr_B\\",\\n  \\"amount\\": 200.00\\n}", action: "Sender submits instant P2P transfer request.", response: "202 Accepted", badge: "SUBMITTED" },
-              { nodeIdx: 1, title: "Step 2: Gateway Validates Balance & Acquires Lock", protocol: "gRPC Validation", headers: "Redis-Lock: lock:p2p:p2p_99182a", body: "{\\n  \\"sender_balance\\": 1250.00,\\n  \\"valid\\": true\\n}", action: "Gateway verifies sender has $1,250 balance > $200 transfer.", response: "Validation Passed", badge: "VALIDATED" },
-              { nodeIdx: 2, title: "Step 3: Double-Entry DB Transaction (PostgreSQL)", protocol: "PostgreSQL BEGIN ... COMMIT", headers: "Txn-Iso: SERIALIZABLE", body: "BEGIN;\\nINSERT INTO ledger (acc, type, amt) VALUES ('A', 'DEBIT', -200.00);\\nINSERT INTO ledger (acc, type, amt) VALUES ('B', 'CREDIT', 200.00);\\nCOMMIT;", action: "Executes paired DEBIT (-$200) and CREDIT (+$200). Sum of debits and credits = $0.", response: "DB Transaction Committed", badge: "LEDGER COMMITTED" },
-              { nodeIdx: 3, title: "Step 4: Kafka Event Trigger & Push Notification", protocol: "Kafka c1.p2p.events", headers: "Event: P2PTransferCompleted", body: "{\\n  \\"transfer_id\\": \\"trf_881\\",\\n  \\"receiver_id\\": \\"usr_B\\",\\n  \\"amount\\": 200.00\\n}", action: "Kafka event published. Receiver receives push notification: 'You received $200 from Bob!'", response: "Transfer Complete (200 OK)", badge: "COMPLETED" }
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: User A Transfers $200 to User B", protocol: "HTTP/2 POST /v1/p2p/transfers", headers: "Idempotency-Key: p2p_99182a\\nAuth: Bearer sender_token", body: "{\\n  \\"sender_id\\": \\"usr_A\\",\\n  \\"receiver_id\\": \\"usr_B\\",\\n  \\"amount\\": 200.00\\n}", action: "Sender submits instant P2P transfer request.", response: "202 Accepted", badge: "SUBMITTED" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Gateway Validates Balance & Acquires Lock", protocol: "gRPC Validation", headers: "Redis-Lock: lock:p2p:p2p_99182a", body: "{\\n  \\"sender_balance\\": 1250.00,\\n  \\"valid\\": true\\n}", action: "Gateway verifies sender has $1,250 balance > $200 transfer.", response: "Validation Passed", badge: "VALIDATED" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Double-Entry DB Transaction (PostgreSQL)", protocol: "PostgreSQL BEGIN ... COMMIT", headers: "Txn-Iso: SERIALIZABLE", body: "BEGIN;\\nINSERT INTO ledger (acc, type, amt) VALUES ('A', 'DEBIT', -200.00);\\nINSERT INTO ledger (acc, type, amt) VALUES ('B', 'CREDIT', 200.00);\\nCOMMIT;", action: "Executes paired DEBIT (-$200) and CREDIT (+$200). Sum of debits and credits = $0.", response: "DB Transaction Committed", badge: "LEDGER COMMITTED" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Kafka Event Trigger & Push Notification", protocol: "Kafka c1.p2p.events", headers: "Event: P2PTransferCompleted", body: "{\\n  \\"transfer_id\\": \\"trf_881\\",\\n  \\"receiver_id\\": \\"usr_B\\",\\n  \\"amount\\": 200.00\\n}", action: "Kafka event published. Receiver receives push notification: 'You received $200 from Bob!'", response: "Transfer Complete (200 OK)", badge: "COMPLETED" }
             ]
           }
         ]
@@ -1799,10 +1826,10 @@ def create_index_html():
               { title: "Twilio Worker", sub: "Delivered in <1.2s" }
             ],
             steps: [
-              { nodeIdx: 0, title: "Step 1: Fraud Service Emits Alert Event", protocol: "gRPC Internal", headers: "Priority: HIGH\\nAlert-Type: FRAUD_SUSPECTED", body: "{\\n  \\"user_id\\": \\"u_9921\\",\\n  \\"card\\": \\"c_4821\\",\\n  \\"channel\\": \\"SMS\\"\\n}", action: "Fraud engine emits critical alert to notification engine.", response: "Routing Alert", badge: "EMITTED" },
-              { nodeIdx: 1, title: "Step 2: Preference Check Bypasses Quiet Hours", protocol: "User Preference DB", headers: "Is-Fraud: TRUE (Bypass Quiet Hours)", body: "{\\n  \\"phone\\": \\"+15550192834\\",\\n  \\"quiet_hours_active\\": true,\\n  \\"bypass\\": true\\n}", action: "Fraud severity overrides quiet hours settings.", response: "Queued to High Priority", badge: "BYPASSED" },
-              { nodeIdx: 2, title: "Step 3: Pushed to High-Priority SQS FIFO Queue", protocol: "AWS SQS SendMessage", headers: "QueueUrl: high-priority-alerts.fifo", body: "{\\n  \\"msg_id\\": \\"msg_88192\\",\\n  \\"dedup_id\\": \\"fraud_c_4821\\"\\n}", action: "Alert pushes to dedicated high-priority queue, bypassing marketing batches.", response: "Enqueued (0ms delay)", badge: "PRIORITY QUEUED" },
-              { nodeIdx: 3, title: "Step 4: Twilio Worker Delivers SMS to User Phone", protocol: "HTTPS POST to Twilio REST API", headers: "Host: api.twilio.com", body: "{\\n  \\"sid\\": \\"SM88192a\\",\\n  \\"status\\": \\"delivered\\",\\n  \\"latency_ms\\": 1180\\n}", action: "SMS delivered to user's phone in 1.18 seconds!", response: "DELIVERED (1.18s)", badge: "DELIVERED" }
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: Fraud Service Emits Alert Event", protocol: "gRPC Internal", headers: "Priority: HIGH\\nAlert-Type: FRAUD_SUSPECTED", body: "{\\n  \\"user_id\\": \\"u_9921\\",\\n  \\"card\\": \\"c_4821\\",\\n  \\"channel\\": \\"SMS\\"\\n}", action: "Fraud engine emits critical alert to notification engine.", response: "Routing Alert", badge: "EMITTED" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Preference Check Bypasses Quiet Hours", protocol: "User Preference DB", headers: "Is-Fraud: TRUE (Bypass Quiet Hours)", body: "{\\n  \\"phone\\": \\"+15550192834\\",\\n  \\"quiet_hours_active\\": true,\\n  \\"bypass\\": true\\n}", action: "Fraud severity overrides quiet hours settings.", response: "Queued to High Priority", badge: "BYPASSED" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Pushed to High-Priority SQS FIFO Queue", protocol: "AWS SQS SendMessage", headers: "QueueUrl: high-priority-alerts.fifo", body: "{\\n  \\"msg_id\\": \\"msg_88192\\",\\n  \\"dedup_id\\": \\"fraud_c_4821\\"\\n}", action: "Alert pushes to dedicated high-priority queue, bypassing marketing batches.", response: "Enqueued (0ms delay)", badge: "PRIORITY QUEUED" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Twilio Worker Delivers SMS to User Phone", protocol: "HTTPS POST to Twilio REST API", headers: "Host: api.twilio.com", body: "{\\n  \\"sid\\": \\"SM88192a\\",\\n  \\"status\\": \\"delivered\\",\\n  \\"latency_ms\\": 1180\\n}", action: "SMS delivered to user's phone in 1.18 seconds!", response: "DELIVERED (1.18s)", badge: "DELIVERED" }
             ]
           }
         ]
@@ -1818,10 +1845,10 @@ def create_index_html():
               { title: "Redis Cache Update", sub: "9,999 Served from Redis" }
             ],
             steps: [
-              { nodeIdx: 0, title: "Step 1: 10,000 Concurrent Requests for Hot Key", protocol: "HTTP GET /v1/profile/acc_99", headers: "Concurrent-Connections: 10,000", body: "{}", action: "Hot cache key profile:acc_99 expires. 10,000 requests hit gateway simultaneously.", response: "Cache Lookup", badge: "10K REQS" },
-              { nodeIdx: 1, title: "Step 2: Redis Cluster Returns Cache Miss", protocol: "Redis GET profile:acc_99", headers: "Result: NULL (EXPIRED)", body: "{\\n  \\"key\\": \\"profile:acc_99\\",\\n  \\"hit\\": false\\n}", action: "Redis indicates key is missing.", response: "CACHE MISS", badge: "CACHE MISS" },
-              { nodeIdx: 2, title: "Step 3: Singleflight Mutex Lock Granted to Thread 1", protocol: "Redis SETNX lock:profile:acc_99 EX 5", headers: "Lock-Result: Thread 1 = GRANTED, Threads 2-10,000 = WAIT", body: "{\\n  \\"thread_1_granted\\": true,\\n  \\"waiting_threads\\": 9999\\n}", action: "Thread 1 acquires lock & queries DB. Threads 2-10,000 enter 50ms spin-wait.", response: "DB Query In Flight (1 Thread)", badge: "MUTEX LOCK" },
-              { nodeIdx: 3, title: "Step 4: Thread 1 Populates Redis -> 9,999 Requests Hit Cache!", protocol: "Redis SET profile:acc_99 EX 300", headers: "TTL: 300s\\nDB-Load: 1 Query total!", body: "{\\n  \\"cache_populated\\": true,\\n  \\"served_from_redis\\": 9999\\n}", action: "Thread 1 writes profile to Redis and releases mutex. 9,999 waiting requests fetch result from Redis instantly!", response: "200 OK (DB Protected)", badge: "STAMPEDE GUARDED" }
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: 10,000 Concurrent Requests for Hot Key", protocol: "HTTP GET /v1/profile/acc_99", headers: "Concurrent-Connections: 10,000", body: "{}", action: "Hot cache key profile:acc_99 expires. 10,000 requests hit gateway simultaneously.", response: "Cache Lookup", badge: "10K REQS" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Redis Cluster Returns Cache Miss", protocol: "Redis GET profile:acc_99", headers: "Result: NULL (EXPIRED)", body: "{\\n  \\"key\\": \\"profile:acc_99\\",\\n  \\"hit\\": false\\n}", action: "Redis indicates key is missing.", response: "CACHE MISS", badge: "CACHE MISS" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Singleflight Mutex Lock Granted to Thread 1", protocol: "Redis SETNX lock:profile:acc_99 EX 5", headers: "Lock-Result: Thread 1 = GRANTED, Threads 2-10,000 = WAIT", body: "{\\n  \\"thread_1_granted\\": true,\\n  \\"waiting_threads\\": 9999\\n}", action: "Thread 1 acquires lock & queries DB. Threads 2-10,000 enter 50ms spin-wait.", response: "DB Query In Flight (1 Thread)", badge: "MUTEX LOCK" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Thread 1 Populates Redis -> 9,999 Requests Hit Cache!", protocol: "Redis SET profile:acc_99 EX 300", headers: "TTL: 300s\\nDB-Load: 1 Query total!", body: "{\\n  \\"cache_populated\\": true,\\n  \\"served_from_redis\\": 9999\\n}", action: "Thread 1 writes profile to Redis and releases mutex. 9,999 waiting requests fetch result from Redis instantly!", response: "200 OK (DB Protected)", badge: "STAMPEDE GUARDED" }
             ]
           }
         ]
@@ -1837,10 +1864,10 @@ def create_index_html():
               { title: "TimescaleDB & S3", sub: "Hypertables & Parquet" }
             ],
             steps: [
-              { nodeIdx: 0, title: "Step 1: 10 Million Smart Meters Transmit Data", protocol: "MQTT over TLS 1.3", headers: "Topic: telemetry/meters/m_88192", body: "{\\n  \\"meter_id\\": \\"m_88192\\",\\n  \\"kw_usage\\": 4.2,\\n  \\"timestamp\\": 1775480000\\n}", action: "Meters stream usage data every 15 seconds.", response: "MQTT Ack", badge: "MQTT INGEST" },
-              { nodeIdx: 1, title: "Step 2: Kinesis Shards Aggregate Stream Data", protocol: "AWS Kinesis Data Streams", headers: "Shards: 64\\nPartitionKey: m_88192", body: "{\\n  \\"throughput_msgs_sec\\": 700000\\n}", action: "64 Kinesis shards ingest 700,000 messages/sec smoothly.", response: "Kinesis Partitioned", badge: "KINESIS OK" },
-              { nodeIdx: 2, title: "Step 3: Flink Windowing Detects Grid Overload Surges", protocol: "Flink Tumbling Window (5m)", headers: "Window: 13:00 - 13:05", body: "{\\n  \\"avg_kw\\": 4.1,\\n  \\"status\\": \\"NORMAL\\"\\n}", action: "Flink computes 5-minute rolling averages per transformer district.", response: "Stream Windowed", badge: "FLINK STREAM" },
-              { nodeIdx: 3, title: "Step 4: Batch Writes to TimescaleDB & S3 Parquet", protocol: "TimescaleDB Hypertable & S3 Firehose", headers: "Table: meter_telemetry\\nS3: s3://telemetry/year=2026/", body: "{\\n  \\"inserted_rows\\": 1000,\\n  \\"parquet_compressed\\": true\\n}", action: "Data written to TimescaleDB for dashboards and archived to S3 Parquet for Athena billing queries.", response: "Stored & Archived", badge: "TIMESCALEDB" }
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: 10 Million Smart Meters Transmit Data", protocol: "MQTT over TLS 1.3", headers: "Topic: telemetry/meters/m_88192", body: "{\\n  \\"meter_id\\": \\"m_88192\\",\\n  \\"kw_usage\\": 4.2,\\n  \\"timestamp\\": 1775480000\\n}", action: "Meters stream usage data every 15 seconds.", response: "MQTT Ack", badge: "MQTT INGEST" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Kinesis Shards Aggregate Stream Data", protocol: "AWS Kinesis Data Streams", headers: "Shards: 64\\nPartitionKey: m_88192", body: "{\\n  \\"throughput_msgs_sec\\": 700000\\n}", action: "64 Kinesis shards ingest 700,000 messages/sec smoothly.", response: "Kinesis Partitioned", badge: "KINESIS OK" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Flink Windowing Detects Grid Overload Surges", protocol: "Flink Tumbling Window (5m)", headers: "Window: 13:00 - 13:05", body: "{\\n  \\"avg_kw\\": 4.1,\\n  \\"status\\": \\"NORMAL\\"\\n}", action: "Flink computes 5-minute rolling averages per transformer district.", response: "Stream Windowed", badge: "FLINK STREAM" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Batch Writes to TimescaleDB & S3 Parquet", protocol: "TimescaleDB Hypertable & S3 Firehose", headers: "Table: meter_telemetry\\nS3: s3://telemetry/year=2026/", body: "{\\n  \\"inserted_rows\\": 1000,\\n  \\"parquet_compressed\\": true\\n}", action: "Data written to TimescaleDB for dashboards and archived to S3 Parquet for Athena billing queries.", response: "Stored & Archived", badge: "TIMESCALEDB" }
             ]
           }
         ]
@@ -1856,10 +1883,10 @@ def create_index_html():
               { title: "Region Blackout", sub: "DNS Failover to us-west-2" }
             ],
             steps: [
-              { nodeIdx: 0, title: "Step 1: User Deposited $500 in US-East-1", protocol: "HTTP POST /v1/transactions", headers: "Host: api.capitalone.com\\nGeo: US-East", body: "{\\n  \\"account_id\\": \\"acc_992\\",\\n  \\"amount\\": 500.00\\n}", action: "Route 53 routes request to nearest US-East data center.", response: "Processing...", badge: "US-EAST-1" },
-              { nodeIdx: 1, title: "Step 2: Raft Consensus Synchronizes Across Regions", protocol: "Raft Consensus (CockroachDB)", headers: "Quorum: 3/5 Replicas Ack", body: "{\\n  \\"us_east_1_ack\\": true,\\n  \\"us_west_2_ack\\": true,\\n  \\"raft_term\\": 42\\n}", action: "Raft consensus writes transaction synchronously to US-East & US-West nodes before acknowledging user.", response: "Raft Committed (Zero RPO)", badge: "RAFT SYNC" },
-              { nodeIdx: 2, title: "Step 3: Total AWS US-East-1 Regional Outage Occurs!", protocol: "Route 53 Health Check", headers: "us-east-1: UNHEALTHY (503)", body: "{\\n  \\"outage_type\\": \\"TOTAL_DATACENTER_FAILURE\\"\\n}", action: "AWS US-East-1 loses total power. Health check fails after 2 consecutive probes.", response: "Health Check Failed", badge: "OUTAGE ALERT" },
-              { nodeIdx: 3, title: "Step 4: Route 53 DNS Failover to US-West-2 in 2.8s", protocol: "DNS Anycast Failover", headers: "Active-Region: us-west-2\\nRTO: 2.8s, RPO: 0s", body: "{\\n  \\"traffic_shifted\\": \\"100% to us-west-2\\",\\n  \\"lost_transactions\\": 0\\n}", action: "Route 53 shifts 100% traffic to US-West-2. Zero transaction data lost!", response: "100% Recovered in US-West (2.8s)", badge: "ZERO RPO FAILOVER" }
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: User Deposited $500 in US-East-1", protocol: "HTTP POST /v1/transactions", headers: "Host: api.capitalone.com\\nGeo: US-East", body: "{\\n  \\"account_id\\": \\"acc_992\\",\\n  \\"amount\\": 500.00\\n}", action: "Route 53 routes request to nearest US-East data center.", response: "Processing...", badge: "US-EAST-1" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Raft Consensus Synchronizes Across Regions", protocol: "Raft Consensus (CockroachDB)", headers: "Quorum: 3/5 Replicas Ack", body: "{\\n  \\"us_east_1_ack\\": true,\\n  \\"us_west_2_ack\\": true,\\n  \\"raft_term\\": 42\\n}", action: "Raft consensus writes transaction synchronously to US-East & US-West nodes before acknowledging user.", response: "Raft Committed (Zero RPO)", badge: "RAFT SYNC" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Total AWS US-East-1 Regional Outage Occurs!", protocol: "Route 53 Health Check", headers: "us-east-1: UNHEALTHY (503)", body: "{\\n  \\"outage_type\\": \\"TOTAL_DATACENTER_FAILURE\\"\\n}", action: "AWS US-East-1 loses total power. Health check fails after 2 consecutive probes.", response: "Health Check Failed", badge: "OUTAGE ALERT" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Route 53 DNS Failover to US-West-2 in 2.8s", protocol: "DNS Anycast Failover", headers: "Active-Region: us-west-2\\nRTO: 2.8s, RPO: 0s", body: "{\\n  \\"traffic_shifted\\": \\"100% to us-west-2\\",\\n  \\"lost_transactions\\": 0\\n}", action: "Route 53 shifts 100% traffic to US-West-2. Zero transaction data lost!", response: "100% Recovered in US-West (2.8s)", badge: "ZERO RPO FAILOVER" }
             ]
           }
         ]
@@ -1905,6 +1932,18 @@ def create_index_html():
       const scenario = sysSimData[qId].scenarios[state.scenarioIdx];
       const step = scenario.steps[state.stepIdx];
 
+      // Update Connector SVG Line Animation
+      ['line-0-1', 'line-1-2'].forEach(lId => {
+        const lineEl = document.getElementById(qId + '-' + lId);
+        if (lineEl) {
+          if (step.lineId === lId) {
+            lineEl.className.baseVal = "flow-line-active";
+          } else {
+            lineEl.className.baseVal = "flow-line";
+          }
+        }
+      });
+
       // Update Node Boxes
       for (let i = 1; i <= 4; i++) {
         const nodeEl = document.getElementById(qId + '-node-' + i);
@@ -1920,13 +1959,13 @@ def create_index_html():
 
         if (nodeEl) {
           if (i - 1 === step.nodeIdx) {
-            nodeEl.className = "cursor-pointer p-3 rounded-xl border border-blue-500 bg-blue-500/20 shadow-lg shadow-blue-500/20 transition-all duration-300 relative group node-active";
+            nodeEl.className = "cursor-pointer p-3 rounded-xl border border-blue-500 bg-blue-500/25 shadow-lg shadow-blue-500/25 transition-all duration-300 relative group node-active";
             if (badgeEl) {
               badgeEl.textContent = step.badge || 'ACTIVE';
               badgeEl.className = "px-1.5 py-0.2 rounded bg-blue-600 text-white font-bold text-[8px]";
             }
           } else if (i - 1 < step.nodeIdx) {
-            nodeEl.className = "cursor-pointer p-3 rounded-xl border border-emerald-500/40 bg-emerald-500/5 transition-all duration-300 relative group opacity-80";
+            nodeEl.className = "cursor-pointer p-3 rounded-xl border border-emerald-500/40 bg-emerald-500/10 transition-all duration-300 relative group opacity-85";
             if (badgeEl) {
               badgeEl.textContent = 'DONE';
               badgeEl.className = "px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[8px]";
@@ -2125,4 +2164,4 @@ def create_index_html():
 </html>''')
 
 create_index_html()
-print("Written index.html with enhanced Cheat Sheet (Postgres vs DynamoDB, ElastiCache vs SETNX, Debezium CDC).")
+print("Written index.html with visual system architecture framework diagram & animated flow paths.")
