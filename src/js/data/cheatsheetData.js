@@ -123,23 +123,68 @@ export const cheatsheetData = {
       items: [
         {
           name: "Apache Kafka / AWS MSK",
-          bestFor: "Enterprise event backbone, high-throughput log streams, multi-consumer event replay.",
-          keyFeatures: "Log-based commit stream, partition key ordering guarantees, retention up to months, ecosystem tools (Flink/Kafka Connect)."
+          type: "Distributed Commit Log",
+          latency: "5ms - 20ms",
+          bestFor: "Enterprise event backbone, high-throughput log streams, multi-consumer event replay, Flink analytics.",
+          pros: [
+            "Log-based commit stream with retention up to months/years",
+            "Partition key ordering guarantees across high-throughput clusters",
+            "Rich ecosystem (Kafka Connect, Flink SQL, Schema Registry)",
+            "Highest raw throughput (100k+ msg/sec per broker node)"
+          ],
+          cons: [
+            "Cluster capacity management overhead (even with managed MSK)",
+            "Partition count cannot be easily reduced after creation"
+          ],
+          verdict: "Standard enterprise event backbone for core microservice event streaming and real-time stateful stream processing."
         },
         {
           name: "AWS Kinesis Data Streams",
-          bestFor: "AWS-native serverless stream processing with tight DynamoDB & Lambda integration.",
-          keyFeatures: "Auto-scaling shards, managed serverless stream operations, built-in enhanced fan-out."
+          type: "Serverless Stream Log",
+          latency: "10ms - 200ms",
+          bestFor: "AWS-native serverless stream processing with tight DynamoDB & Lambda triggers.",
+          pros: [
+            "Managed serverless stream operations with On-Demand auto-scaling",
+            "Enhanced Fan-Out delivers dedicated 2 MB/sec throughput per consumer",
+            "Native integration with AWS Lambda, EventBridge, and DynamoDB Streams"
+          ],
+          cons: [
+            "1 MB/sec write limit per shard (requires resharding for large volume spikes)",
+            "Poison pill record errors block shard partition until handled or expired"
+          ],
+          verdict: "Ideal for AWS-cloud-native event ingestion pipelines prioritizing zero server administration."
         },
         {
-          name: "AWS SQS & SNS (Queueing & Fan-Out)",
-          bestFor: "Asynchronous task queueing, microservice decoupling, DLQ retries, pub/sub notifications.",
-          keyFeatures: "SNS fans out messages to multiple SQS queues; SQS handles standard & FIFO queues with visibility timeouts."
+          name: "AWS SQS & SNS (Queue & Pub/Sub)",
+          type: "Message Queue & Topic Fan-Out",
+          latency: "10ms - 50ms",
+          bestFor: "Asynchronous task queueing, worker decoupling, DLQ retries, pub/sub topic notifications.",
+          pros: [
+            "SNS fans out messages to multiple SQS queues automatically",
+            "Built-in Dead-Letter Queue (DLQ) isolates unprocessable poison pills",
+            "Pay-per-request pricing ($0.40 per 1M calls) with zero base cost"
+          ],
+          cons: [
+            "Destructive consumption (messages deleted after processing, no stream replay)",
+            "Single consumer per queue message (requires SNS topic for multi-service delivery)"
+          ],
+          verdict: "Ideal for background worker tasks, email/SMS notifications, and resilient microservice task queues."
         },
         {
           name: "Debezium CDC (Change Data Capture)",
+          type: "DB Transaction Log Streamer",
+          latency: "10ms - 100ms",
           bestFor: "Zero-code stream replication from OLTP DBs (Postgres WAL) to Kafka / analytical sinks.",
-          keyFeatures: "Eliminates application dual-write partial failures, zero DB table locks, 100% eventual consistency."
+          pros: [
+            "Eliminates application dual-write partial failure windows completely",
+            "Zero database table locks (tails WAL / binlog asynchronously)",
+            "Captures full row states (BEFORE/AFTER) with 100% eventual consistency"
+          ],
+          cons: [
+            "Requires Write-Ahead Log (WAL) storage capacity on primary DB",
+            "Schema migration changes require schema registry alignment"
+          ],
+          verdict: "Mandatory enterprise pattern for syncing Postgres OLTP to ClickHouse/Elasticsearch without app code dual-writes."
         }
       ]
     },
