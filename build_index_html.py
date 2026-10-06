@@ -126,7 +126,7 @@ def create_index_html():
     </div>
 
     <!-- TAB 1: TECHNICAL CASES (SORTED BY RECENCY: 2025–2026 FIRST) -->
-    <div id="tab-tech-cases" class="tab-content space-y-4">
+    <div id="tab-tech-cases" class="tab-content space-y-4" style="display: block;">
       <div class="block lg:hidden bg-slate-850 border border-slate-800 p-3 rounded-xl shadow-xs space-y-2">
         <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Select Case Study (Most Recent First):</label>
         <select id="mobile-case-select" onchange="selectCase(this.value)" class="w-full p-2.5 text-xs rounded-lg border border-slate-700 bg-slate-950 text-slate-100 font-semibold min-h-[44px]">
@@ -148,7 +148,7 @@ def create_index_html():
             <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/30">Latest First</span>
           </div>
           
-          <button onclick="selectCase('case-1')" id="nav-case-1" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 case-nav-item active-nav border-blue-500 bg-blue-500/10">
+          <button onclick="selectCase('case-1')" id="nav-case-1" class="w-full text-left p-3 rounded-xl border transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 case-nav-item active-nav border-blue-500 bg-blue-500/10">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-blue-400">Case 1</span>
               <span class="text-[11px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 font-semibold">Late 2025</span>
@@ -573,9 +573,10 @@ def calculate_profit(amount: float) -> float:
 
         for case in tech_cases_config:
             c_id = case["id"]
+            disp_style = 'display: block;' if c_id == "case-1" else 'display: none;'
             f.write(f'''
           <!-- {case["tag"].upper()} -->
-          <div id="{c_id}" class="case-detail-pane space-y-4 sm:space-y-6 {"hidden" if c_id != "case-1" else ""}">
+          <div id="{c_id}" class="case-detail-pane space-y-4 sm:space-y-6" style="{disp_style}">
             <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-5">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
                 <div>
@@ -622,7 +623,7 @@ def calculate_profit(amount: float) -> float:
               </div>
 
               <!-- HIDDEN SOLUTION CONTAINER -->
-              <div id="sol-container-{c_id}" class="hidden space-y-4 pt-2">
+              <div id="sol-container-{c_id}" class="space-y-4 pt-2" style="display: none;">
                 
                 <!-- Root Causes & Fix Architecture -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
@@ -656,10 +657,10 @@ def calculate_profit(amount: float) -> float:
                     <div class="code-block lang-python">
                       <pre class="text-xs text-slate-200"><code>{case["solution_py"]}</code></pre>
                     </div>
-                    <div class="code-block lang-go hidden">
+                    <div class="code-block lang-go" style="display: none;">
                       <pre class="text-xs text-slate-200"><code>{case["solution_go"]}</code></pre>
                     </div>
-                    <div class="code-block lang-java hidden">
+                    <div class="code-block lang-java" style="display: none;">
                       <pre class="text-xs text-slate-200"><code>{case["solution_java"]}</code></pre>
                     </div>
                   </div>
@@ -677,7 +678,7 @@ def calculate_profit(amount: float) -> float:
     </div>
 
     <!-- TAB 2: SYSTEM DESIGN -->
-    <div id="tab-system-design" class="tab-content hidden space-y-4">
+    <div id="tab-system-design" class="tab-content space-y-4" style="display: none;">
       <div class="block lg:hidden bg-slate-850 border border-slate-800 p-3 rounded-xl shadow-xs space-y-2">
         <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Select System Design Question:</label>
         <select id="mobile-sys-select" onchange="selectSysQ(this.value)" class="w-full p-2.5 text-xs rounded-lg border border-slate-700 bg-slate-950 text-slate-100 font-semibold min-h-[44px]">
@@ -701,7 +702,7 @@ def calculate_profit(amount: float) -> float:
             <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/30">2025–2026 Loops</span>
           </div>
           
-          <button onclick="selectSysQ('sys-q1')" id="nav-sys-q1" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item active-nav border-blue-500 bg-blue-500/10">
+          <button onclick="selectSysQ('sys-q1')" id="nav-sys-q1" class="w-full text-left p-3 rounded-xl border transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item active-nav border-blue-500 bg-blue-500/10">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-blue-400">Question 1</span>
               <span class="text-[11px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 font-semibold">2025–2026</span>
@@ -983,9 +984,10 @@ def calculate_profit(amount: float) -> float:
 
         for q in sys_questions:
             q_id = q["id"]
+            disp_style = 'display: block;' if q_id == "q1" else 'display: none;'
             f.write(f'''
           <!-- SYS {q["tag"].upper()} -->
-          <div id="sys-{q_id}" class="sys-detail-pane space-y-4 sm:space-y-6 {"hidden" if q_id != "q1" else ""}">
+          <div id="sys-{q_id}" class="sys-detail-pane space-y-4 sm:space-y-6" style="{disp_style}">
             <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
                 <div>
@@ -1231,7 +1233,7 @@ def calculate_profit(amount: float) -> float:
     </div>
 
     <!-- TAB 3: FLASHCARDS -->
-    <div id="tab-flashcards" class="tab-content hidden space-y-6">
+    <div id="tab-flashcards" class="tab-content space-y-6" style="display: none;">
       <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
           <div>
@@ -1302,7 +1304,7 @@ def calculate_profit(amount: float) -> float:
     </div>
 
     <!-- TAB 4: MOCK INTERVIEW SIMULATOR -->
-    <div id="tab-mock-interview" class="tab-content hidden space-y-6">
+    <div id="tab-mock-interview" class="tab-content space-y-6" style="display: none;">
       <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
           <div>
@@ -1356,7 +1358,7 @@ def calculate_profit(amount: float) -> float:
     </div>
 
     <!-- TAB 5: SIZING MATH CALCULATOR -->
-    <div id="tab-calculators" class="tab-content hidden space-y-6">
+    <div id="tab-calculators" class="tab-content space-y-6" style="display: none;">
       <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
         <div class="border-b border-slate-800 pb-4">
           <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Back-Of-The-Envelope Math</span>
@@ -1417,7 +1419,7 @@ def calculate_profit(amount: float) -> float:
     </div>
 
     <!-- TAB 6: CHEAT SHEET -->
-    <div id="tab-cheat-sheet" class="tab-content hidden space-y-6">
+    <div id="tab-cheat-sheet" class="tab-content space-y-6" style="display: none;">
       <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
         <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
@@ -1574,7 +1576,7 @@ def calculate_profit(amount: float) -> float:
     </div>
 
     <!-- TAB 7: PRACTICE QUIZ -->
-    <div id="tab-quiz" class="tab-content hidden space-y-6">
+    <div id="tab-quiz" class="tab-content space-y-6" style="display: none;">
       <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
         <div class="border-b border-slate-800 pb-4">
           <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">Self-Assessment</span>
@@ -1615,7 +1617,7 @@ def calculate_profit(amount: float) -> float:
 
   </main>
 
-  <!-- Interactive Bulletproof JavaScript Logic (Modular & Complete Data for Q1 to Q9) -->
+  <!-- Interactive Bulletproof JavaScript Logic (Explicit Inline Style Visibility Engine) -->
   <script>
     let currentLang = 'python';
 
@@ -1627,21 +1629,15 @@ def calculate_profit(amount: float) -> float:
         langs.forEach(l => {
           const btn = document.getElementById('lang-btn-' + l);
           if (btn) {
-            if (l === lang) {
-              btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-xs border border-blue-400";
-            } else {
-              btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white border border-transparent";
-            }
+            btn.className = (l === lang)
+              ? "px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-xs border border-blue-400"
+              : "px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white border border-transparent";
           }
         });
 
         langs.forEach(l => {
           document.querySelectorAll('.code-block.lang-' + l).forEach(el => {
-            if (l === lang) {
-              el.classList.remove('hidden');
-            } else {
-              el.classList.add('hidden');
-            }
+            el.style.display = (l === lang) ? 'block' : 'none';
           });
         });
       } catch (err) {
@@ -1649,22 +1645,27 @@ def calculate_profit(amount: float) -> float:
       }
     }
 
-    // Safe Tab Switcher - Completely Independent Tabs
+    // Safe Tab Switcher - Completely Independent Tabs with Explicit Inline Styles
     function switchTab(tabId) {
       try {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-        const activeTab = document.getElementById('tab-' + tabId);
-        if (activeTab) {
-          activeTab.classList.remove('hidden');
-        }
-
         const tabs = ['tech-cases', 'system-design', 'flashcards', 'mock-interview', 'calculators', 'cheat-sheet', 'quiz'];
         tabs.forEach(t => {
+          const tabEl = document.getElementById('tab-' + t);
           const btn = document.getElementById('tab-btn-' + t);
-          if (btn) {
-            if (t === tabId) {
+          if (t === tabId) {
+            if (tabEl) {
+              tabEl.style.display = 'block';
+              tabEl.classList.remove('hidden');
+            }
+            if (btn) {
               btn.className = "flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white shadow-xs flex items-center gap-1.5 min-h-[38px]";
-            } else {
+            }
+          } else {
+            if (tabEl) {
+              tabEl.style.display = 'none';
+              tabEl.classList.add('hidden');
+            }
+            if (btn) {
               btn.className = "flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]";
             }
           }
@@ -1674,27 +1675,34 @@ def calculate_profit(amount: float) -> float:
       }
     }
 
-    // Safe Technical Case Switcher
+    // Safe Technical Case Switcher with Explicit Inline Styles
     function selectCase(caseId) {
       try {
-        document.querySelectorAll('.case-detail-pane').forEach(el => el.classList.add('hidden'));
-        const target = document.getElementById(caseId);
-        if (target) {
-          target.classList.remove('hidden');
-        }
-
-        document.querySelectorAll('.case-nav-item').forEach(el => {
-          el.classList.remove('border-blue-500', 'bg-blue-500/10');
+        const cases = ['case-1', 'case-2', 'case-3', 'case-4', 'case-5', 'case-6', 'case-7'];
+        cases.forEach(c => {
+          const casePane = document.getElementById(c);
+          const navItem = document.getElementById('nav-' + c);
+          if (c === caseId) {
+            if (casePane) {
+              casePane.style.display = 'block';
+              casePane.classList.remove('hidden');
+            }
+            if (navItem) {
+              navItem.classList.add('border-blue-500', 'bg-blue-500/10');
+            }
+          } else {
+            if (casePane) {
+              casePane.style.display = 'none';
+              casePane.classList.add('hidden');
+            }
+            if (navItem) {
+              navItem.classList.remove('border-blue-500', 'bg-blue-500/10');
+            }
+          }
         });
-        const navItem = document.getElementById('nav-' + caseId);
-        if (navItem) {
-          navItem.classList.add('border-blue-500', 'bg-blue-500/10');
-        }
 
         const mobileSelect = document.getElementById('mobile-case-select');
-        if (mobileSelect) {
-          mobileSelect.value = caseId;
-        }
+        if (mobileSelect) mobileSelect.value = caseId;
 
         setGlobalLang(currentLang);
       } catch (err) {
@@ -1702,30 +1710,38 @@ def calculate_profit(amount: float) -> float:
       }
     }
 
-    // Safe System Design Question Switcher
+    // Safe System Design Question Switcher with Explicit Inline Styles
     function selectSysQ(sysId) {
       try {
-        document.querySelectorAll('.sys-detail-pane').forEach(el => el.classList.add('hidden'));
-        const target = document.getElementById(sysId);
-        if (target) {
-          target.classList.remove('hidden');
-          const qId = sysId.replace('sys-', '');
-          if (activeSimState[qId]) {
-            renderSimStep(qId);
+        const sysQuestions = ['sys-q1', 'sys-q2', 'sys-q9', 'sys-q3', 'sys-q4', 'sys-q5', 'sys-q6', 'sys-q7', 'sys-q8'];
+        sysQuestions.forEach(sq => {
+          const sysPane = document.getElementById(sq);
+          const navItem = document.getElementById('nav-' + sq);
+          if (sq === sysId) {
+            if (sysPane) {
+              sysPane.style.display = 'block';
+              sysPane.classList.remove('hidden');
+            }
+            if (navItem) {
+              navItem.classList.add('border-blue-500', 'bg-blue-500/10');
+            }
+          } else {
+            if (sysPane) {
+              sysPane.style.display = 'none';
+              sysPane.classList.add('hidden');
+            }
+            if (navItem) {
+              navItem.classList.remove('border-blue-500', 'bg-blue-500/10');
+            }
           }
-        }
-
-        document.querySelectorAll('.sys-nav-item').forEach(el => {
-          el.classList.remove('border-blue-500', 'bg-blue-500/10');
         });
-        const navItem = document.getElementById('nav-' + sysId);
-        if (navItem) {
-          navItem.classList.add('border-blue-500', 'bg-blue-500/10');
-        }
 
         const mobileSelect = document.getElementById('mobile-sys-select');
-        if (mobileSelect) {
-          mobileSelect.value = sysId;
+        if (mobileSelect) mobileSelect.value = sysId;
+
+        const qId = sysId.replace('sys-', '');
+        if (activeSimState[qId]) {
+          renderSimStep(qId);
         }
       } catch (err) {
         console.error("selectSysQ error:", err);
@@ -1741,12 +1757,14 @@ def calculate_profit(amount: float) -> float:
 
         if (!container || !btn) return;
 
-        if (container.classList.contains('hidden')) {
+        if (container.style.display === 'none' || container.classList.contains('hidden')) {
+          container.style.display = 'block';
           container.classList.remove('hidden');
           btn.className = "w-full py-3 px-4 bg-blue-900/40 hover:bg-blue-900/60 text-blue-300 font-bold rounded-xl border border-blue-500/50 flex items-center justify-between text-xs sm:text-sm shadow-xs transition-all";
           btn.querySelector('span:first-child').innerHTML = "<span>🙈</span> <span>Hide Solution & Engineering Breakdown</span>";
           if (icon) icon.textContent = "▲";
         } else {
+          container.style.display = 'none';
           container.classList.add('hidden');
           btn.className = "w-full py-3 px-4 bg-slate-800 hover:bg-slate-750 text-blue-400 font-bold rounded-xl border border-slate-700 flex items-center justify-between text-xs sm:text-sm shadow-xs transition-all";
           btn.querySelector('span:first-child').innerHTML = "<span>👁️</span> <span>Reveal Answer & Fixed Engineering Solution</span>";
@@ -2281,4 +2299,4 @@ def calculate_profit(amount: float) -> float:
 </html>''')
 
 create_index_html()
-print("Successfully generated build_index_html.py with complete sysSimData for Q1..Q9 and bulletproof case switching.")
+print("Successfully generated build_index_html.py with explicit inline style display engine.")
