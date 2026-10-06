@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+import os
+
+def create_index_html():
+    target_path = "/Users/sandeepbehera/.gemini/antigravity/scratch/capital-one-prep-app/index.html"
+    
+    with open(target_path, "w", encoding="utf-8") as f:
+        f.write('''<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -492,7 +498,7 @@ public class CustomerDataStore {
                     <pre class="text-xs text-slate-200"><code>public class KafkaCdcIngestion {
     public String processEvent(String accountId, double amount, String merchant) {
         String txnId = db.insertTransaction(accountId, amount, merchant);
-        String jsonPayload = String.format("{"transaction_id":"%s","account_id":"%s","amount":%.2f}", txnId, accountId, amount);
+        String jsonPayload = String.format("{\"transaction_id\":\"%s\",\"account_id\":\"%s\",\"amount\":%.2f}", txnId, accountId, amount);
         producer.send("transaction-events", accountId, jsonPayload);
         return txnId;
     }
@@ -1469,4 +1475,7 @@ public class CustomerDataStore {
     setGlobalLang('python');
   </script>
 </body>
-</html>
+</html>''')
+
+create_index_html()
+print("Written index.html with full Tech Cases and System Design visualizers.")
