@@ -48,7 +48,17 @@ export function renderSystemDesign(containerEl, navContainerEl, mobileSelectEl) 
             </div>
           </div>
 
-          <!-- Requirements -->
+          <!-- Original Interview Question Prompt -->
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+            <span class="text-xs font-bold text-${q.color}-400 uppercase flex items-center gap-1.5">
+              <span>❓</span> <span>Original Interview Question Prompt</span>
+            </span>
+            <p class="text-xs sm:text-sm italic text-slate-300 leading-relaxed">
+              "${escapeHTML(q.prompt)}"
+            </p>
+          </div>
+
+          <!-- Key System Requirements -->
           <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
             <span class="text-xs font-bold text-${q.color}-400 uppercase flex items-center gap-1.5">
               <span>📋</span> <span>Key System Requirements & Scale</span>
@@ -111,6 +121,28 @@ export function renderSystemDesign(containerEl, navContainerEl, mobileSelectEl) 
                   <button onclick="window.resetFlow('${simKey}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-400 ml-auto">🔄 Reset</button>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Architectural Trade-offs & Design Rationale Section -->
+          <div class="space-y-4 pt-2">
+            <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+              <span class="text-base">⚖️</span>
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider">Architectural Trade-offs & Engineering Rationale</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 gap-4">
+              ${q.tradeoffs.map(t => `
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-800/80 pb-2">
+                    <h4 class="text-xs font-bold text-cyan-400 uppercase">${escapeHTML(t.topic)}</h4>
+                    <span class="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">${escapeHTML(t.decision)}</span>
+                  </div>
+                  <p class="text-xs text-slate-300 leading-relaxed pt-1">
+                    ${escapeHTML(t.rationale)}
+                  </p>
+                </div>
+              `).join('')}
             </div>
           </div>
 

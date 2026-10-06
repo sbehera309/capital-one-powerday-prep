@@ -9,10 +9,28 @@ export const sysDesignQuestions = [
     recency: "2025–2026 • High Frequency",
     color: "blue",
     archBadge: "AWS 5-Tier Distributed Saga & Async Microservices",
+    prompt: "Design a real-time credit card transaction processing platform for Capital One. It must approve payments in sub-100ms P99 latency, support high-volume ACH statement settlements, and maintain dual-write consistency between transactional OLTP storage and OLAP analytical warehouses without database locks.",
     requirements: [
       "Sub-100ms P99 latency for credit card transaction approval.",
-      "Dual-write consistency between Amazon Aurora Postgres (OLTP) & ClickHouse / Redshift (OLAP).",
+      "Dual-write consistency between Amazon Aurora Postgres OLTP & ClickHouse / Redshift OLAP analytics.",
       "Zero lost transactions during total AWS Availability Zone failure."
+    ],
+    tradeoffs: [
+      {
+        topic: "AWS Fargate (Containers) vs AWS Lambda (Serverless)",
+        decision: "AWS Fargate ECS Containers Selected",
+        rationale: "Payment authorization requires warm database connection pools (HikariCP / PgBouncer) to Amazon Aurora Postgres. AWS Lambda cold starts (100ms–500ms) would violate sub-100ms P99 SLAs. Fargate containers maintain persistent gRPC / TCP connections, eliminating connection setup overhead per payment request."
+      },
+      {
+        topic: "Debezium CDC + Amazon MSK vs Application Dual-Writing",
+        decision: "Debezium Change Data Capture Selected",
+        rationale: "Dual-writing directly to Postgres and ClickHouse from the microservice layer creates partial failure windows (e.g. Postgres succeeds, ClickHouse times out) and doubles network hop latency. Debezium CDC reads the Postgres Write-Ahead Log (WAL) asynchronously without locking database tables, guaranteeing 100% eventual consistency without impacting payment approval latency."
+      },
+      {
+        topic: "Amazon Aurora Postgres (OLTP) vs Amazon DynamoDB",
+        decision: "Amazon Aurora PostgreSQL Selected for OLTP",
+        rationale: "ACH statement settlements and core ledger accounting require ACID transactions and relational constraints (SERIALIZABLE isolation, multi-table Foreign Keys). DynamoDB is single-row ACID or eventual-consistent, making multi-account ledger balancing harder to audit."
+      }
     ],
     components: [
       { name: "Amazon API Gateway", desc: "TLS 1.3 termination, WAF rules, OAuth2 validation, and Amazon ElastiCache distributed locking." },
@@ -28,10 +46,28 @@ export const sysDesignQuestions = [
     recency: "2025–2026 • Low Latency",
     color: "cyan",
     archBadge: "AWS In-Memory ElastiCache Redis & ISO 8583",
+    prompt: "Design a high-throughput POS card swipe authorization system capable of handling 50,000 swipes/sec with sub-20ms P99 response time. Prevent double-spending on remaining balances using atomic in-memory scripts and publish asynchronous audit events.",
     requirements: [
       "Process 50,000 POS swipes/sec with sub-20ms P99 response time.",
       "Atomic remaining balance verification to prevent double-spending.",
       "Asynchronous audit log publishing to Amazon DynamoDB without blocking POS approval."
+    ],
+    tradeoffs: [
+      {
+        topic: "Amazon ElastiCache Redis Lua Scripts vs Relational DB Lock",
+        decision: "Redis Single-Threaded Lua Script (EVALSHA) Selected",
+        rationale: "Relational database row locks (`SELECT ... FOR UPDATE`) at 50,000 QPS cause severe lock contention and DB thread pool exhaustion. Redis executes Lua scripts single-threadedly in memory, performing atomic remaining balance checks and deductions in <1ms without locks."
+      },
+      {
+        topic: "AWS Network Load Balancer (NLB) vs Application Load Balancer (ALB)",
+        decision: "AWS NLB Selected for POS Ingress",
+        rationale: "POS terminals communicate via low-level ISO 8583 TCP socket connections. AWS NLB operates at Layer 4, handling tens of millions of concurrent TCP/gRPC connections with ultra-low sub-millisecond latency compared to Layer 7 ALB HTTP parsing overhead."
+      },
+      {
+        topic: "Amazon DynamoDB Async Audit Stream vs Synchronous Write",
+        decision: "Amazon MSK + DynamoDB Async Audit Selected",
+        rationale: "Writing audit logs synchronously during the POS authorization path adds 10-15ms of disk I/O latency. Publishing authorization decision events to Amazon MSK streams logs asynchronously into DynamoDB without delaying the ISO 8583 merchant response."
+      }
     ],
     components: [
       { name: "AWS Network Load Balancer (NLB)", desc: "High-throughput TCP ingress balancing 50,000 ISO 8583 requests/sec." },
@@ -47,10 +83,23 @@ export const sysDesignQuestions = [
     recency: "2025–2026 • High Availability",
     color: "emerald",
     archBadge: "AWS Route 53 Anycast & Multi-Region Compute",
+    prompt: "Design a multi-region active-active core banking database architecture spanning AWS us-east-1 and us-west-2. Achieve zero transaction data loss (RPO = 0) and automated failover in under 3 seconds (RTO < 3s) during total regional blackout.",
     requirements: [
       "RPO = 0 (Zero transaction data loss) & RTO < 3 seconds during total AWS region failure.",
       "Active-Active write capability in AWS us-east-1 and us-west-2.",
       "Strong serializable isolation across multi-region transactions."
+    ],
+    tradeoffs: [
+      {
+        topic: "Raft Consensus Multi-Region DB vs Asynchronous Primary-Replica",
+        decision: "Multi-Region Raft Quorum Database Selected",
+        rationale: "Asynchronous DB replication across regions introduces data loss windows during unannounced regional outages (RPO > 0). Raft consensus requires a majority quorum (3/5 replicas across 3 availability zones / 2 regions) to acknowledge writes before committing, guaranteeing RPO = 0."
+      },
+      {
+        topic: "AWS Route 53 Anycast Latency Routing vs Static DNS",
+        decision: "AWS Route 53 Latency Routing with Health Probes Selected",
+        rationale: "Route 53 latency routing directs users to the geographically nearest AWS region under normal conditions. When health probes detect 2 consecutive failures in us-east-1, Route 53 shifts 100% traffic to us-west-2 in <3 seconds without human intervention."
+      }
     ],
     components: [
       { name: "AWS Route 53 Anycast DNS", desc: "Latency-based routing with automated health check probes to nearest active region." },
@@ -66,10 +115,23 @@ export const sysDesignQuestions = [
     recency: "2025 • Core Infrastructure",
     color: "teal",
     archBadge: "Amazon ElastiCache Redis ZSET Sliding Window",
+    prompt: "Design a distributed API Gateway rate limiter enforcing 100 requests/minute per partner API key across 200 stateless gateway nodes with sub-2ms overhead per check and smooth burst handling.",
     requirements: [
       "Enforce 100 requests/minute per partner API key across 200 gateway nodes.",
       "Sub-2ms rate limit check overhead per incoming HTTP request.",
       "Smooth burst handling without sticky thread starvation."
+    ],
+    tradeoffs: [
+      {
+        topic: "Redis ZSET Sliding Window vs Fixed Window Counter",
+        decision: "ElastiCache Redis Sorted Set (ZSET) Selected",
+        rationale: "Fixed-window rate limiters suffer from edge-of-window traffic spikes (e.g. 100 requests at 00:59 and 100 requests at 01:01 allows 200 requests in 2 seconds). The Redis ZSET sliding window logs timestamp scores and purges elements older than now - 60s, enforcing strict rolling 60-second limit compliance."
+      },
+      {
+        topic: "Centralized Redis Cluster vs Local In-Memory Gateway Caching",
+        decision: "Centralized ElastiCache Redis Cluster Selected",
+        rationale: "Local in-memory counters across 200 gateway nodes allow clients to bypass rate limits by hitting different gateway instances behind round-robin load balancers. A centralized ElastiCache Redis cluster provides a single global source of truth."
+      }
     ],
     components: [
       { name: "Amazon API Gateway / Envoy", desc: "Interprets HTTP headers and queries centralized rate limit service." },
@@ -84,10 +146,23 @@ export const sysDesignQuestions = [
     recency: "Mid 2025 • ML Engineering",
     color: "indigo",
     archBadge: "AWS SageMaker / ONNX & ElastiCache Feature Store",
+    prompt: "Design a real-time fraud scoring engine evaluating 120 ML features in sub-50ms window before issuing HTTP authorization. Integrate low-latency feature stores and ONNX C++ XGBoost inference with fallback rule processing.",
     requirements: [
       "Evaluate 120 ML fraud features in sub-50ms window before issuing HTTP authorization response.",
       "Real-time velocity counter aggregation over 1-minute sliding windows.",
       "Fallback to rule engine if ML model inference times out."
+    ],
+    tradeoffs: [
+      {
+        topic: "Amazon ElastiCache (Feast Feature Store) vs Relational Database Joins",
+        decision: "Amazon ElastiCache Redis Feature Store Selected",
+        rationale: "Executing 120 SQL joins across user transaction history tables takes 30ms–100ms, consuming the entire SLA budget. Feast backed by ElastiCache Redis stores pre-computed features in memory, returning 120 data points via a single `MGET` call in sub-2ms."
+      },
+      {
+        topic: "ONNX Runtime C++ Server vs Python Flask ML Inference",
+        decision: "ONNX C++ Model Execution Engine Selected",
+        rationale: "Python ML servers suffer from Global Interpreter Lock (GIL) overhead and memory garbage collection pauses (45ms+ latency). Compiling XGBoost models to ONNX format executed via C++ containers achieves predictable 4.2ms model evaluation."
+      }
     ],
     components: [
       { name: "AWS Fargate (Fraud Orchestrator)", desc: "Coordinates sub-50ms parallel feature fetching and ML inference." },
@@ -102,10 +177,23 @@ export const sysDesignQuestions = [
     recency: "2024–2025 • Event Driven",
     color: "purple",
     archBadge: "Amazon MSK & AWS EKS Apache Flink Stream",
+    prompt: "Design an event-driven rewards and loyalty platform processing 100,000 credit card transaction settlements/sec. Ensure exactly-once processing semantics to prevent duplicate points and trigger instant mobile push alerts upon tier promotion.",
     requirements: [
       "Process 100,000 reward point calculations/second from card transactions.",
       "Exact-once processing semantics to prevent duplicate point credit allocations.",
       "Real-time tier upgrade notifications (Gold/Platinum) within 500ms of transaction."
+    ],
+    tradeoffs: [
+      {
+        topic: "Apache Flink Stateful Streaming vs Traditional Nightly Cron Jobs",
+        decision: "AWS EKS Apache Flink Stateful Stream Selected",
+        rationale: "Nightly batch cron jobs leave users waiting 24 hours to see point balances or tier promotions. Apache Flink maintains in-memory state in RocksDB, computing rolling spend totals per transaction in real-time with sub-second tier promotion push alerts."
+      },
+      {
+        topic: "Amazon MSK Partition Key = account_id vs Round-Robin Partitioning",
+        decision: "Explicit account_id Partition Key Selected",
+        rationale: "Round-robin partitioning sends transactions for the same account to different Flink workers, causing race conditions in point balances. Partitioning by `account_id` guarantees all events for a given account land on the exact same Flink task worker in sequential order."
+      }
     ],
     components: [
       { name: "Amazon MSK (Managed Kafka)", desc: "Ingests credit card settlement events with partition key = `account_id`." },
@@ -120,10 +208,23 @@ export const sysDesignQuestions = [
     recency: "2024 • Data Engineering",
     color: "amber",
     archBadge: "Debezium CDC + Amazon MSK + AWS S3",
+    prompt: "Design an automated Change Data Capture (CDC) streaming pipeline from DB2 mainframe legacy databases to AWS S3 and Snowflake analytical data lakehouses with sub-10 second latency and zero read-locking overhead on mainframe DB2 production tables.",
     requirements: [
       "Stream DB2 mainframe database changes to AWS S3 data lake with sub-10 second latency.",
       "Zero read lock overhead on mainframe production DB2 database.",
       "Automatic schema evolution handling for mainframe copybook alterations."
+    ],
+    tradeoffs: [
+      {
+        topic: "Debezium CDC + AWS Direct Connect vs Batch SQL Queries",
+        decision: "Debezium Change Data Capture Selected",
+        rationale: "Executing `SELECT * FROM DB2_TABLE` batch queries on production mainframes incurs heavy CPU MIPS costs and table locks. Debezium streams Write-Ahead Logs (WAL) over AWS Direct Connect without impacting production mainframe queries."
+      },
+      {
+        topic: "Apache Parquet Columnar Storage vs JSON/CSV Format",
+        decision: "Snappy Parquet Format on Amazon S3 Selected",
+        rationale: "JSON and CSV formats require scanning full files line-by-line during analytics queries. Snappy Parquet is a compressed columnar format, reducing S3 storage costs by 80% and enabling Snowflake/Athena to execute column-filtered queries 10x faster."
+      }
     ],
     components: [
       { name: "AWS Direct Connect + Debezium CDC", desc: "Reads DB2 transaction logs directly without locking database tables." },
@@ -138,10 +239,23 @@ export const sysDesignQuestions = [
     recency: "2024 • Ledger Systems",
     color: "rose",
     archBadge: "AWS CQRS Event Sourcing Ledger",
+    prompt: "Design an immutable double-entry accounting ledger system for Buy-Now-Pay-Later (BNPL) loans supporting 10,000 writes/sec, cryptographic event stream auditing, and CQRS read projections for instant merchant balance queries.",
     requirements: [
       "Immutable double-entry ledger ensuring Total Assets = Total Liabilities + Equity at all times.",
       "Audit capability to replay ledger state to any historic microsecond timestamp.",
       "High throughput write pipeline supporting 10,000 ledger entries/sec."
+    ],
+    tradeoffs: [
+      {
+        topic: "Event Sourcing + CQRS Pattern vs Standard Database CRUD",
+        decision: "Event Sourcing with CQRS Projections Selected",
+        rationale: "CRUD update operations (`UPDATE account SET balance = balance - 100`) destroy historic audit trails and create lock contention. Event sourcing stores an immutable append-only journal of financial events, allowing full ledger replay. CQRS projects balances into Amazon OpenSearch for instant read queries."
+      },
+      {
+        topic: "Double-Entry Accounting Constraint Validation",
+        decision: "Synchronous Double-Entry Validation Selected",
+        rationale: "Every transaction must balance (`Debits == Credits`) before being sealed into the immutable ledger, guaranteeing zero accounting discrepancy."
+      }
     ],
     components: [
       { name: "AWS Fargate (Ledger Command API)", desc: "Spring Boot microservice verifying double-entry constraints." },
@@ -156,10 +270,23 @@ export const sysDesignQuestions = [
     recency: "2024 • Financial Architecture",
     color: "violet",
     archBadge: "AWS ISO 20022 & SWIFT gpi Pipeline",
+    prompt: "Design an international cross-border FX payment settlement platform supporting ISO 20022 XML standards, sub-30ms OFAC sanctions screening, automated 10-second exchange rate locking, and SWIFT gpi Nostro/Vostro settlement.",
     requirements: [
       "Settle cross-border payments across 15 currencies with instant rate locking.",
       "Automated liquidity rebalancing between Nostro/Vostro accounts.",
       "Compliance screening against OFAC sanctions lists in sub-30ms."
+    ],
+    tradeoffs: [
+      {
+        topic: "Aho-Corasick Trie Matcher vs Relational Database LIKE Queries",
+        decision: "Aho-Corasick In-Memory Trie Screener Selected",
+        rationale: "Fuzzy SQL `LIKE` queries against millions of sanctioned names in OFAC database take 200ms+. The Aho-Corasick trie data structure evaluates all SDN list names in a single sub-30ms pass in memory."
+      },
+      {
+        topic: "10-Second Rate Lock in ElastiCache Redis vs Dynamic Execution",
+        decision: "ElastiCache Redis TTL Rate Lock Selected",
+        rationale: "Executing cross-border transfers without locking exchange rates exposes the bank to foreign exchange rate market volatility during SWIFT settlement processing."
+      }
     ],
     components: [
       { name: "Amazon API Gateway (ISO Ingress)", desc: "Validates pacs.008 XML payment messages." },
