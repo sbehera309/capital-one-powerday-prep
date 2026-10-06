@@ -1,0 +1,18 @@
+{
+  "name": "capital-one-powerday-prep",
+  "version": "1.0.0",
+  "description": "Capital One PowerDay Engineering Compendium - Tech Case & System Design Prep App",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "capital-one",
+    "powerday",
+    "system-design",
+    "tech-case",
+    "interview-prep"
+  ],
+  "author": "",
+  "license": "MIT"
+}

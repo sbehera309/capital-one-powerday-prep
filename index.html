@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Capital One PowerDay Prep - Technical Case & System Design</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    pre code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    button, input, select {
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased font-sans min-h-screen pb-12">
+  
+  <!-- Header Banner -->
+  <header class="border-b border-slate-800 bg-slate-900/90 sticky top-0 z-50 shadow-sm backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 py-3 space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow flex-shrink-0">
+            C1
+          </div>
+          <div>
+            <h1 class="text-base sm:text-lg font-bold text-white leading-tight">Capital One PowerDay Prep</h1>
+            <p class="text-[11px] sm:text-xs text-slate-400">Technical Case & System Design Compendium</p>
+          </div>
+        </div>
+
+        <!-- Global Language Selector -->
+        <div class="flex items-center gap-1.5 bg-slate-950 border border-slate-800 p-1 rounded-xl">
+          <button onclick="setGlobalLang('python')" id="lang-btn-python" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-xs">
+            Python
+          </button>
+          <button onclick="setGlobalLang('go')" id="lang-btn-go" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white">
+            Go
+          </button>
+          <button onclick="setGlobalLang('java')" id="lang-btn-java" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white">
+            Java
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Mobile/Desktop Main Navigation Bar -->
+      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 border-t border-slate-800 pt-2.5">
+        <button onclick="switchTab('tech-cases')" id="tab-btn-tech-cases" class="flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white shadow-xs flex items-center gap-1.5 min-h-[38px]">
+          <span>📋</span> <span>Tech Cases</span>
+        </button>
+        <button onclick="switchTab('system-design')" id="tab-btn-system-design" class="flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
+          <span>🏗️</span> <span>System Design</span>
+        </button>
+        <button onclick="switchTab('calculators')" id="tab-btn-calculators" class="flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
+          <span>🧮</span> <span>Sizing Math</span>
+        </button>
+        <button onclick="switchTab('cheat-sheet')" id="tab-btn-cheat-sheet" class="flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
+          <span>💡</span> <span>Cheat Sheet</span>
+        </button>
+        <button onclick="switchTab('quiz')" id="tab-btn-quiz" class="flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
+          <span>⚡</span> <span>Practice Quiz</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
+
+    <!-- Global Search Bar -->
+    <div class="bg-slate-850 border border-slate-800 p-2.5 sm:p-3 rounded-xl shadow-xs">
+      <div class="relative">
+        <input type="text" id="searchInput" onkeyup="filterContent()" placeholder="Search cases, Redis Lua, Flink, Kafka, formulas..." 
+               class="w-full pl-9 pr-4 py-2 text-xs rounded-lg border border-slate-700 bg-slate-950 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[40px]">
+        <svg class="w-4 h-4 absolute left-3 top-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- TAB 1: TECHNICAL CASES -->
+    <div id="tab-tech-cases" class="tab-content space-y-4">
+      
+      <!-- Mobile Quick Selector (Shown on screens < lg) -->
+      <div class="block lg:hidden bg-slate-850 border border-slate-800 p-3 rounded-xl shadow-xs space-y-2">
+        <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Select Case Study:</label>
+        <select id="mobile-case-select" onchange="selectCase(this.value)" class="w-full p-2.5 text-xs rounded-lg border border-slate-700 bg-slate-950 text-slate-100 font-semibold min-h-[44px]">
+          <option value="case-1">Case 1: "Eeno" Customer History Retrieval</option>
+          <option value="case-2">Case 2: Virtual Card Generation (Serverless vs ECS)</option>
+          <option value="case-3">Case 3: 3-Boolean Security Alert Logic</option>
+          <option value="case-4">Case 4: Mainframe to Real-Time Kafka Streaming</option>
+          <option value="case-5">Case 5: Mobile Payments Unit Economics</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- Sidebar Navigation (Desktop lg+) -->
+        <div class="hidden lg:block lg:col-span-1 space-y-2">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2 mb-2">Technical Case Studies</h3>
+          
+          <button onclick="selectCase('case-1')" id="nav-case-1" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 case-nav-item active-nav border-blue-500 bg-blue-500/10">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-blue-400">Case 1</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 font-semibold">Late 2025</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">"Eeno" Customer History</div>
+            <div class="text-[11px] text-slate-400">Network & Dynamic Windowing</div>
+          </button>
+
+          <button onclick="selectCase('case-2')" id="nav-case-2" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 case-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-400">Case 2</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-semibold">Mid 2025</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Virtual Card Generation</div>
+            <div class="text-[11px] text-slate-400">Serverless vs ECS & Logic Bug</div>
+          </button>
+
+          <button onclick="selectCase('case-3')" id="nav-case-3" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 case-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-amber-400">Case 3</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 font-semibold">Mid 2024</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">3-Boolean Security Alert</div>
+            <div class="text-[11px] text-slate-400">De Morgan's & Truth Table</div>
+          </button>
+
+          <button onclick="selectCase('case-4')" id="nav-case-4" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 case-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-purple-400">Case 4</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 font-semibold">Early 2024</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Mainframe to Kafka</div>
+            <div class="text-[11px] text-slate-400">Fraud ROI ($1.25M) & Dual-Write</div>
+          </button>
+
+          <button onclick="selectCase('case-5')" id="nav-case-5" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 case-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-rose-400">Case 5</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-400 font-semibold">2023-2024</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Mobile Payments Unit Econ</div>
+            <div class="text-[11px] text-slate-400">Break-Even & Margin Math</div>
+          </button>
+        </div>
+
+        <!-- Case Detail Content -->
+        <div class="lg:col-span-3 space-y-6">
+          
+          <!-- CASE 1 -->
+          <div id="case-1" class="case-detail-pane space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Technical Case 1</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">"Eeno" Real-Time Customer History Retrieval & Network Optimization</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] text-slate-400">Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">Late 2025 – 2026 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800">
+                <h4 class="text-xs font-bold text-slate-200 uppercase mb-1">Business Context</h4>
+                <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                  Capital One utilizes an intelligent conversational AI assistant named "Eeno" to address customer mobile app queries (e.g., "Why was my card declined?"). To evaluate context, the assistant queries an underlying event store for recent customer actions. You are presented with a legacy retrieval function, asked to evaluate its complexity, refactor it to accept dynamic windows, and optimize the distributed architecture.
+                </p>
+              </div>
+
+              <!-- Part A: Legacy Analysis -->
+              <div class="space-y-3">
+                <h3 class="text-sm sm:text-base font-bold text-white">Part A: Legacy Code Analysis & Evaluation</h3>
+                <div class="p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs space-y-2">
+                  <p class="font-semibold text-amber-400">Legacy Python Function:</p>
+                  <pre class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-slate-200 overflow-x-auto"><code>def retrieve_recent(self, customer_id, curr_time):
+    result = []
+    for i in range(5):
+        val = self.store.retrieve(customer_id, curr_time - 5 + i + 1)
+        if val is not None:
+            result.append(val)
+    return result</code></pre>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1">
+                    <span class="text-xs font-bold text-blue-400">Q1: Complexity & Network</span>
+                    <p class="text-xs text-slate-400">Time complexity is <strong>O(T)</strong> where T = 5. Makes 5 sequential point-lookup network round-trips returning records from <code>curr_time - 4</code> to <code>curr_time</code>.</p>
+                  </div>
+                  <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1">
+                    <span class="text-xs font-bold text-blue-400">Q2: Dynamic Window</span>
+                    <p class="text-xs text-slate-400">Refactor to accept dynamic window <strong>T (in minutes)</strong> starting from <code>curr_time - time_window_minutes + 1</code>.</p>
+                  </div>
+                  <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1">
+                    <span class="text-xs font-bold text-rose-400">Q3: Bottleneck at Scale</span>
+                    <p class="text-xs text-slate-400">Iterating minute-by-minute introduces the <strong>Chatty API / N+1 Query anti-pattern</strong>. If T=60, service executes 60 sequential database roundtrips!</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Part B: Optimized Solution -->
+              <div class="space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                  <h3 class="text-sm sm:text-base font-bold text-white">Part B: Optimized Production Implementation</h3>
+                  <span class="text-xs font-mono text-emerald-400">Single Partition Range Query (O(1) Call)</span>
+                </div>
+
+                <!-- Code Switcher for Case 1 -->
+                <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                  <div class="bg-slate-900 px-3.5 py-2 border-b border-slate-800 flex items-center justify-between">
+                    <span class="text-xs font-bold text-white">Production Refactoring Code</span>
+                    <span class="text-[11px] font-mono text-slate-400">Redis / Cassandra</span>
+                  </div>
+                  <div class="p-3.5 overflow-x-auto">
+                    <div class="code-block lang-python">
+                      <pre class="text-xs text-slate-200"><code>class CustomerDataStore:
+    def __init__(self, storage_client):
+        self.store = storage_client
+
+    def retrieve_recent(self, customer_id: int, curr_time: int, time_window_minutes: int) -> list:
+        """
+        Retrieves historical customer interactions within [curr_time - time_window_minutes + 1, curr_time].
+        Replaces O(T) sequential network calls with a single partition range query.
+        """
+        if time_window_minutes <= 0:
+            return []
+        start_time = curr_time - time_window_minutes + 1
+        return self.store.retrieve_range(
+            partition_key=customer_id,
+            start_timestamp=start_time,
+            end_timestamp=curr_time
+        )</code></pre>
+                    </div>
+
+                    <div class="code-block lang-go hidden">
+                      <pre class="text-xs text-slate-200"><code>package main
+
+type StorageClient interface {
+	RetrieveRange(customerID int64, startTimestamp, endTimestamp int64) ([]string, error)
+}
+
+type CustomerDataStore struct {
+	store StorageClient
+}
+
+func NewCustomerDataStore(client StorageClient) *CustomerDataStore {
+	return &CustomerDataStore{store: client}
+}
+
+func (cds *CustomerDataStore) RetrieveRecent(customerID int64, currTime int64, timeWindowMinutes int64) ([]string, error) {
+	if timeWindowMinutes <= 0 {
+		return []string{}, nil
+	}
+	startTime := currTime - timeWindowMinutes + 1
+	return cds.store.RetrieveRange(customerID, startTime, currTime)
+}</code></pre>
+                    </div>
+
+                    <div class="code-block lang-java hidden">
+                      <pre class="text-xs text-slate-200"><code>package com.capitalone.prep;
+
+import java.util.Collections;
+import java.util.List;
+
+public class CustomerDataStore {
+
+    public interface StorageClient {
+        List&lt;String&gt; retrieveRange(long customerId, long startTimestamp, long endTimestamp);
+    }
+
+    private final StorageClient store;
+
+    public CustomerDataStore(StorageClient storageClient) {
+        this.store = storageClient;
+    }
+
+    public List&lt;String&gt; retrieveRecent(long customerId, long currTime, long timeWindowMinutes) {
+        if (timeWindowMinutes <= 0) {
+            return Collections.emptyList();
+        }
+        long startTime = currTime - timeWindowMinutes + 1;
+        return store.retrieveRange(customerId, startTime, currTime);
+    }
+}</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- CASE 2 -->
+          <div id="case-2" class="case-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Technical Case 2</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Virtual Card Generation (Serverless vs Containerized TCO & Sizing)</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] text-slate-400">Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">Mid 2025 – 2026 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <!-- Part A & B Grid -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                  <h4 class="text-xs font-bold text-blue-400 uppercase">Part A: Capacity & Sizing Math</h4>
+                  <ul class="text-xs text-slate-400 space-y-1 list-disc pl-4">
+                    <li><strong>Monthly Active Calls:</strong> 60 Million requests/month</li>
+                    <li><strong>Avg Payload Size:</strong> 2 KB per record</li>
+                    <li><strong>Avg RPS:</strong> 60M / (30 × 86,400) ≈ <strong>23.1 RPS</strong></li>
+                    <li><strong>Peak RPS (4x):</strong> 23.1 × 4 ≈ <strong>92.4 RPS</strong></li>
+                    <li><strong>3-Year Storage:</strong> 60M × 12 × 3 = 2.16B records</li>
+                    <li><strong>Total Hot Storage:</strong> 2.16B × 2 KB ≈ <strong>4.32 TB</strong></li>
+                  </ul>
+                </div>
+
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                  <h4 class="text-xs font-bold text-emerald-400 uppercase">Part B: Cloud TCO Economics (Monthly)</h4>
+                  <div class="space-y-2 text-xs">
+                    <div class="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                      <strong class="text-amber-400">Option A: Serverless (Lambda + DynamoDB)</strong>
+                      <p class="text-[11px] text-slate-400 mt-0.5">Lambda: $100 + DynamoDB Storage (4.3TB @ $0.25): $1,080 + Writes: $150 = <strong>$1,330/mo</strong></p>
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                      <strong class="text-emerald-400">Option B: Containerized (ECS Fargate + Aurora PG)</strong>
+                      <p class="text-[11px] text-slate-400 mt-0.5">Fargate Compute: $234 + Aurora Storage (4.3TB @ $0.10): $432 + Aurora Serverless: $350 = <strong>$1,016/mo (24% cheaper!)</strong></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Part C: Logic Bug Fix -->
+              <div class="space-y-3">
+                <h3 class="text-sm sm:text-base font-bold text-white">Part C: Logic Bug Identification & Resolution</h3>
+                <div class="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-400 leading-relaxed">
+                  <strong>Identified Bug:</strong> <code>is_one_time == False</code> forced the service to create a brand-new card on every single invocation, even when an existing multi-use virtual card should have been returned.
+                </div>
+
+                <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                  <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 text-xs font-bold text-white">
+                    Resolved Logic Fix Code
+                  </div>
+                  <div class="p-4 overflow-x-auto">
+                    <div class="code-block lang-python">
+                      <pre class="text-xs text-slate-200"><code>def generate_virtual_card(db, user_id: str, expiry_hours: int, is_one_time: bool) -> str:
+    if is_one_time:
+        return db.create_new_card(user_id, ttl_hours=expiry_hours)
+    
+    existing_card = db.find_active_reusable_card(user_id)
+    if existing_card:
+        return existing_card
+    
+    return db.create_new_card(user_id, ttl_hours=None)</code></pre>
+                    </div>
+
+                    <div class="code-block lang-go hidden">
+                      <pre class="text-xs text-slate-200"><code>package main
+
+type CardDB interface {
+	CreateNewCard(userID string, ttlHours *int) (string, error)
+	FindActiveReusableCard(userID string) (string, error)
+}
+
+func GenerateVirtualCard(db CardDB, userID string, expiryHours int, isOneTime bool) (string, error) {
+	if isOneTime {
+		return db.CreateNewCard(userID, &expiryHours)
+	}
+
+	existingCard, err := db.FindActiveReusableCard(userID)
+	if err == nil && existingCard != "" {
+		return existingCard, nil
+	}
+
+	return db.CreateNewCard(userID, nil)
+}</code></pre>
+                    </div>
+
+                    <div class="code-block lang-java hidden">
+                      <pre class="text-xs text-slate-200"><code>package com.capitalone.prep;
+
+import java.util.Optional;
+
+public class VirtualCardService {
+
+    public interface CardDB {
+        String createNewCard(String userId, Integer ttlHours);
+        Optional&lt;String&gt; findActiveReusableCard(String userId);
+    }
+
+    private final CardDB db;
+
+    public VirtualCardService(CardDB db) {
+        this.db = db;
+    }
+
+    public String generateVirtualCard(String userId, int expiryHours, boolean isOneTime) {
+        if (isOneTime) {
+            return db.createNewCard(userId, expiryHours);
+        }
+
+        Optional&lt;String&gt; existingCard = db.findActiveReusableCard(userId);
+        if (existingCard.isPresent()) {
+            return existingCard.get();
+        }
+
+        return db.createNewCard(userId, null);
+    }
+}</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Executive Recommendation -->
+              <div class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl space-y-1">
+                <span class="text-xs font-bold text-blue-400 uppercase">Executive Recommendation (Interview Pitch)</span>
+                <blockquote class="text-xs italic text-slate-200 leading-relaxed">
+                  "I recommend Option B (ECS Fargate + Aurora PostgreSQL). Although Serverless eliminates idle cost, virtual card tokenization sits directly in the checkout path where cold starts degrade user conversion. Aurora provides relational ACID compliance for token-to-account mapping without custom coordination logic, while saving 24% monthly on storage costs ($1,016 vs. $1,330) at 4.3 TB scale."
+                </blockquote>
+              </div>
+            </div>
+          </div>
+
+          <!-- CASE 3 -->
+          <div id="case-3" class="case-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Technical Case 3</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">3-Boolean Security Alert Truth Table & Logic Optimization</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] text-slate-400">Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">Mid 2024 – 2025 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                <h4 class="text-xs font-bold text-white uppercase">Step 1: Boolean Deconstruction via De Morgan's Law</h4>
+                <p class="text-xs text-slate-400">
+                  The nested condition <code>not (not is_foreign and not is_high_value)</code> simplifies directly to:
+                </p>
+                <div class="p-2.5 bg-slate-900 rounded-lg font-mono text-xs text-blue-400 text-center font-bold">
+                  is_foreign OR is_high_value
+                </div>
+              </div>
+
+              <!-- Truth Table -->
+              <div class="space-y-2">
+                <h3 class="text-xs font-bold text-white uppercase">Step 2: The 8-Scenario (2^3) Truth Table</h3>
+                <div class="overflow-x-auto border border-slate-800 rounded-xl custom-scrollbar">
+                  <table class="w-full text-left text-xs min-w-[500px]">
+                    <thead class="bg-slate-950 border-b border-slate-800 text-slate-400">
+                      <tr>
+                        <th class="p-2.5">#</th>
+                        <th class="p-2.5">is_foreign</th>
+                        <th class="p-2.5">is_high_value</th>
+                        <th class="p-2.5">is_new_merchant</th>
+                        <th class="p-2.5">Output</th>
+                        <th class="p-2.5">Production Logic Reason</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800 font-mono text-[11px]">
+                      <tr class="bg-rose-500/5">
+                        <td class="p-2 font-bold">1</td><td>True</td><td>True</td><td>True</td><td class="font-bold text-rose-400">True</td><td class="font-sans">Foreign, high amount, new merchant</td>
+                      </tr>
+                      <tr class="bg-rose-500/5">
+                        <td class="p-2 font-bold">2</td><td>True</td><td>True</td><td>False</td><td class="font-bold text-rose-400">True</td><td class="font-sans">Foreign charge + High amount</td>
+                      </tr>
+                      <tr class="bg-rose-500/5">
+                        <td class="p-2 font-bold">3</td><td>True</td><td>False</td><td>True</td><td class="font-bold text-rose-400">True</td><td class="font-sans">Foreign charge + New merchant</td>
+                      </tr>
+                      <tr class="bg-rose-500/5">
+                        <td class="p-2 font-bold">4</td><td>True</td><td>False</td><td>False</td><td class="font-bold text-rose-400">True</td><td class="font-sans">Foreign charge</td>
+                      </tr>
+                      <tr class="bg-rose-500/5">
+                        <td class="p-2 font-bold">5</td><td>False</td><td>True</td><td>True</td><td class="font-bold text-rose-400">True</td><td class="font-sans">High amount at unfamiliar merchant</td>
+                      </tr>
+                      <tr class="opacity-70">
+                        <td class="p-2 font-bold">6</td><td>False</td><td>True</td><td>False</td><td class="font-bold text-emerald-400">False</td><td class="font-sans">High amount at recognized merchant</td>
+                      </tr>
+                      <tr class="opacity-70">
+                        <td class="p-2 font-bold">7</td><td>False</td><td>False</td><td>True</td><td class="font-bold text-emerald-400">False</td><td class="font-sans">Domestic low amount at new merchant</td>
+                      </tr>
+                      <tr class="opacity-70">
+                        <td class="p-2 font-bold">8</td><td>False</td><td>False</td><td>False</td><td class="font-bold text-emerald-400">False</td><td class="font-sans">Standard recurring domestic transaction</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Refactored Code -->
+              <div class="space-y-3">
+                <h3 class="text-sm sm:text-base font-bold text-white">Step 3: Refactored Production Code</h3>
+                <div class="rounded-xl border border-slate-800 bg-slate-950 p-4 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>def should_flag_transaction(is_foreign: bool, is_high_value: bool, is_new_merchant: bool) -> bool:
+    """
+    Flags transaction if:
+    1. It is an international charge, OR
+    2. It is high value AND occurring at an unfamiliar merchant.
+    """
+    return is_foreign or (is_high_value and is_new_merchant)</code></pre>
+                  </div>
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func ShouldFlagTransaction(isForeign, isHighValue, isNewMerchant bool) bool {
+	return isForeign || (isHighValue && isNewMerchant)
+}</code></pre>
+                  </div>
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class SecurityAlertEvaluator {
+    public static boolean shouldFlagTransaction(boolean isForeign, boolean isHighValue, boolean isNewMerchant) {
+        return isForeign || (isHighValue && isNewMerchant);
+    }
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- CASE 4 -->
+          <div id="case-4" class="case-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Technical Case 4</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Mainframe Batch to Real-Time Streaming Migration (Fraud ROI)</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] text-slate-400">Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">Early 2024 – 2025 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 text-xs">
+                  <h4 class="font-bold text-purple-400 uppercase">Part A: Capacity & Throughput Sizing</h4>
+                  <p><strong>Batch Ingestion Rate (6-hr window):</strong><br>120,000,000 / (6 × 3,600) = <strong>5,555 records/sec</strong></p>
+                  <p><strong>Streaming Steady-State (24-hr):</strong><br>120,000,000 / 86,400 = <strong>1,388 records/sec</strong></p>
+                  <p><strong>Network Bandwidth (1 KB payload):</strong><br>1,388 × 1 KB = 1.388 MB/sec = <strong>11.1 Mbps</strong></p>
+                </div>
+
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 text-xs">
+                  <h4 class="font-bold text-emerald-400 uppercase">Part B: Financial ROI Analysis</h4>
+                  <p><strong>Gross Fraud Savings (70% caught):</strong><br>$1,800,000 × 70% = <strong>$1,260,000 / year</strong></p>
+                  <p><strong>AWS MSK Kafka + Flink Infra Cost:</strong><br>3x m5.xlarge + Flink + Storage ≈ $1,100/mo = <strong>$13,200 / year</strong></p>
+                  <div class="p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-lg font-bold text-emerald-400 text-xs text-center">
+                    Net Bottom-Line ROI: +$1,246,800 / year
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                <h4 class="text-xs font-bold text-white uppercase">Part C: Migration Risk Mitigation Strategy</h4>
+                <ol class="text-xs text-slate-400 space-y-2 list-decimal pl-4 leading-relaxed">
+                  <li><strong>Dual-Write / Shadow Pipeline:</strong> Ingest transactions into Kafka in parallel while the mainframe batch job continues running.</li>
+                  <li><strong>Automated Reconciliation Engine:</strong> Daily validation compares streaming output tables against batch ledger. Enforce a <strong>99.999% parity requirement for 30 consecutive days</strong> before turning off mainframe feed.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- CASE 5 -->
+          <div id="case-5" class="case-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">Technical Case 5</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Mobile Payments Startup Unit Economics & Break-Even Analysis</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] text-slate-400">Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">2023 – Early 2024 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                  <span class="font-bold text-blue-400 uppercase">Step 1: Revenue</span>
+                  <p><strong>MAU:</strong> 500,000</p>
+                  <p><strong>Monthly Tx (4/user):</strong> 2,000,000</p>
+                  <p><strong>GMV ($50 avg):</strong> $100,000,000</p>
+                  <p><strong>Fee Collected (2%):</strong> <strong>$2,000,000/mo</strong></p>
+                </div>
+
+                <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                  <span class="font-bold text-amber-400 uppercase">Step 2: Margin & Profit</span>
+                  <p><strong>Interchange (1.2%+$0.05):</strong> $1,300,000</p>
+                  <p><strong>Cloud Cost ($0.01/tx):</strong> $20,000</p>
+                  <p><strong>Variable Costs:</strong> $1,320,000 ($0.66/tx)</p>
+                  <p><strong>Contribution Margin:</strong> $680k ($0.34/tx)</p>
+                  <p class="font-bold text-emerald-400">Net Profit ($150k Fixed): +$530k/mo</p>
+                </div>
+
+                <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                  <span class="font-bold text-rose-400 uppercase">Step 3: Break-Even Follow-Up</span>
+                  <p>If Interchange rises to <strong>1.7% + $0.05</strong>:</p>
+                  <p><strong>New Var Cost/tx:</strong> $0.91</p>
+                  <p><strong>New Revenue/tx:</strong> $1.00</p>
+                  <p><strong>New Margin/tx:</strong> $0.09</p>
+                  <p class="font-bold text-blue-400">Break-Even Volume: 1,666,667 tx/month</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: SYSTEM DESIGN -->
+    <div id="tab-system-design" class="tab-content hidden space-y-4">
+      
+      <!-- Mobile Quick Selector for System Design -->
+      <div class="block lg:hidden bg-slate-850 border border-slate-800 p-3 rounded-xl shadow-xs space-y-2">
+        <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Select System Design Question:</label>
+        <select id="mobile-sys-select" onchange="selectSysQ(this.value)" class="w-full p-2.5 text-xs rounded-lg border border-slate-700 bg-slate-950 text-slate-100 font-semibold min-h-[44px]">
+          <option value="sys-q1">Q1: Payment Portal & Ledger (ACH + CDC)</option>
+          <option value="sys-q2">Q2: Credit Limit Concurrent Throttler (Redis Lua)</option>
+          <option value="sys-q3">Q3: Distributed Rate Limiter (ZSET Sliding Window)</option>
+          <option value="sys-q4">Q4: Real-Time POS Fraud (Fast/Slow Path)</option>
+          <option value="sys-q5">Q5: Peer-to-Peer Money Transfer (Zelle Double-Entry)</option>
+          <option value="sys-q6">Q6: Enterprise Notification Engine (SQS Priority)</option>
+          <option value="sys-q7">Q7: Distributed Banking Cache Architecture (SETNX)</option>
+          <option value="sys-q8">Q8: Smart Meter Telemetry Ingestion (10M Meters)</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- Sidebar Navigation (Desktop lg+) -->
+        <div class="hidden lg:block lg:col-span-1 space-y-2">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2 mb-2">System Design Questions</h3>
+          
+          <button onclick="selectSysQ('sys-q1')" id="nav-sys-q1" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item active-nav border-blue-500 bg-blue-500/10">
+            <span class="text-xs font-bold text-blue-400">Q1: Payment Portal & Ledger</span>
+            <span class="text-[11px] text-slate-400">ACH Asynchrony & CDC to OLAP</span>
+          </button>
+
+          <button onclick="selectSysQ('sys-q2')" id="nav-sys-q2" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <span class="text-xs font-bold text-emerald-400">Q2: Credit Limit Throttler</span>
+            <span class="text-[11px] text-slate-400">Redis Lua Distributed Atomicity</span>
+          </button>
+
+          <button onclick="selectSysQ('sys-q3')" id="nav-sys-q3" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <span class="text-xs font-bold text-amber-400">Q3: Distributed Rate Limiter</span>
+            <span class="text-[11px] text-slate-400">ZSET Sliding Window Counter</span>
+          </button>
+
+          <button onclick="selectSysQ('sys-q4')" id="nav-sys-q4" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <span class="text-xs font-bold text-purple-400">Q4: Real-Time POS Fraud</span>
+            <span class="text-[11px] text-slate-400">Fast/Slow Path & Flink Travel</span>
+          </button>
+
+          <button onclick="selectSysQ('sys-q5')" id="nav-sys-q5" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <span class="text-xs font-bold text-rose-400">Q5: Peer-to-Peer Transfer</span>
+            <span class="text-[11px] text-slate-400">Zelle/Venmo Double Entry & Saga</span>
+          </button>
+
+          <button onclick="selectSysQ('sys-q6')" id="nav-sys-q6" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <span class="text-xs font-bold text-indigo-400">Q6: Multi-Channel Alert Engine</span>
+            <span class="text-[11px] text-slate-400">SQS Priority, Circuit Breakers</span>
+          </button>
+
+          <button onclick="selectSysQ('sys-q7')" id="nav-sys-q7" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <span class="text-xs font-bold text-cyan-400">Q7: Banking Cache Architecture</span>
+            <span class="text-[11px] text-slate-400">Cache Stampede SETNX & Read-Your-Own</span>
+          </button>
+
+          <button onclick="selectSysQ('sys-q8')" id="nav-sys-q8" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <span class="text-xs font-bold text-teal-400">Q8: Telemetry Ingestion</span>
+            <span class="text-[11px] text-slate-400">10M Smart Meters, TimescaleDB & Athena</span>
+          </button>
+        </div>
+
+        <!-- System Design Detail Content -->
+        <div class="lg:col-span-3 space-y-6">
+          
+          <!-- SYS Q1 -->
+          <div id="sys-q1" class="sys-detail-pane space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-bold text-blue-400 uppercase">System Design Question 1</span>
+                <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Credit Card Account Management & Payment Portal</h2>
+              </div>
+              <p class="text-xs italic text-slate-400 bg-slate-950 p-3 rounded-xl border border-slate-800 leading-relaxed">
+                "Design a credit card account management application for a bank. The application must support customer credit card applications, viewing balance and real-time transaction activity, making monthly statement payments (minimum vs custom), and generating spending analytics."
+              </p>
+
+              <!-- Architecture Flow Diagram -->
+              <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl font-mono text-xs overflow-x-auto space-y-1 custom-scrollbar">
+                <span class="text-[11px] font-bold text-blue-400 font-sans uppercase">High-Level Data Flow</span>
+                <pre class="text-slate-200 text-[11px] sm:text-xs">
+[Client Mobile / Web] ──► [API Gateway (JWT Auth, SETNX Idempotency)]
+                                │
+                                ▼
+                   [Card Account Microservice]
+                   ┌────────────┼────────────┐
+                   ▼            ▼            ▼
+             [App Svc]    [Payment Svc]  [Analytics Svc]
+                │               │              │
+                ▼               ▼              ▼
+          [Underwriting DB] [Ledger DB]  [ClickHouse OLAP]
+                                │              ▲
+                                └─► [Debezium CDC] ──► [Kafka] ──┘</pre>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                  <strong class="text-blue-400">1. Idempotency & ACH Asynchrony</strong>
+                  <p class="text-slate-400 leading-relaxed">SETNX key <code>payment:{idempotency_key}</code> in Redis. ACH clearing takes 1-3 business days. Record inserted as <code>SCHEDULED_ACH</code> into Aurora PG while available credit updates conditionally.</p>
+                </div>
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                  <strong class="text-emerald-400">2. OLTP vs OLAP via Debezium CDC</strong>
+                  <p class="text-slate-400 leading-relaxed">Never run <code>SUM(...) GROUP BY</code> analytics against transactional database. Stream Aurora WAL logs via Debezium to Kafka and sink into ClickHouse/Redshift.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q2 -->
+          <div id="sys-q2" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-bold text-emerald-400 uppercase">System Design Question 2</span>
+                <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Credit Limit Concurrent Throttler & Atomic Balance Reservation</h2>
+              </div>
+              <p class="text-xs italic text-slate-400 bg-slate-950 p-3 rounded-xl border border-slate-800 leading-relaxed">
+                "Design a system that tracks a customer's available credit in real time across multiple concurrent authorized users. If an account has a $1,000 credit limit and two transactions of $600 occur at the exact same millisecond, exactly one must approve and one must decline."
+              </p>
+
+              <div class="bg-emerald-500/10 border border-emerald-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
+                <h4 class="font-bold text-emerald-400">Redis Lua Distributed Atomicity Script</h4>
+                <pre class="bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-slate-200 overflow-x-auto text-[11px] sm:text-xs"><code>-- KEYS[1] = account:{account_id}:available_credit
+-- ARGV[1] = transaction_amount
+local available = tonumber(redis.call('GET', KEYS[1]))
+local amount = tonumber(ARGV[1])
+if available and available >= amount then
+    redis.call('DECRBY', KEYS[1], amount)
+    return 1 -- APPROVED
+else
+    return 0 -- DECLINED (INSUFFICIENT_CREDIT)
+end</code></pre>
+              </div>
+
+              <!-- Multi-Language Implementation for Q2 -->
+              <div class="rounded-xl border border-slate-800 bg-slate-950 p-4">
+                <span class="text-xs font-bold text-white mb-2 block">Application Service Integration</span>
+                <div class="code-block lang-python">
+                  <pre class="text-xs text-slate-200"><code>class CreditReservationService:
+    def __init__(self, redis_client: redis.Redis):
+        self.r = redis_client
+        self._script = self.r.register_script(LUA_SCRIPT)
+
+    def reserve_credit(self, account_id: str, amount: float) -> bool:
+        key = f"account:{account_id}:available_credit"
+        return self._script(keys=[key], args=[int(amount)]) == 1</code></pre>
+                </div>
+                <div class="code-block lang-go hidden">
+                  <pre class="text-xs text-slate-200"><code>func (s *CreditReservationService) ReserveCredit(ctx context.Context, accountID string, amount int64) (bool, error) {
+	key := "account:" + accountID + ":available_credit"
+	res, err := s.rdb.Eval(ctx, reserveLuaScript, []string{key}, amount).Result()
+	return res.(int64) == 1, err
+}</code></pre>
+                </div>
+                <div class="code-block lang-java hidden">
+                  <pre class="text-xs text-slate-200"><code>public boolean reserveCredit(String accountId, long amount) {
+    String key = "account:" + accountId + ":available_credit";
+    Object result = jedis.eval(LUA_SCRIPT, Collections.singletonList(key), Collections.singletonList(String.valueOf(amount)));
+    return Long.valueOf(1).equals(result);
+}</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q3 -->
+          <div id="sys-q3" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-bold text-amber-400 uppercase">System Design Question 3</span>
+                <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Distributed In-Memory Rate Limiter for Banking APIs</h2>
+              </div>
+              <p class="text-xs italic text-slate-400 bg-slate-950 p-3 rounded-xl border border-slate-800 leading-relaxed">
+                "Design a low-latency distributed rate limiter to protect customer-facing APIs from brute-force login attacks, scraping, and DDoS. Limit each API key or IP address to 100 requests per minute with &lt;5ms latency overhead."
+              </p>
+
+              <div class="bg-amber-500/10 border border-amber-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
+                <h4 class="font-bold text-amber-400">Redis Sorted Set (ZSET) Sliding Window Lua Script</h4>
+                <pre class="bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-slate-200 overflow-x-auto text-[11px] sm:text-xs"><code>local key = KEYS[1]
+local now = tonumber(ARGV[1])
+local window = tonumber(ARGV[2])
+local limit = tonumber(ARGV[3])
+local clearBefore = now - window
+
+redis.call('ZREMRANGEBYSCORE', key, 0, clearBefore)
+local currentRequests = redis.call('ZCARD', key)
+if currentRequests < limit then
+    redis.call('ZADD', key, now, now)
+    redis.call('EXPIRE', key, math.ceil(window / 1000))
+    return 1 -- HTTP 200 ALLOWED
+else
+    return 0 -- HTTP 429 RATE LIMITED
+end</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q4 -->
+          <div id="sys-q4" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-bold text-purple-400 uppercase">System Design Question 4</span>
+                <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Real-Time POS Transaction Ingestion & Fraud Detection</h2>
+              </div>
+              <p class="text-xs italic text-slate-400 bg-slate-950 p-3 rounded-xl border border-slate-800 leading-relaxed">
+                "Design the authorization pipeline that ingests point-of-sale credit card swipe authorizations, evaluates limits and fraud heuristics, and returns an approval or decline in under 100ms. Scale: 10,000 writes/sec peak load."
+              </p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1.5">
+                  <strong class="text-blue-400 uppercase">Synchronous Fast Path (&lt; 50ms SLA)</strong>
+                  <p class="text-slate-400 leading-relaxed">Queries Redis cluster to verify card state (Active vs Frozen), available credit, and 1-minute velocity. Returns HTTP 200 to POS terminal immediately.</p>
+                </div>
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1.5">
+                  <strong class="text-purple-400 uppercase">Asynchronous Slow Path (Kafka + Flink)</strong>
+                  <p class="text-slate-400 leading-relaxed">Emits authorization events to Kafka topic partitioned by <code>account_id</code>. Apache Flink windowed job detects "Impossible Travel" anomalies (&gt;600 mph velocity) and sets card to RESTRICTED.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q5 -->
+          <div id="sys-q5" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-bold text-rose-400 uppercase">System Design Question 5</span>
+                <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Peer-to-Peer Payment / Money Transfer Service (Zelle / Venmo)</h2>
+              </div>
+
+              <div class="bg-rose-500/10 border border-rose-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
+                <h4 class="font-bold text-rose-400">Double-Entry Append-Only Bookkeeping SQL</h4>
+                <p class="text-slate-400 leading-relaxed">Never mutate balance columns with <code>UPDATE accounts SET balance = balance - 100</code>. Insert paired immutable debit and credit rows:</p>
+                <pre class="bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-slate-200 overflow-x-auto text-[11px] sm:text-xs"><code>BEGIN TRANSACTION;
+SELECT balance FROM accounts WHERE account_id = 'A' FOR UPDATE;
+INSERT INTO ledger_entries (entry_id, transaction_id, account_id, amount, currency, entry_type)
+VALUES 
+  (gen_random_uuid(), 'tx-123', 'A', -100.00, 'USD', 'DEBIT'),
+  (gen_random_uuid(), 'tx-123', 'B', 100.00, 'USD', 'CREDIT');
+COMMIT;</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q6 -->
+          <div id="sys-q6" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-bold text-indigo-400 uppercase">System Design Question 6</span>
+                <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Enterprise Multi-Channel Notification Engine</h2>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                  <strong class="text-indigo-400">Priority Queuing</strong>
+                  <p class="text-slate-400 leading-relaxed">Separate SQS queues by urgency: <code>fraud-sms-queue</code> (&lt;2s SLA), <code>transaction-push-queue</code>, <code>marketing-email-queue</code>.</p>
+                </div>
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                  <strong class="text-rose-400">Exponential Backoff & DLQ</strong>
+                  <p class="text-slate-400 leading-relaxed">Visibility Timeout = 2^(retry_count) × 5s. Route to Dead-Letter Queue (DLQ) after 3 failed attempts.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q7 -->
+          <div id="sys-q7" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-bold text-cyan-400 uppercase">System Design Question 7</span>
+                <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Distributed Banking Cache Architecture</h2>
+              </div>
+              <div class="bg-cyan-500/10 border border-cyan-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
+                <h4 class="font-bold text-cyan-400">Cache Stampede Mitigation (SETNX Mutex Lock)</h4>
+                <p class="text-slate-400 leading-relaxed">If high-traffic key expires, only the first worker thread acquires <code>SETNX lock:account:{id}</code> to rebuild cache from DB; other threads wait 50ms and retry reading cache.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q8 -->
+          <div id="sys-q8" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-bold text-teal-400 uppercase">System Design Question 8</span>
+                <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Smart Meter Telemetry Ingestion (10M Meters)</h2>
+              </div>
+              <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl text-xs space-y-2">
+                <p><strong>Throughput:</strong> 10M meters × 96 reports/day = <strong>960 Million events/day (11,111 RPS, 192 GB/day)</strong></p>
+                <p><strong>Tiered Storage:</strong> AWS IoT Core → Kinesis → TimescaleDB (0-30 days Hot) → Amazon S3 Parquet / Athena (Cold Archival).</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: CALCULATORS -->
+    <div id="tab-calculators" class="tab-content hidden space-y-4 sm:space-y-6">
+      <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-6">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-white">Interactive Sizing & TCO Math Calculators</h2>
+          <p class="text-xs text-slate-400">Test capacity math scenarios live on mobile or desktop during interview prep.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          
+          <!-- Calculator 1: RPS & Throughput -->
+          <div class="bg-slate-950 p-4 sm:p-5 rounded-xl border border-slate-800 space-y-4">
+            <h3 class="text-xs sm:text-sm font-bold text-blue-400 uppercase">1. Requests Per Second (RPS) Calculator</h3>
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="block font-medium text-slate-400 mb-1">Monthly Active Requests (Millions):</label>
+                <input type="number" inputmode="decimal" id="calc-monthly-req" value="60" oninput="runCalculations()" class="w-full p-2.5 rounded-lg border border-slate-700 bg-slate-900 text-slate-100 font-semibold text-sm min-h-[44px]">
+              </div>
+              <div>
+                <label class="block font-medium text-slate-400 mb-1">Peak Load Multiplier:</label>
+                <input type="number" inputmode="decimal" id="calc-peak-mult" value="4" oninput="runCalculations()" class="w-full p-2.5 rounded-lg border border-slate-700 bg-slate-900 text-slate-100 font-semibold text-sm min-h-[44px]">
+              </div>
+              <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl space-y-1.5 font-mono">
+                <div class="flex justify-between"><span>Average RPS:</span><strong id="res-avg-rps" class="text-blue-400 text-sm">23.1 RPS</strong></div>
+                <div class="flex justify-between"><span>Peak RPS:</span><strong id="res-peak-rps" class="text-blue-400 text-sm">92.4 RPS</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Calculator 2: Storage Sizing -->
+          <div class="bg-slate-950 p-4 sm:p-5 rounded-xl border border-slate-800 space-y-4">
+            <h3 class="text-xs sm:text-sm font-bold text-emerald-400 uppercase">2. Storage Horizon Capacity Calculator</h3>
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="block font-medium text-slate-400 mb-1">Record Payload Size (KB):</label>
+                <input type="number" inputmode="decimal" id="calc-payload-kb" value="2" oninput="runCalculations()" class="w-full p-2.5 rounded-lg border border-slate-700 bg-slate-900 text-slate-100 font-semibold text-sm min-h-[44px]">
+              </div>
+              <div>
+                <label class="block font-medium text-slate-400 mb-1">Retention Horizon (Years):</label>
+                <input type="number" inputmode="decimal" id="calc-retention-yrs" value="3" oninput="runCalculations()" class="w-full p-2.5 rounded-lg border border-slate-700 bg-slate-900 text-slate-100 font-semibold text-sm min-h-[44px]">
+              </div>
+              <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl space-y-1.5 font-mono">
+                <div class="flex justify-between"><span>Total Records:</span><strong id="res-total-records" class="text-emerald-400 text-sm">2.16 Billion</strong></div>
+                <div class="flex justify-between"><span>Total Raw Storage:</span><strong id="res-total-storage" class="text-emerald-400 text-sm">4.32 TB</strong></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: CHEAT SHEET -->
+    <div id="tab-cheat-sheet" class="tab-content hidden space-y-4 sm:space-y-6">
+      <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-6">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-white">Quantitative Formulas & Mental Math Anchors</h2>
+          <p class="text-xs text-slate-400">Memorize these key benchmarks for live interview estimation.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 text-xs">
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+            <h3 class="font-bold text-blue-400 uppercase">RPS Anchors</h3>
+            <ul class="space-y-1.5 font-mono text-[11px] text-slate-400">
+              <li>• 1 Million req/day ≈ <strong>12 RPS</strong></li>
+              <li>• 10 Million req/day ≈ <strong>116 RPS</strong></li>
+              <li>• 100 Million req/day ≈ <strong>1,160 RPS</strong></li>
+              <li>• 1 Day = <strong>86,400 seconds</strong></li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+            <h3 class="font-bold text-emerald-400 uppercase">Data Sizing Hierarchy</h3>
+            <ul class="space-y-1.5 font-mono text-[11px] text-slate-400">
+              <li>• 1 KB = 1,000 Bytes (10^3)</li>
+              <li>• 1 MB = 1,000 KB (10^6 Bytes)</li>
+              <li>• 1 GB = 1,000 MB (10^9 Bytes)</li>
+              <li>• 1 TB = 1,000 GB (10^12 Bytes)</li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+            <h3 class="font-bold text-purple-400 uppercase">Delivery Frameworks</h3>
+            <div class="space-y-1.5 text-[11px] text-slate-400 leading-relaxed">
+              <p><strong>Tech Case:</strong> Clarify Metrics → Capacity Math → Code Trade-offs → Direct Recommendation</p>
+              <p><strong>System Design:</strong> Scope & SLAs → Data Flow → Data Model → Failure Isolation</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: PRACTICE QUIZ -->
+    <div id="tab-quiz" class="tab-content hidden space-y-4 sm:space-y-6">
+      <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-6">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-white">Capital One Interview Practice Quiz</h2>
+          <p class="text-xs text-slate-400">Test your grasp of core concepts from recent PowerDay loops.</p>
+        </div>
+
+        <div id="quiz-container" class="space-y-4">
+          <!-- Quiz Item 1 -->
+          <div class="p-3.5 sm:p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+            <h3 class="text-xs sm:text-sm font-bold text-white leading-snug">Q1: Why does iterating minute-by-minute in Case 1 fail at enterprise scale?</h3>
+            <div class="space-y-2 text-xs">
+              <button onclick="checkAnswer(this, false)" class="w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-900 hover:bg-blue-500/10 transition min-h-[44px]">A) It causes Redis memory fragmentation.</button>
+              <button onclick="checkAnswer(this, true)" class="w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-900 hover:bg-blue-500/10 transition min-h-[44px]">B) It introduces the Chatty API / N+1 Query anti-pattern with T sequential roundtrips.</button>
+              <button onclick="checkAnswer(this, false)" class="w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-900 hover:bg-blue-500/10 transition min-h-[44px]">C) It violates relational ACID isolation levels.</button>
+            </div>
+            <div class="quiz-feedback hidden text-xs font-bold p-3 rounded-xl"></div>
+          </div>
+
+          <!-- Quiz Item 2 -->
+          <div class="p-3.5 sm:p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+            <h3 class="text-xs sm:text-sm font-bold text-white leading-snug">Q2: How does Redis resolve race conditions when reserving credit in Q2?</h3>
+            <div class="space-y-2 text-xs">
+              <button onclick="checkAnswer(this, true)" class="w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-900 hover:bg-blue-500/10 transition min-h-[44px]">A) Embedded Lua scripts run on a single-threaded execution model, ensuring atomic check & decrement.</button>
+              <button onclick="checkAnswer(this, false)" class="w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-900 hover:bg-blue-500/10 transition min-h-[44px]">B) It uses distributed two-phase commit (2PC) locks across cluster nodes.</button>
+              <button onclick="checkAnswer(this, false)" class="w-full text-left p-3 rounded-xl border border-slate-800 bg-slate-900 hover:bg-blue-500/10 transition min-h-[44px]">C) It delegates locking to Postgres SELECT FOR UPDATE.</button>
+            </div>
+            <div class="quiz-feedback hidden text-xs font-bold p-3 rounded-xl"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Interactive JavaScript Logic -->
+  <script>
+    let currentLang = 'python';
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+      const tabs = ['tech-cases', 'system-design', 'calculators', 'cheat-sheet', 'quiz'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('tab-btn-' + t);
+        if (t === tabId) {
+          btn.className = "flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white shadow-xs flex items-center gap-1.5 min-h-[38px]";
+        } else {
+          btn.className = "flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]";
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectCase(caseId) {
+      document.querySelectorAll('.case-detail-pane').forEach(el => el.classList.add('hidden'));
+      document.getElementById(caseId).classList.remove('hidden');
+
+      // Update Desktop Sidebar
+      document.querySelectorAll('.case-nav-item').forEach(el => {
+        el.classList.remove('border-blue-500', 'bg-blue-500/10');
+      });
+      const navItem = document.getElementById('nav-' + caseId);
+      if (navItem) navItem.classList.add('border-blue-500', 'bg-blue-500/10');
+
+      // Update Mobile Dropdown
+      const mobileSelect = document.getElementById('mobile-case-select');
+      if (mobileSelect) mobileSelect.value = caseId;
+    }
+
+    function selectSysQ(sysId) {
+      document.querySelectorAll('.sys-detail-pane').forEach(el => el.classList.add('hidden'));
+      document.getElementById(sysId).classList.remove('hidden');
+
+      // Update Desktop Sidebar
+      document.querySelectorAll('.sys-nav-item').forEach(el => {
+        el.classList.remove('border-blue-500', 'bg-blue-500/10');
+      });
+      const navItem = document.getElementById('nav-' + sysId);
+      if (navItem) navItem.classList.add('border-blue-500', 'bg-blue-500/10');
+
+      // Update Mobile Dropdown
+      const mobileSelect = document.getElementById('mobile-sys-select');
+      if (mobileSelect) mobileSelect.value = sysId;
+    }
+
+    function setGlobalLang(lang) {
+      currentLang = lang;
+      const langs = ['python', 'go', 'java'];
+      langs.forEach(l => {
+        const btn = document.getElementById('lang-btn-' + l);
+        if (l === lang) {
+          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-xs";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white";
+        }
+
+        document.querySelectorAll('.code-block.lang-' + l).forEach(el => {
+          if (l === lang) el.classList.remove('hidden');
+          else el.classList.add('hidden');
+        });
+      });
+    }
+
+    function runCalculations() {
+      const monthlyReq = parseFloat(document.getElementById('calc-monthly-req').value) || 0;
+      const peakMult = parseFloat(document.getElementById('calc-peak-mult').value) || 1;
+      const payloadKb = parseFloat(document.getElementById('calc-payload-kb').value) || 0;
+      const retentionYrs = parseFloat(document.getElementById('calc-retention-yrs').value) || 0;
+
+      const avgRps = (monthlyReq * 1000000) / (30 * 86400);
+      const peakRps = avgRps * peakMult;
+
+      const totalRecs = monthlyReq * 12 * retentionYrs;
+      const totalStorageGb = (totalRecs * 1000000 * payloadKb) / (1024 * 1024);
+      const totalStorageTb = totalStorageGb / 1024;
+
+      document.getElementById('res-avg-rps').textContent = avgRps.toFixed(1) + " RPS";
+      document.getElementById('res-peak-rps').textContent = peakRps.toFixed(1) + " RPS";
+      document.getElementById('res-total-records').textContent = (totalRecs / 1000).toFixed(2) + " Billion";
+      document.getElementById('res-total-storage').textContent = totalStorageTb.toFixed(2) + " TB";
+    }
+
+    function filterContent() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      document.querySelectorAll('.case-detail-pane, .sys-detail-pane').forEach(pane => {
+        const text = pane.innerText.toLowerCase();
+        if (text.includes(query)) {
+          pane.style.opacity = '1';
+        } else {
+          pane.style.opacity = '0.4';
+        }
+      });
+    }
+
+    function checkAnswer(btn, isCorrect) {
+      const feedback = btn.parentElement.nextElementSibling;
+      feedback.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-400', 'bg-rose-500/20', 'text-rose-400');
+      if (isCorrect) {
+        feedback.classList.add('bg-emerald-500/20', 'text-emerald-400');
+        feedback.textContent = "✓ Correct! Excellent grasp of the architectural constraint.";
+      } else {
+        feedback.classList.add('bg-rose-500/20', 'text-rose-400');
+        feedback.textContent = "✗ Incorrect. Review the case detail pane for the breakdown.";
+      }
+    }
+
+    // Initialize
+    runCalculations();
+  </script>
+</body>
+</html>
