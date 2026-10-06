@@ -118,7 +118,7 @@ export const cheatsheetData = {
       id: "streaming",
       category: "Messaging & Streaming Strategy",
       title: "Apache Kafka (AWS MSK) vs AWS Kinesis vs AWS SQS/SNS vs Debezium CDC",
-      badge: "Messaging Layer",
+      badge: "Messaging Overview",
       color: "purple",
       items: [
         {
@@ -142,11 +142,64 @@ export const cheatsheetData = {
           keyFeatures: "Eliminates application dual-write partial failures, zero DB table locks, 100% eventual consistency."
         }
       ]
+    },
+    {
+      id: "kinesis-vs-sqs",
+      category: "AWS Messaging Deep Dive",
+      title: "AWS Kinesis Data Streams vs AWS SQS (Simple Queue Service)",
+      badge: "Kinesis vs SQS Decision",
+      color: "purple",
+      items: [
+        {
+          name: "AWS Kinesis Data Streams",
+          type: "Stream Log Model (Pull)",
+          latency: "10ms - 200ms",
+          bestFor: "Real-time continuous event streaming, multi-consumer event replay, partition-ordered log streams.",
+          pros: [
+            "Replayable stream log (retention from 24 hours up to 365 days)",
+            "Multiple independent microservices read same stream at different offsets",
+            "Strict FIFO ordering guaranteed per Shard Partition Key",
+            "Enhanced Fan-Out (2 MB/sec dedicated HTTP/2 pipe per consumer)"
+          ],
+          cons: [
+            "Requires shard capacity management (or On-Demand shard pricing)",
+            "Poison pill errors block shard processing until handled or expired",
+            "Higher baseline cost for low or idle traffic"
+          ],
+          verdict: "Ideal for real-time credit card transaction ingestion where Fraud ML, Accounting Ledgers, and Analytics pipelines all read the same stream."
+        },
+        {
+          name: "AWS SQS (Simple Queue Service)",
+          type: "Task Queue Model (Push/Poll)",
+          latency: "10ms - 50ms",
+          bestFor: "Asynchronous task queueing, worker decoupling, background job processing with DLQ isolation.",
+          pros: [
+            "Scales to zero cost ($0.40 per 1 million requests)",
+            "Destructive pull model permanently deletes processed tasks",
+            "Built-in Dead-Letter Queue (DLQ) isolates unprocessable poison pills",
+            "Automatic unlimited horizontal scaling without provisioning shards"
+          ],
+          cons: [
+            "Messages permanently deleted after processing (No stream replay)",
+            "Standard SQS offers best-effort ordering (FIFO SQS capped at 3,000 RPS)",
+            "Single consumer per message (requires SNS fan-out for multi-service delivery)"
+          ],
+          verdict: "Ideal for background worker tasks, email/SMS notification dispatch, async webhook processing, and retrying RPC operations."
+        }
+      ]
     }
   ],
 
   // System Design Architectural Patterns
   patterns: [
+    {
+      id: "kinesis-vs-sqs-pattern",
+      title: "Stream Log (Kinesis/Kafka) vs Task Queue (SQS)",
+      icon: "📡",
+      color: "purple",
+      problem: "Using SQS for multi-service event streaming requires creating separate queues for every service and managing SNS fan-out, while using Kinesis for simple background tasks wastes shard costs and risks blocking streams on unprocessable poison pill records.",
+      solution: "Use Kinesis/Kafka when data represents an immutable append-only event stream (log) read by multiple independent microservices at different speeds. Use SQS when data represents discrete work units (tasks) that should be consumed once by worker threads and deleted upon completion with DLQ failure isolation."
+    },
     {
       id: "cdc-vs-dual-write",
       title: "Dual-Write Problem vs Debezium Change Data Capture (CDC)",

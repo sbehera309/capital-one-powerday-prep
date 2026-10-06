@@ -29,7 +29,7 @@ export function renderCheatSheet(containerEl) {
             type="text" 
             id="cheatsheet-search" 
             oninput="window.filterCheatSheet()" 
-            placeholder="Search Fargate, CDC, Redis, NLB..." 
+            placeholder="Search Fargate, Kinesis, SQS, Redis, NLB..." 
             class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-mono"
           />
           <svg class="w-4 h-4 text-slate-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,9 +105,9 @@ function renderCheatSheetContent() {
 
   const showAll = activeCategory === 'all';
 
-  // 1. Comparative Matrix Cards (Compute, Databases, Networking, Streaming)
+  // 1. Comparative Matrix Cards (Compute, Databases, Networking, Streaming, Kinesis vs SQS)
   cheatsheetData.comparisons.forEach(comp => {
-    if (showAll || activeCategory === comp.id) {
+    if (showAll || activeCategory === comp.id || (activeCategory === 'streaming' && (comp.id === 'streaming' || comp.id === 'kinesis-vs-sqs'))) {
       html += renderComparisonSection(comp);
     }
   });
