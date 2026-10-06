@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <!-- TAB 1: TECHNICAL CASES -->
+    <!-- TAB 1: TECHNICAL CASES (FULL RESTORED CASES 1 TO 7 WITH LEGACY BUGGY CODE & HIDE/REVEAL SOLUTIONS) -->
     <div id="tab-tech-cases" class="tab-content space-y-4">
       <div class="block lg:hidden bg-slate-850 border border-slate-800 p-3 rounded-xl shadow-xs space-y-2">
         <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Select Case Study:</label>
@@ -205,10 +205,10 @@
 
         <!-- Case Detail Panes -->
         <div class="lg:col-span-3 space-y-6">
-          
-          <!-- CASE 1 -->
-          <div id="case-1" class="case-detail-pane space-y-4 sm:space-y-6">
-            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+
+          <!-- TECHNICAL CASE STUDY 1 -->
+          <div id="case-1" class="case-detail-pane space-y-4 sm:space-y-6 ">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-5">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
                 <div>
                   <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Technical Case Study 1</span>
@@ -220,43 +220,81 @@
                 </div>
               </div>
 
-              <!-- Context & Problem -->
-              <div class="space-y-2 text-xs sm:text-sm text-slate-300">
-                <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider">Business Context & Problem Statement</h3>
-                <p class="leading-relaxed">
-                  Capital One's virtual assistant ("Eeno") queries customer transaction histories. When querying 3 years of transaction history over poor mobile networks (3G/LTE), response payloads exceed 5 MB, causing <strong>timeouts (504 Gateway Timeout)</strong> and mobile app memory crashes.
+              <!-- Original Question Prompt -->
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                <span class="text-xs font-bold text-blue-400 uppercase flex items-center gap-1.5">
+                  <span>❓</span> <span>Original Interview Question Prompt</span>
+                </span>
+                <p class="text-xs sm:text-sm italic text-slate-300 leading-relaxed">
+                  "Capital One's virtual assistant ("Eeno") queries customer transaction histories over mobile networks. When a customer requests 3 years of transaction history, the mobile app freezes or hits a 504 Gateway Timeout over 3G/LTE connections. Inspect the legacy endpoint code below, diagnose why it fails, and rewrite it for sub-100ms response times over low-bandwidth mobile networks."
                 </p>
               </div>
 
-              <!-- Key Trade-offs & Solution -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                  <h4 class="font-bold text-rose-400 uppercase text-xs">Root Cause Analysis</h4>
-                  <ul class="space-y-1 text-slate-400">
-                    <li>• Unbounded payload fetching (10,000+ JSON records).</li>
-                    <li>• Mobile app CPU spike parsing huge JSON arrays.</li>
-                    <li>• High packet loss on mobile cellular connections.</li>
-                  </ul>
+              <!-- Unmodified Buggy Legacy Code Block -->
+              <div class="bg-slate-950 rounded-xl border border-rose-900/50 overflow-hidden space-y-0">
+                <div class="bg-rose-950/60 px-4 py-2 border-b border-rose-900/50 flex items-center justify-between text-xs">
+                  <span class="font-bold text-rose-400 flex items-center gap-1.5">
+                    <span>⚠️</span> <span>Legacy Buggy Code (Inspect & Debug Yourself)</span>
+                  </span>
+                  <span class="text-rose-400/80 font-mono text-[11px]">Contains Logic Flaws</span>
                 </div>
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                  <h4 class="font-bold text-emerald-400 uppercase text-xs">Recommended Architecture</h4>
-                  <ul class="space-y-1 text-slate-400">
-                    <li>• <strong>Dynamic Time Windowing:</strong> Fetch last 30 days first (sub-50ms).</li>
-                    <li>• <strong>Keyset Pagination:</strong> <code>WHERE (created_at, id) &lt; (:last_date, :last_id)</code>.</li>
-                    <li>• <strong>Gzip / Brotli Compression:</strong> Shrinks response payloads by ~82%.</li>
-                  </ul>
+                <div class="p-4 overflow-x-auto font-mono text-xs bg-slate-950">
+                  <pre class="text-xs text-rose-200 leading-relaxed"><code># ❌ LEGACY BUGGY CODE: Unbounded database query + 5MB uncompressed JSON payload
+def get_all_customer_transactions(account_id: str):
+    # BAD: Unbounded query fetches ALL rows into memory without LIMIT or pagination (10,000+ records)
+    sql = "SELECT * FROM transactions WHERE account_id = '" + account_id + "' ORDER BY created_at DESC"
+    rows = db.execute_query(sql)  # O(N) memory allocation & potential SQL Injection!
+    
+    # BAD: Serializes full payload into a 5MB+ JSON payload sent uncompressed
+    return jsonify(rows)  # Causes 504 Gateway Timeout over mobile 3G/LTE networks!</code></pre>
                 </div>
               </div>
 
-              <!-- Interactive Code Snippet -->
-              <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex items-center justify-between text-xs">
-                  <span class="font-bold text-slate-300">Keyset Pagination Implementation</span>
-                  <span class="text-slate-500 font-mono text-[11px]">O(1) Index Scan</span>
+              <!-- HIDE / REVEAL SOLUTION TOGGLE BUTTON -->
+              <div class="pt-2">
+                <button onclick="toggleSolution('case-1')" id="sol-btn-case-1" class="w-full py-3 px-4 bg-slate-800 hover:bg-slate-750 text-blue-400 font-bold rounded-xl border border-slate-700 flex items-center justify-between text-xs sm:text-sm shadow-xs transition-all">
+                  <span class="flex items-center gap-2">
+                    <span>👁️</span> <span>Reveal Answer & Fixed Engineering Solution</span>
+                  </span>
+                  <span id="sol-icon-case-1">▼</span>
+                </button>
+              </div>
+
+              <!-- HIDDEN SOLUTION CONTAINER -->
+              <div id="sol-container-case-1" class="hidden space-y-4 pt-2">
+                
+                <!-- Root Causes & Fix Architecture -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-rose-400 uppercase text-xs">Identified Root Causes</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• Unbounded DB memory allocation (SELECT * fetching 10,000+ rows).</li>
+                      <li>• SQL Injection vulnerability via string concatenation.</li>
+                      <li>• Mobile CPU spike & memory crash parsing uncompressed 5MB+ JSON arrays.</li>
+                    </ul>
+                  </div>
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-emerald-400 uppercase text-xs">Architectural Solution</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• Dynamic Time Windowing: Fetch last 30 days of data first (sub-50ms).</li>
+                      <li>• Keyset Pagination: WHERE (created_at, id) < (:last_date, :last_id) ORDER BY created_at DESC, id DESC LIMIT 50.</li>
+                      <li>• Response Compression: Gzip/Brotli compression shrinks payload size by ~82%.</li>
+                    </ul>
+                  </div>
                 </div>
-                <div class="p-4 overflow-x-auto font-mono text-xs">
-                  <div class="code-block lang-python">
-                    <pre class="text-xs text-slate-200"><code>def fetch_customer_history(account_id: str, last_date=None, last_id=None, limit=50):
+
+                <!-- Refactored Solution Code Block -->
+                <div class="bg-slate-950 rounded-xl border border-emerald-900/50 overflow-hidden">
+                  <div class="bg-emerald-950/40 px-4 py-2 border-b border-emerald-900/50 flex items-center justify-between text-xs">
+                    <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+                      <span>✅</span> <span>Refactored Production Code</span>
+                    </span>
+                    <span class="text-slate-500 font-mono text-[11px]">Multi-Language Solution</span>
+                  </div>
+                  <div class="p-4 overflow-x-auto font-mono text-xs">
+                    <div class="code-block lang-python">
+                      <pre class="text-xs text-slate-200"><code>def fetch_customer_history(account_id: str, last_date=None, last_id=None, limit=50):
+    # ✅ Parameterized query with Keyset Pagination & O(1) index scan
     query = """
         SELECT id, amount, merchant, created_at
         FROM transactions
@@ -269,9 +307,9 @@
     query += " ORDER BY created_at DESC, id DESC LIMIT %s"
     params.append(limit)
     return db.execute(query, params)</code></pre>
-                  </div>
-                  <div class="code-block lang-go hidden">
-                    <pre class="text-xs text-slate-200"><code>func FetchCustomerHistory(ctx context.Context, db *sql.DB, accountID string, lastDate time.Time, lastID string, limit int) ([]Transaction, error) {
+                    </div>
+                    <div class="code-block lang-go hidden">
+                      <pre class="text-xs text-slate-200"><code>func FetchCustomerHistory(ctx context.Context, db *sql.DB, accountID string, lastDate time.Time, lastID string, limit int) ([]Transaction, error) {
 	query := `SELECT id, amount, merchant, created_at FROM transactions WHERE account_id = $1`
 	args := []interface{}{accountID}
 	if !lastDate.IsZero() && lastID != "" {
@@ -283,11 +321,11 @@
 	rows, err := db.QueryContext(ctx, query, args...)
 	return parseRows(rows), err
 }</code></pre>
-                  </div>
-                  <div class="code-block lang-java hidden">
-                    <pre class="text-xs text-slate-200"><code>public List&lt;Transaction&gt; fetchCustomerHistory(String accountId, Instant lastDate, String lastId, int limit) {
+                    </div>
+                    <div class="code-block lang-java hidden">
+                      <pre class="text-xs text-slate-200"><code>public List<Transaction> fetchCustomerHistory(String accountId, Instant lastDate, String lastId, int limit) {
     String sql = "SELECT id, amount, merchant, created_at FROM transactions WHERE account_id = ?";
-    List&lt;Object&gt; params = new ArrayList&lt;&gt;(List.of(accountId));
+    List<Object> params = new ArrayList<>(List.of(accountId));
     if (lastDate != null && lastId != null) {
         sql += " AND (created_at, id) < (?, ?)";
         params.add(lastDate);
@@ -297,15 +335,18 @@
     params.add(limit);
     return jdbcTemplate.query(sql, params.toArray(), new TransactionRowMapper());
 }</code></pre>
+                    </div>
                   </div>
                 </div>
+
               </div>
+
             </div>
           </div>
 
-          <!-- CASE 2 -->
+          <!-- TECHNICAL CASE STUDY 2 -->
           <div id="case-2" class="case-detail-pane space-y-4 sm:space-y-6 hidden">
-            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-5">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
                 <div>
                   <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Technical Case Study 2</span>
@@ -317,43 +358,91 @@
                 </div>
               </div>
 
-              <div class="space-y-2 text-xs sm:text-sm text-slate-300">
-                <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Business Context & Bug Case</h3>
-                <p class="leading-relaxed">
-                  E-commerce shoppers generate temporary virtual card numbers (VCN) for single-use purchases. During Cyber Monday spikes, the service suffered from <strong>AWS Lambda cold starts (800ms)</strong> and a logic bug where active cards were initialized with <code>active=false</code>.
+              <!-- Original Question Prompt -->
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                <span class="text-xs font-bold text-emerald-400 uppercase flex items-center gap-1.5">
+                  <span>❓</span> <span>Original Interview Question Prompt</span>
+                </span>
+                <p class="text-xs sm:text-sm italic text-slate-300 leading-relaxed">
+                  "E-commerce shoppers generate temporary virtual card numbers (VCN) for single-use purchases. During Cyber Monday traffic spikes, the VCN generation service experienced 1,500ms latency spikes (AWS Lambda VPC cold starts) and issued invalid cards that were rejected by merchants. Inspect the legacy serverless handler below, identify the boolean logic bug, and propose a low-latency architecture."
                 </p>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                  <h4 class="font-bold text-rose-400 uppercase text-xs">Identified Bugs & Flaws</h4>
-                  <ul class="space-y-1 text-slate-400">
-                    <li>• Boolean inversion bug in card status assignment.</li>
-                    <li>• Lambda VPC ENI cold starts spiking p99 latency to 1.5s.</li>
-                  </ul>
+              <!-- Unmodified Buggy Legacy Code Block -->
+              <div class="bg-slate-950 rounded-xl border border-rose-900/50 overflow-hidden space-y-0">
+                <div class="bg-rose-950/60 px-4 py-2 border-b border-rose-900/50 flex items-center justify-between text-xs">
+                  <span class="font-bold text-rose-400 flex items-center gap-1.5">
+                    <span>⚠️</span> <span>Legacy Buggy Code (Inspect & Debug Yourself)</span>
+                  </span>
+                  <span class="text-rose-400/80 font-mono text-[11px]">Contains Logic Flaws</span>
                 </div>
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                  <h4 class="font-bold text-emerald-400 uppercase text-xs">Architectural Fix</h4>
-                  <ul class="space-y-1 text-slate-400">
-                    <li>• Shift high-traffic VCN generation to AWS ECS Fargate provisioned tasks.</li>
-                    <li>• Luhn Algorithm card number generator with HMAC signature.</li>
-                  </ul>
+                <div class="p-4 overflow-x-auto font-mono text-xs bg-slate-950">
+                  <pre class="text-xs text-rose-200 leading-relaxed"><code># ❌ LEGACY BUGGY CODE: Boolean inversion bug + AWS Lambda Cold Start
+def lambda_handler(event, context):
+    user_id = event['user_id']
+    limit = event['limit']
+    
+    # Generate 16-digit card number
+    raw_card = "4" + str(random.randint(100000000000000, 999999999999999))
+    
+    # 🐛 BUG: Inverted boolean initialization sets card to False (inactive) upon issuance!
+    is_active = False  # <--- Merchant authorization fails instantly!
+    
+    db.save({"user_id": user_id, "card_number": raw_card, "is_active": is_active})
+    return {"statusCode": 200, "body": {"vcn": raw_card, "status": "INACTIVE"}}</code></pre>
                 </div>
               </div>
 
-              <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex items-center justify-between text-xs">
-                  <span class="font-bold text-slate-300">Corrected VCN Generator & Luhn Checksum</span>
-                  <span class="text-slate-500 font-mono text-[11px]">Corrected Boolean Logic</span>
+              <!-- HIDE / REVEAL SOLUTION TOGGLE BUTTON -->
+              <div class="pt-2">
+                <button onclick="toggleSolution('case-2')" id="sol-btn-case-2" class="w-full py-3 px-4 bg-slate-800 hover:bg-slate-750 text-blue-400 font-bold rounded-xl border border-slate-700 flex items-center justify-between text-xs sm:text-sm shadow-xs transition-all">
+                  <span class="flex items-center gap-2">
+                    <span>👁️</span> <span>Reveal Answer & Fixed Engineering Solution</span>
+                  </span>
+                  <span id="sol-icon-case-2">▼</span>
+                </button>
+              </div>
+
+              <!-- HIDDEN SOLUTION CONTAINER -->
+              <div id="sol-container-case-2" class="hidden space-y-4 pt-2">
+                
+                <!-- Root Causes & Fix Architecture -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-rose-400 uppercase text-xs">Identified Root Causes</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• Boolean inversion bug: is_active set to False during issuance.</li>
+                      <li>• AWS Lambda VPC cold starts penalty (800ms-1,500ms during Cyber Monday bursts).</li>
+                      <li>• Missing Luhn algorithm checksum validation on generated card numbers.</li>
+                    </ul>
+                  </div>
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-emerald-400 uppercase text-xs">Architectural Solution</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• Corrected boolean initialization (is_active = True).</li>
+                      <li>• Added Luhn algorithm checksum calculation to guarantee valid 16-digit card numbers.</li>
+                      <li>• Migrated high-throughput VCN generation to AWS ECS Fargate provisioned tasks to eliminate cold starts.</li>
+                    </ul>
+                  </div>
                 </div>
-                <div class="p-4 overflow-x-auto font-mono text-xs">
-                  <div class="code-block lang-python">
-                    <pre class="text-xs text-slate-200"><code>def generate_virtual_card(user_id: str, credit_limit: float) -> dict:
+
+                <!-- Refactored Solution Code Block -->
+                <div class="bg-slate-950 rounded-xl border border-emerald-900/50 overflow-hidden">
+                  <div class="bg-emerald-950/40 px-4 py-2 border-b border-emerald-900/50 flex items-center justify-between text-xs">
+                    <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+                      <span>✅</span> <span>Refactored Production Code</span>
+                    </span>
+                    <span class="text-slate-500 font-mono text-[11px]">Multi-Language Solution</span>
+                  </div>
+                  <div class="p-4 overflow-x-auto font-mono text-xs">
+                    <div class="code-block lang-python">
+                      <pre class="text-xs text-slate-200"><code>def generate_virtual_card(user_id: str, credit_limit: float) -> dict:
+    # ✅ Generates 15 raw digits + calculates 16th Luhn checksum digit
     raw_num = "4" + "".join([str(random.randint(0, 9)) for _ in range(14)])
     checksum = calculate_luhn_checksum(raw_num)
     vcn = raw_num + str(checksum)
     
-    # FIXED: active set to True upon issuance
+    # ✅ FIXED: active set to True upon issuance
     return {
         "user_id": user_id,
         "vcn": vcn,
@@ -361,9 +450,9 @@
         "is_active": True,
         "status": "ACTIVE"
     }</code></pre>
-                  </div>
-                  <div class="code-block lang-go hidden">
-                    <pre class="text-xs text-slate-200"><code>func GenerateVirtualCard(userID string, creditLimit float64) VirtualCard {
+                    </div>
+                    <div class="code-block lang-go hidden">
+                      <pre class="text-xs text-slate-200"><code>func GenerateVirtualCard(userID string, creditLimit float64) VirtualCard {
 	raw := "4" + fmt.Sprintf("%014d", rand.Int64N(10000000000004))
 	checksum := calcLuhn(raw)
 	return VirtualCard{
@@ -371,22 +460,25 @@
 		CreditLimit: creditLimit, IsActive: true, Status: "ACTIVE",
 	}
 }</code></pre>
-                  </div>
-                  <div class="code-block lang-java hidden">
-                    <pre class="text-xs text-slate-200"><code>public VirtualCard generateVirtualCard(String userId, double creditLimit) {
+                    </div>
+                    <div class="code-block lang-java hidden">
+                      <pre class="text-xs text-slate-200"><code>public VirtualCard generateVirtualCard(String userId, double creditLimit) {
     String raw = "4" + String.format("%014d", ThreadLocalRandom.current().nextLong(100000000000000L));
     int checksum = calculateLuhn(raw);
     return new VirtualCard(userId, raw + checksum, creditLimit, true, "ACTIVE");
 }</code></pre>
+                    </div>
                   </div>
                 </div>
+
               </div>
+
             </div>
           </div>
 
-          <!-- CASE 3 -->
+          <!-- TECHNICAL CASE STUDY 3 -->
           <div id="case-3" class="case-detail-pane space-y-4 sm:space-y-6 hidden">
-            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-5">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
                 <div>
                   <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Technical Case Study 3</span>
@@ -398,80 +490,202 @@
                 </div>
               </div>
 
-              <div class="space-y-2 text-xs sm:text-sm text-slate-300">
-                <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">Business Problem</h3>
-                <p class="leading-relaxed">
-                  A legacy fraud alert engine evaluated 3 boolean flags: <code>is_foreign_ip</code>, <code>is_new_device</code>, and <code>is_large_amount</code>. Due to poorly nested <code>if/else</code> statements, critical fraud alerts failed to trigger for high-value foreign IP logins.
+              <!-- Original Question Prompt -->
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                <span class="text-xs font-bold text-amber-400 uppercase flex items-center gap-1.5">
+                  <span>❓</span> <span>Original Interview Question Prompt</span>
+                </span>
+                <p class="text-xs sm:text-sm italic text-slate-300 leading-relaxed">
+                  "Capital One's security engine evaluates 3 risk flags: is_foreign_ip, is_new_device, and is_large_amount. Due to poorly nested legacy if/else statements, high-value foreign transactions failed to trigger security alerts. Simplify and correct the boolean decision logic using De Morgan's laws and a truth table."
                 </p>
               </div>
 
-              <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex items-center justify-between text-xs">
-                  <span class="font-bold text-slate-300">Refactored Boolean Logic (De Morgan's Simplification)</span>
-                  <span class="text-slate-500 font-mono text-[11px]">Deterministic Truth Table</span>
+              <!-- Unmodified Buggy Legacy Code Block -->
+              <div class="bg-slate-950 rounded-xl border border-rose-900/50 overflow-hidden space-y-0">
+                <div class="bg-rose-950/60 px-4 py-2 border-b border-rose-900/50 flex items-center justify-between text-xs">
+                  <span class="font-bold text-rose-400 flex items-center gap-1.5">
+                    <span>⚠️</span> <span>Legacy Buggy Code (Inspect & Debug Yourself)</span>
+                  </span>
+                  <span class="text-rose-400/80 font-mono text-[11px]">Contains Logic Flaws</span>
                 </div>
-                <div class="p-4 overflow-x-auto font-mono text-xs">
-                  <div class="code-block lang-python">
-                    <pre class="text-xs text-slate-200"><code>def should_trigger_security_alert(is_foreign_ip: bool, is_new_device: bool, is_large_amount: bool) -> bool:
-    # Rule: Trigger alert if foreign IP AND new device, OR if large amount with any risk factor
+                <div class="p-4 overflow-x-auto font-mono text-xs bg-slate-950">
+                  <pre class="text-xs text-rose-200 leading-relaxed"><code># ❌ LEGACY BUGGY CODE: Incorrectly nested boolean conditions swallow security alerts
+def evaluate_security_risk(is_foreign_ip: bool, is_new_device: bool, is_large_amount: bool) -> bool:
+    if is_foreign_ip:
+        if is_new_device:
+            return True
+        else:
+            # 🐛 BUG: Returns False even if is_large_amount is True! High-value foreign transactions missed!
+            return False 
+    else:
+        if is_large_amount and not is_new_device:
+            return False # 🐛 BUG: Suppresses alert for large transactions on recognized devices!
+        return False</code></pre>
+                </div>
+              </div>
+
+              <!-- HIDE / REVEAL SOLUTION TOGGLE BUTTON -->
+              <div class="pt-2">
+                <button onclick="toggleSolution('case-3')" id="sol-btn-case-3" class="w-full py-3 px-4 bg-slate-800 hover:bg-slate-750 text-blue-400 font-bold rounded-xl border border-slate-700 flex items-center justify-between text-xs sm:text-sm shadow-xs transition-all">
+                  <span class="flex items-center gap-2">
+                    <span>👁️</span> <span>Reveal Answer & Fixed Engineering Solution</span>
+                  </span>
+                  <span id="sol-icon-case-3">▼</span>
+                </button>
+              </div>
+
+              <!-- HIDDEN SOLUTION CONTAINER -->
+              <div id="sol-container-case-3" class="hidden space-y-4 pt-2">
+                
+                <!-- Root Causes & Fix Architecture -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-rose-400 uppercase text-xs">Identified Root Causes</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• Poorly nested if/else logic swallowed alerts for high-value foreign transactions (is_foreign_ip = True, is_new_device = False, is_large_amount = True).</li>
+                      <li>• Redundant evaluation branches increased cyclomatic complexity.</li>
+                    </ul>
+                  </div>
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-emerald-400 uppercase text-xs">Architectural Solution</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• De Morgan's Laws simplification into a single deterministic truth table.</li>
+                      <li>• Rule: Alert if dual risk (foreign IP + new device) OR high value risk (large amount + foreign IP/new device).</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Refactored Solution Code Block -->
+                <div class="bg-slate-950 rounded-xl border border-emerald-900/50 overflow-hidden">
+                  <div class="bg-emerald-950/40 px-4 py-2 border-b border-emerald-900/50 flex items-center justify-between text-xs">
+                    <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+                      <span>✅</span> <span>Refactored Production Code</span>
+                    </span>
+                    <span class="text-slate-500 font-mono text-[11px]">Multi-Language Solution</span>
+                  </div>
+                  <div class="p-4 overflow-x-auto font-mono text-xs">
+                    <div class="code-block lang-python">
+                      <pre class="text-xs text-slate-200"><code>def should_trigger_security_alert(is_foreign_ip: bool, is_new_device: bool, is_large_amount: bool) -> bool:
+    # ✅ Refactored single-line boolean expression
     has_dual_risk = is_foreign_ip and is_new_device
     has_high_value_risk = is_large_amount and (is_foreign_ip or is_new_device)
     return has_dual_risk or has_high_value_risk</code></pre>
-                  </div>
-                  <div class="code-block lang-go hidden">
-                    <pre class="text-xs text-slate-200"><code>func ShouldTriggerSecurityAlert(isForeignIP, isNewDevice, isLargeAmount bool) bool {
+                    </div>
+                    <div class="code-block lang-go hidden">
+                      <pre class="text-xs text-slate-200"><code>func ShouldTriggerSecurityAlert(isForeignIP, isNewDevice, isLargeAmount bool) bool {
 	return (isForeignIP && isNewDevice) || (isLargeAmount && (isForeignIP || isNewDevice))
 }</code></pre>
-                  </div>
-                  <div class="code-block lang-java hidden">
-                    <pre class="text-xs text-slate-200"><code>public boolean shouldTriggerSecurityAlert(boolean isForeignIp, boolean isNewDevice, boolean isLargeAmount) {
+                    </div>
+                    <div class="code-block lang-java hidden">
+                      <pre class="text-xs text-slate-200"><code>public boolean shouldTriggerSecurityAlert(boolean isForeignIp, boolean isNewDevice, boolean isLargeAmount) {
     return (isForeignIp && isNewDevice) || (isLargeAmount && (isForeignIp || isNewDevice));
 }</code></pre>
+                    </div>
                   </div>
                 </div>
+
               </div>
+
             </div>
           </div>
 
-          <!-- CASE 4 -->
+          <!-- TECHNICAL CASE STUDY 4 -->
           <div id="case-4" class="case-detail-pane space-y-4 sm:space-y-6 hidden">
-            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-5">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
                 <div>
                   <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Technical Case Study 4</span>
                   <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Mainframe Batch Migration to Real-Time Kafka Streaming</h2>
                 </div>
                 <div class="sm:text-right">
-                  <span class="text-[11px] font-medium text-slate-400">Recency & Impact:</span>
+                  <span class="text-[11px] font-medium text-slate-400">Recency & Difficulty:</span>
                   <div class="text-xs font-bold text-purple-400">Early 2024 • $1.25M ROI</div>
                 </div>
               </div>
 
-              <div class="space-y-2 text-xs sm:text-sm text-slate-300">
-                <h3 class="text-xs font-bold text-purple-400 uppercase tracking-wider">Business Case & ROI</h3>
-                <p class="leading-relaxed">
-                  Nightly mainframe batch files created a 24-hour delay in fraud detection. Shifting to Change Data Capture (Debezium WAL) and Kafka streaming prevented <strong>$1.25 million in annual fraudulent transactions</strong>.
+              <!-- Original Question Prompt -->
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                <span class="text-xs font-bold text-purple-400 uppercase flex items-center gap-1.5">
+                  <span>❓</span> <span>Original Interview Question Prompt</span>
+                </span>
+                <p class="text-xs sm:text-sm italic text-slate-300 leading-relaxed">
+                  "A legacy mainframe batch job exports transaction files every night at midnight to detect fraud. However, fraudulent card activity occurring at 9:00 AM goes undetected for 15 hours. Redesign the batch ingestion system into a real-time event streaming pipeline using Kafka and Change Data Capture (CDC), and quantify the fraud reduction ROI."
                 </p>
               </div>
 
-              <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex items-center justify-between text-xs">
-                  <span class="font-bold text-slate-300">Kafka Outbox Pattern Handler</span>
-                  <span class="text-slate-500 font-mono text-[11px]">Zero Data Loss</span>
+              <!-- Unmodified Buggy Legacy Code Block -->
+              <div class="bg-slate-950 rounded-xl border border-rose-900/50 overflow-hidden space-y-0">
+                <div class="bg-rose-950/60 px-4 py-2 border-b border-rose-900/50 flex items-center justify-between text-xs">
+                  <span class="font-bold text-rose-400 flex items-center gap-1.5">
+                    <span>⚠️</span> <span>Legacy Buggy Code (Inspect & Debug Yourself)</span>
+                  </span>
+                  <span class="text-rose-400/80 font-mono text-[11px]">Contains Logic Flaws</span>
                 </div>
-                <div class="p-4 overflow-x-auto font-mono text-xs">
-                  <div class="code-block lang-python">
-                    <pre class="text-xs text-slate-200"><code>def process_outbox_event(event_id: str, payload: dict, producer):
-    # Idempotent publishing using outbox table record
+                <div class="p-4 overflow-x-auto font-mono text-xs bg-slate-950">
+                  <pre class="text-xs text-rose-200 leading-relaxed"><code># ❌ LEGACY BUGGY CODE: EBCDIC Mainframe Batch Processing (24-Hour Delay)
+def process_nightly_batch_file(batch_file_path: str):
+    # 🐛 Runs only once per day at 00:00 UTC! Fraudulent activity at 9 AM is undetected for 15 hours.
+    with open(batch_file_path, "r") as f:
+        for line in f:
+            txn = parse_ebcdic_record(line)
+            if txn.amount > 5000:
+                flag_fraud(txn.account_id)  # Too late! Money already withdrawn/settled.</code></pre>
+                </div>
+              </div>
+
+              <!-- HIDE / REVEAL SOLUTION TOGGLE BUTTON -->
+              <div class="pt-2">
+                <button onclick="toggleSolution('case-4')" id="sol-btn-case-4" class="w-full py-3 px-4 bg-slate-800 hover:bg-slate-750 text-blue-400 font-bold rounded-xl border border-slate-700 flex items-center justify-between text-xs sm:text-sm shadow-xs transition-all">
+                  <span class="flex items-center gap-2">
+                    <span>👁️</span> <span>Reveal Answer & Fixed Engineering Solution</span>
+                  </span>
+                  <span id="sol-icon-case-4">▼</span>
+                </button>
+              </div>
+
+              <!-- HIDDEN SOLUTION CONTAINER -->
+              <div id="sol-container-case-4" class="hidden space-y-4 pt-2">
+                
+                <!-- Root Causes & Fix Architecture -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-rose-400 uppercase text-xs">Identified Root Causes</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• 24-hour batch processing window exposes bank to millions in fraudulent card usage before midnight batch run.</li>
+                      <li>• Tight coupling to mainframe EBCDIC flat file exports.</li>
+                    </ul>
+                  </div>
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-emerald-400 uppercase text-xs">Architectural Solution</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• Debezium CDC reads PostgreSQL Write-Ahead Logs (WAL) directly from disk.</li>
+                      <li>• Streams changes in real time to Kafka topic c1.mainframe.transactions.v1.</li>
+                      <li>• Yields $1.25 million annual fraud prevention ROI.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Refactored Solution Code Block -->
+                <div class="bg-slate-950 rounded-xl border border-emerald-900/50 overflow-hidden">
+                  <div class="bg-emerald-950/40 px-4 py-2 border-b border-emerald-900/50 flex items-center justify-between text-xs">
+                    <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+                      <span>✅</span> <span>Refactored Production Code</span>
+                    </span>
+                    <span class="text-slate-500 font-mono text-[11px]">Multi-Language Solution</span>
+                  </div>
+                  <div class="p-4 overflow-x-auto font-mono text-xs">
+                    <div class="code-block lang-python">
+                      <pre class="text-xs text-slate-200"><code>def process_outbox_event(event_id: str, payload: dict, producer):
+    # ✅ Real-time Kafka Outbox pattern handler (Sub-second fraud evaluation)
     producer.send(
         topic="c1.mainframe.transactions.v1",
         key=payload["account_id"].encode("utf-8"),
         value=json.dumps(payload).encode("utf-8")
     )
     db.execute("UPDATE outbox SET processed = TRUE WHERE id = %s", [event_id])</code></pre>
-                  </div>
-                  <div class="code-block lang-go hidden">
-                    <pre class="text-xs text-slate-200"><code>func ProcessOutboxEvent(ctx context.Context, producer *kafka.Producer, eventID string, payload TxnEvent) error {
+                    </div>
+                    <div class="code-block lang-go hidden">
+                      <pre class="text-xs text-slate-200"><code>func ProcessOutboxEvent(ctx context.Context, producer *kafka.Producer, eventID string, payload TxnEvent) error {
 	msg, _ := json.Marshal(payload)
 	err := producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
@@ -479,49 +693,109 @@
 	}, nil)
 	return markOutboxProcessed(ctx, eventID)
 }</code></pre>
-                  </div>
-                  <div class="code-block lang-java hidden">
-                    <pre class="text-xs text-slate-200"><code>public void processOutboxEvent(String eventId, TxnPayload payload) {
+                    </div>
+                    <div class="code-block lang-java hidden">
+                      <pre class="text-xs text-slate-200"><code>public void processOutboxEvent(String eventId, TxnPayload payload) {
     kafkaTemplate.send("c1.mainframe.transactions.v1", payload.getAccountId(), payload)
         .whenComplete((result, ex) -> {
             if (ex == null) outboxRepository.markProcessed(eventId);
         });
 }</code></pre>
+                    </div>
                   </div>
                 </div>
+
               </div>
+
             </div>
           </div>
 
-          <!-- CASE 5 -->
+          <!-- TECHNICAL CASE STUDY 5 -->
           <div id="case-5" class="case-detail-pane space-y-4 sm:space-y-6 hidden">
-            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-5">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
                 <div>
                   <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">Technical Case Study 5</span>
-                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Mobile Payments Unit Economics & Interchange Margin</h2>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Mobile Payments Unit Economics & Margin Math</h2>
                 </div>
                 <div class="sm:text-right">
-                  <span class="text-[11px] font-medium text-slate-400">Recency & Focus:</span>
+                  <span class="text-[11px] font-medium text-slate-400">Recency & Difficulty:</span>
                   <div class="text-xs font-bold text-rose-400">2023 - 2024 • Finance & Math</div>
                 </div>
               </div>
 
-              <div class="space-y-2 text-xs sm:text-sm text-slate-300">
-                <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider">Financial Breakdown</h3>
-                <p class="leading-relaxed">
-                  Evaluating interchange revenue (1.75% + $0.10) against network processing fees (0.15%), reward cashback (1.00%), and fraud loss reserves (0.25%) to determine transaction break-even threshold.
+              <!-- Original Question Prompt -->
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                <span class="text-xs font-bold text-rose-400 uppercase flex items-center gap-1.5">
+                  <span>❓</span> <span>Original Interview Question Prompt</span>
+                </span>
+                <p class="text-xs sm:text-sm italic text-slate-300 leading-relaxed">
+                  "Capital One earns interchange revenue on credit card swipes, but incurs network fees, rewards cashback, and fraud loss reserves. Write a function to calculate the net margin on a transaction and determine the minimum transaction amount required for Capital One to break even."
                 </p>
               </div>
 
-              <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex items-center justify-between text-xs">
-                  <span class="font-bold text-slate-300">Interchange Unit Economics Calculator</span>
-                  <span class="text-slate-500 font-mono text-[11px]">Margin Math</span>
+              <!-- Unmodified Buggy Legacy Code Block -->
+              <div class="bg-slate-950 rounded-xl border border-rose-900/50 overflow-hidden space-y-0">
+                <div class="bg-rose-950/60 px-4 py-2 border-b border-rose-900/50 flex items-center justify-between text-xs">
+                  <span class="font-bold text-rose-400 flex items-center gap-1.5">
+                    <span>⚠️</span> <span>Legacy Buggy Code (Inspect & Debug Yourself)</span>
+                  </span>
+                  <span class="text-rose-400/80 font-mono text-[11px]">Contains Logic Flaws</span>
                 </div>
-                <div class="p-4 overflow-x-auto font-mono text-xs">
-                  <div class="code-block lang-python">
-                    <pre class="text-xs text-slate-200"><code>def calculate_transaction_margin(amount: float) -> dict:
+                <div class="p-4 overflow-x-auto font-mono text-xs bg-slate-950">
+                  <pre class="text-xs text-rose-200 leading-relaxed"><code># ❌ LEGACY BUGGY CODE: Over-simplified profit logic ignores fixed network fees
+def calculate_profit(amount: float) -> float:
+    interchange = amount * 0.0175
+    rewards = amount * 0.0100
+    # 🐛 BUG: Ignores fixed per-transaction fee ($0.10) and network scheme fee (0.15%)!
+    # Falsely marks $1.00 micro-transactions as profitable when bank actually loses money!
+    return interchange - rewards</code></pre>
+                </div>
+              </div>
+
+              <!-- HIDE / REVEAL SOLUTION TOGGLE BUTTON -->
+              <div class="pt-2">
+                <button onclick="toggleSolution('case-5')" id="sol-btn-case-5" class="w-full py-3 px-4 bg-slate-800 hover:bg-slate-750 text-blue-400 font-bold rounded-xl border border-slate-700 flex items-center justify-between text-xs sm:text-sm shadow-xs transition-all">
+                  <span class="flex items-center gap-2">
+                    <span>👁️</span> <span>Reveal Answer & Fixed Engineering Solution</span>
+                  </span>
+                  <span id="sol-icon-case-5">▼</span>
+                </button>
+              </div>
+
+              <!-- HIDDEN SOLUTION CONTAINER -->
+              <div id="sol-container-case-5" class="hidden space-y-4 pt-2">
+                
+                <!-- Root Causes & Fix Architecture -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-rose-400 uppercase text-xs">Identified Root Causes</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• Omitted fixed $0.10 per-transaction fee and 0.15% network scheme processing fee.</li>
+                      <li>• Falsely reported positive margins on small micro-transactions under $8.33.</li>
+                    </ul>
+                  </div>
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-emerald-400 uppercase text-xs">Architectural Solution</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• Full interchange economics equation: Net Margin = (1.75% * Amount + $0.10) - (0.15% + 1.00% + 0.25%) * Amount.</li>
+                      <li>• Calculates exact break-even transaction size ($8.33).</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Refactored Solution Code Block -->
+                <div class="bg-slate-950 rounded-xl border border-emerald-900/50 overflow-hidden">
+                  <div class="bg-emerald-950/40 px-4 py-2 border-b border-emerald-900/50 flex items-center justify-between text-xs">
+                    <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+                      <span>✅</span> <span>Refactored Production Code</span>
+                    </span>
+                    <span class="text-slate-500 font-mono text-[11px]">Multi-Language Solution</span>
+                  </div>
+                  <div class="p-4 overflow-x-auto font-mono text-xs">
+                    <div class="code-block lang-python">
+                      <pre class="text-xs text-slate-200"><code>def calculate_transaction_margin(amount: float) -> dict:
+    # ✅ Complete interchange unit economics equation
     gross_interchange = (amount * 0.0175) + 0.10
     network_fee = amount * 0.0015
     rewards_cost = amount * 0.0100
@@ -533,31 +807,34 @@
         "net_margin": round(net_margin, 2),
         "is_profitable": net_margin > 0
     }</code></pre>
-                  </div>
-                  <div class="code-block lang-go hidden">
-                    <pre class="text-xs text-slate-200"><code>func CalculateTransactionMargin(amount float64) MarginResult {
+                    </div>
+                    <div class="code-block lang-go hidden">
+                      <pre class="text-xs text-slate-200"><code>func CalculateTransactionMargin(amount float64) MarginResult {
 	interchange := (amount * 0.0175) + 0.10
 	costs := (amount * 0.0015) + (amount * 0.0100) + (amount * 0.0025)
 	net := interchange - costs
 	return MarginResult{Amount: amount, Interchange: interchange, NetMargin: net, IsProfitable: net > 0}
 }</code></pre>
-                  </div>
-                  <div class="code-block lang-java hidden">
-                    <pre class="text-xs text-slate-200"><code>public MarginResult calculateTransactionMargin(double amount) {
+                    </div>
+                    <div class="code-block lang-java hidden">
+                      <pre class="text-xs text-slate-200"><code>public MarginResult calculateTransactionMargin(double amount) {
     double interchange = (amount * 0.0175) + 0.10;
     double costs = (amount * 0.0015) + (amount * 0.0100) + (amount * 0.0025);
     double net = interchange - costs;
     return new MarginResult(amount, interchange, net, net > 0);
 }</code></pre>
+                    </div>
                   </div>
                 </div>
+
               </div>
+
             </div>
           </div>
 
-          <!-- CASE 6 -->
+          <!-- TECHNICAL CASE STUDY 6 -->
           <div id="case-6" class="case-detail-pane space-y-4 sm:space-y-6 hidden">
-            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-5">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
                 <div>
                   <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Technical Case Study 6</span>
@@ -569,21 +846,75 @@
                 </div>
               </div>
 
-              <div class="space-y-2 text-xs sm:text-sm text-slate-300">
-                <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Business Context</h3>
-                <p class="leading-relaxed">
-                  Evaluating Buy-Now-Pay-Later (BNPL) 4-installment models where merchants pay 4.0% MDR up front. Model must account for 1.2% default loss rate across installments 2-4.
+              <!-- Original Question Prompt -->
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                <span class="text-xs font-bold text-cyan-400 uppercase flex items-center gap-1.5">
+                  <span>❓</span> <span>Original Interview Question Prompt</span>
+                </span>
+                <p class="text-xs sm:text-sm italic text-slate-300 leading-relaxed">
+                  "Buy-Now-Pay-Later (BNPL) splits a $400 order into 4 equal installments of $100. Merchants pay a 4.0% MDR fee up front ($16). However, installment defaults occur across installments 2, 3, and 4 at a 1.2% loss rate. Write a financial cash flow calculator to evaluate net bank yield."
                 </p>
               </div>
 
-              <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex items-center justify-between text-xs">
-                  <span class="font-bold text-slate-300">BNPL Installment Cash Flow Model</span>
-                  <span class="text-slate-500 font-mono text-[11px]">Yield & Default Calculation</span>
+              <!-- Unmodified Buggy Legacy Code Block -->
+              <div class="bg-slate-950 rounded-xl border border-rose-900/50 overflow-hidden space-y-0">
+                <div class="bg-rose-950/60 px-4 py-2 border-b border-rose-900/50 flex items-center justify-between text-xs">
+                  <span class="font-bold text-rose-400 flex items-center gap-1.5">
+                    <span>⚠️</span> <span>Legacy Buggy Code (Inspect & Debug Yourself)</span>
+                  </span>
+                  <span class="text-rose-400/80 font-mono text-[11px]">Contains Logic Flaws</span>
                 </div>
-                <div class="p-4 overflow-x-auto font-mono text-xs">
-                  <div class="code-block lang-python">
-                    <pre class="text-xs text-slate-200"><code>def calculate_bnpl_yield(order_val: float, mdr_pct=0.04, default_rate=0.012) -> dict:
+                <div class="p-4 overflow-x-auto font-mono text-xs bg-slate-950">
+                  <pre class="text-xs text-rose-200 leading-relaxed"><code># ❌ LEGACY BUGGY CODE: Flawed yield model ignores installment default risk
+def calculate_bnpl_profit(order_amount: float) -> float:
+    mdr_revenue = order_amount * 0.04
+    # 🐛 BUG: Assumes 100% of customers pay all 4 installments! Zero loss reserve factored!
+    return mdr_revenue  # Overstates profit by $3.60 on a $400 purchase.</code></pre>
+                </div>
+              </div>
+
+              <!-- HIDE / REVEAL SOLUTION TOGGLE BUTTON -->
+              <div class="pt-2">
+                <button onclick="toggleSolution('case-6')" id="sol-btn-case-6" class="w-full py-3 px-4 bg-slate-800 hover:bg-slate-750 text-blue-400 font-bold rounded-xl border border-slate-700 flex items-center justify-between text-xs sm:text-sm shadow-xs transition-all">
+                  <span class="flex items-center gap-2">
+                    <span>👁️</span> <span>Reveal Answer & Fixed Engineering Solution</span>
+                  </span>
+                  <span id="sol-icon-case-6">▼</span>
+                </button>
+              </div>
+
+              <!-- HIDDEN SOLUTION CONTAINER -->
+              <div id="sol-container-case-6" class="hidden space-y-4 pt-2">
+                
+                <!-- Root Causes & Fix Architecture -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-rose-400 uppercase text-xs">Identified Root Causes</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• Assumed zero installment defaults, overstating net profit margins on BNPL financing products.</li>
+                    </ul>
+                  </div>
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-emerald-400 uppercase text-xs">Architectural Solution</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• Factored 1.2% default loss rate across remaining 75% uncollected capital ($3.60 expected loss).</li>
+                      <li>• Net bank profit = $16.00 MDR revenue - $3.60 expected loss = $12.40 net yield.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Refactored Solution Code Block -->
+                <div class="bg-slate-950 rounded-xl border border-emerald-900/50 overflow-hidden">
+                  <div class="bg-emerald-950/40 px-4 py-2 border-b border-emerald-900/50 flex items-center justify-between text-xs">
+                    <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+                      <span>✅</span> <span>Refactored Production Code</span>
+                    </span>
+                    <span class="text-slate-500 font-mono text-[11px]">Multi-Language Solution</span>
+                  </div>
+                  <div class="p-4 overflow-x-auto font-mono text-xs">
+                    <div class="code-block lang-python">
+                      <pre class="text-xs text-slate-200"><code>def calculate_bnpl_yield(order_val: float, mdr_pct=0.04, default_rate=0.012) -> dict:
+    # ✅ Risk-adjusted BNPL installment yield model
     upfront_mdr = order_val * mdr_pct
     merchant_payout = order_val - upfront_mdr
     expected_default_loss = (order_val * 0.75) * default_rate
@@ -595,33 +926,36 @@
         "expected_default_loss": expected_default_loss,
         "net_bank_profit": net_bank_profit
     }</code></pre>
-                  </div>
-                  <div class="code-block lang-go hidden">
-                    <pre class="text-xs text-slate-200"><code>func CalculateBnplYield(orderVal float64, mdrPct, defaultRate float64) BnplYield {
+                    </div>
+                    <div class="code-block lang-go hidden">
+                      <pre class="text-xs text-slate-200"><code>func CalculateBnplYield(orderVal float64, mdrPct, defaultRate float64) BnplYield {
 	mdr := orderVal * mdrPct
 	payout := orderVal - mdr
 	loss := (orderVal * 0.75) * defaultRate
 	profit := mdr - loss
 	return BnplYield{OrderVal: orderVal, UpfrontMDR: mdr, MerchantPayout: payout, NetProfit: profit}
 }</code></pre>
-                  </div>
-                  <div class="code-block lang-java hidden">
-                    <pre class="text-xs text-slate-200"><code>public BnplYield calculateBnplYield(double orderVal, double mdrPct, double defaultRate) {
+                    </div>
+                    <div class="code-block lang-java hidden">
+                      <pre class="text-xs text-slate-200"><code>public BnplYield calculateBnplYield(double orderVal, double mdrPct, double defaultRate) {
     double mdr = orderVal * mdrPct;
     double payout = orderVal - mdr;
     double loss = (orderVal * 0.75) * defaultRate;
     double profit = mdr - loss;
     return new BnplYield(orderVal, mdr, payout, loss, profit);
 }</code></pre>
+                    </div>
                   </div>
                 </div>
+
               </div>
+
             </div>
           </div>
 
-          <!-- CASE 7 -->
+          <!-- TECHNICAL CASE STUDY 7 -->
           <div id="case-7" class="case-detail-pane space-y-4 sm:space-y-6 hidden">
-            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-5">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
                 <div>
                   <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">Technical Case Study 7</span>
@@ -633,21 +967,80 @@
                 </div>
               </div>
 
-              <div class="space-y-2 text-xs sm:text-sm text-slate-300">
-                <h3 class="text-xs font-bold text-teal-400 uppercase tracking-wider">Business Context</h3>
-                <p class="leading-relaxed">
-                  Real-time foreign exchange (FX) conversion during international credit card swipes, applying dynamic basis point spreads while maintaining liquidity buffers in EUR/USD.
+              <!-- Original Question Prompt -->
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                <span class="text-xs font-bold text-teal-400 uppercase flex items-center gap-1.5">
+                  <span>❓</span> <span>Original Interview Question Prompt</span>
+                </span>
+                <p class="text-xs sm:text-sm italic text-slate-300 leading-relaxed">
+                  "When a U.S. cardholder swipes their card in Europe, the transaction must convert USD to EUR in real-time, apply a 50 basis point (0.50%) FX spread, and check whether the bank's EUR liquidity buffer has sufficient funds to settle. Write an FX conversion engine that enforces precision math."
                 </p>
               </div>
 
-              <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex items-center justify-between text-xs">
-                  <span class="font-bold text-slate-300">FX Spread & Settlement Calculation</span>
-                  <span class="text-slate-500 font-mono text-[11px]">Precision Math</span>
+              <!-- Unmodified Buggy Legacy Code Block -->
+              <div class="bg-slate-950 rounded-xl border border-rose-900/50 overflow-hidden space-y-0">
+                <div class="bg-rose-950/60 px-4 py-2 border-b border-rose-900/50 flex items-center justify-between text-xs">
+                  <span class="font-bold text-rose-400 flex items-center gap-1.5">
+                    <span>⚠️</span> <span>Legacy Buggy Code (Inspect & Debug Yourself)</span>
+                  </span>
+                  <span class="text-rose-400/80 font-mono text-[11px]">Contains Logic Flaws</span>
                 </div>
-                <div class="p-4 overflow-x-auto font-mono text-xs">
-                  <div class="code-block lang-python">
-                    <pre class="text-xs text-slate-200"><code>def convert_fx_settlement(amount_usd: float, spot_rate_eur: float, spread_bps=50, buffer_eur=10000.0) -> dict:
+                <div class="p-4 overflow-x-auto font-mono text-xs bg-slate-950">
+                  <pre class="text-xs text-rose-200 leading-relaxed"><code># ❌ LEGACY BUGGY CODE: Inverted spread calculation & floating point precision loss
+def convert_currency(usd_amount: float, spot_rate_eur: float) -> float:
+    # 🐛 BUG: Adds 5% to spot rate (making EUR more expensive for bank instead of earning spread!)
+    effective_rate = spot_rate_eur * 1.05  # Hardcoded 5% instead of 50 bps (0.5%)!
+    eur_total = usd_amount * effective_rate
+    # 🐛 BUG: Standard float math causes precision loss ($100.00000000000001)
+    return eur_total</code></pre>
+                </div>
+              </div>
+
+              <!-- HIDE / REVEAL SOLUTION TOGGLE BUTTON -->
+              <div class="pt-2">
+                <button onclick="toggleSolution('case-7')" id="sol-btn-case-7" class="w-full py-3 px-4 bg-slate-800 hover:bg-slate-750 text-blue-400 font-bold rounded-xl border border-slate-700 flex items-center justify-between text-xs sm:text-sm shadow-xs transition-all">
+                  <span class="flex items-center gap-2">
+                    <span>👁️</span> <span>Reveal Answer & Fixed Engineering Solution</span>
+                  </span>
+                  <span id="sol-icon-case-7">▼</span>
+                </button>
+              </div>
+
+              <!-- HIDDEN SOLUTION CONTAINER -->
+              <div id="sol-container-case-7" class="hidden space-y-4 pt-2">
+                
+                <!-- Root Causes & Fix Architecture -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-rose-400 uppercase text-xs">Identified Root Causes</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• Inverted spread calculation (added 5% fee to spot rate instead of deducting spread).</li>
+                      <li>• Hardcoded 5% fee instead of 50 basis points (0.50%).</li>
+                      <li>• Floating point precision errors during currency conversion.</li>
+                    </ul>
+                  </div>
+                  <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-emerald-400 uppercase text-xs">Architectural Solution</h4>
+                    <ul class="space-y-1 text-slate-400">
+                      <li>• Correct basis point spread formula: effective_rate = spot_rate * (1.0 - (spread_bps / 10000.0)).</li>
+                      <li>• Added EUR liquidity buffer threshold check.</li>
+                      <li>• Exact decimal rounding to 2 decimal places.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Refactored Solution Code Block -->
+                <div class="bg-slate-950 rounded-xl border border-emerald-900/50 overflow-hidden">
+                  <div class="bg-emerald-950/40 px-4 py-2 border-b border-emerald-900/50 flex items-center justify-between text-xs">
+                    <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+                      <span>✅</span> <span>Refactored Production Code</span>
+                    </span>
+                    <span class="text-slate-500 font-mono text-[11px]">Multi-Language Solution</span>
+                  </div>
+                  <div class="p-4 overflow-x-auto font-mono text-xs">
+                    <div class="code-block lang-python">
+                      <pre class="text-xs text-slate-200"><code>def convert_fx_settlement(amount_usd: float, spot_rate_eur: float, spread_bps=50, buffer_eur=10000.0) -> dict:
+    # ✅ Precision FX conversion & liquidity buffer check
     effective_rate = spot_rate_eur * (1.0 - (spread_bps / 10000.0))
     converted_eur = amount_usd * effective_rate
     approved = buffer_eur >= converted_eur
@@ -657,25 +1050,28 @@
         "converted_eur": round(converted_eur, 2),
         "approved": approved
     }</code></pre>
-                  </div>
-                  <div class="code-block lang-go hidden">
-                    <pre class="text-xs text-slate-200"><code>func ExecuteConversion(amountUSD, spotRateEUR, bufferEUR float64) FxResult {
+                    </div>
+                    <div class="code-block lang-go hidden">
+                      <pre class="text-xs text-slate-200"><code>func ExecuteConversion(amountUSD, spotRateEUR, bufferEUR float64) FxResult {
 	effectiveRate := spotRateEUR * (1.0 - (50.0 / 10000.0))
 	convertedEUR := amountUSD * effectiveRate
 	approved := bufferEUR >= convertedEUR
 	return FxResult{AmountUSD: amountUSD, SettledEUR: math.Round(convertedEUR*100)/100, Approved: approved}
 }</code></pre>
-                  </div>
-                  <div class="code-block lang-java hidden">
-                    <pre class="text-xs text-slate-200"><code>public FxResult executeConversion(double amountUsd, double spotRateEur, double accountBufferEur) {
+                    </div>
+                    <div class="code-block lang-java hidden">
+                      <pre class="text-xs text-slate-200"><code>public FxResult executeConversion(double amountUsd, double spotRateEur, double accountBufferEur) {
     double effectiveRate = spotRateEur * (1.0 - (50.0 / 10000.0));
     double convertedEur = amountUsd * effectiveRate;
     boolean approved = accountBufferEur >= convertedEur;
     return new FxResult(amountUsd, spotRateEur, effectiveRate, Math.round(convertedEur * 100.0)/100.0, approved);
 }</code></pre>
+                    </div>
                   </div>
                 </div>
+
               </div>
+
             </div>
           </div>
 
@@ -3422,6 +3818,24 @@
       if (mobileSelect) mobileSelect.value = caseId;
 
       setGlobalLang(currentLang);
+    }
+
+    function toggleSolution(caseId) {
+      const container = document.getElementById('sol-container-' + caseId);
+      const btn = document.getElementById('sol-btn-' + caseId);
+      const icon = document.getElementById('sol-icon-' + caseId);
+
+      if (container.classList.contains('hidden')) {
+        container.classList.remove('hidden');
+        btn.className = "w-full py-3 px-4 bg-blue-900/40 hover:bg-blue-900/60 text-blue-300 font-bold rounded-xl border border-blue-500/50 flex items-center justify-between text-xs sm:text-sm shadow-xs transition-all";
+        btn.querySelector('span:first-child').innerHTML = "<span>🙈</span> <span>Hide Solution & Engineering Breakdown</span>";
+        if (icon) icon.textContent = "▲";
+      } else {
+        container.classList.add('hidden');
+        btn.className = "w-full py-3 px-4 bg-slate-800 hover:bg-slate-750 text-blue-400 font-bold rounded-xl border border-slate-700 flex items-center justify-between text-xs sm:text-sm shadow-xs transition-all";
+        btn.querySelector('span:first-child').innerHTML = "<span>👁️</span> <span>Reveal Answer & Fixed Engineering Solution</span>";
+        if (icon) icon.textContent = "▼";
+      }
     }
 
     function selectSysQ(sysId) {
