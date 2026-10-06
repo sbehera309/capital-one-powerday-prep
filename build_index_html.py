@@ -1913,8 +1913,8 @@ def calculate_profit(amount: float) -> float:
 
         setSafeText(qId + '-step-title', step.title);
         setSafeText(qId + '-step-protocol', step.protocol);
-        setSafeText(qId + '-step-headers', (step.headers || '').replace(/\\\\n/g, '\n'));
-        setSafeText(qId + '-step-body', (step.body || '').replace(/\\\\n/g, '\n'));
+        setSafeText(qId + '-step-headers', (step.headers || '').split('\\n').join(String.fromCharCode(10)));
+        setSafeText(qId + '-step-body', (step.body || '').split('\\n').join(String.fromCharCode(10)));
         setSafeText(qId + '-step-action', step.action);
         setSafeText(qId + '-step-response', step.response);
       } catch (err) {
