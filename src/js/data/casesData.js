@@ -10,13 +10,27 @@ export const casesData = [
     difficulty: "Late 2025 • High Frequency",
     category: "Network & Dynamic Windowing",
     prompt: `"Eeno" allows users to request arbitrary windows of transaction history. Legacy pagination relies on SQL OFFSET, causing slow DB queries, database connection pool exhaustion, and duplicate/dropped records when new transactions are inserted concurrently. Implement an efficient keyset pagination algorithm.`,
-    legacyLang: "Go",
-    legacyCode: `// ❌ BUGGY LEGACY CODE: SQL OFFSET pagination causes DB locks and skipped rows
+    legacyCode: {
+      python: `# ❌ BUGGY LEGACY CODE: SQL OFFSET pagination causes DB locks and skipped rows
+def fetch_history_offset(db_conn, account_id: str, offset: int, limit: int):
+    # 🐛 BUG: O(N) DB scan with OFFSET skips records when concurrent writes occur!
+    query = f"SELECT id, amount, created_at FROM transactions WHERE account_id='{account_id}' ORDER BY created_at DESC LIMIT {limit} OFFSET {offset}"
+    return db_conn.execute(query).fetchall()`,
+
+      go: `// ❌ BUGGY LEGACY CODE: SQL OFFSET pagination causes DB locks and skipped rows
 func FetchHistoryOffset(db *sql.DB, accountID string, offset, limit int) ([]Transaction, error) {
-    // 🐛 BUG: O(N) DB scan with OFFSET skips records when concurrent writes occur!
-    query := fmt.Sprintf("SELECT id, amount, created_at FROM txs WHERE account_id='%s' ORDER BY created_at DESC LIMIT %d OFFSET %d", accountID, limit, offset)
-    return db.Query(query)
+	// 🐛 BUG: O(N) DB scan with OFFSET skips records when concurrent writes occur!
+	query := fmt.Sprintf("SELECT id, amount, created_at FROM txs WHERE account_id='%s' ORDER BY created_at DESC LIMIT %d OFFSET %d", accountID, limit, offset)
+	return db.Query(query)
 }`,
+
+      java: `// ❌ BUGGY LEGACY CODE: SQL OFFSET pagination causes DB locks and skipped rows
+public List<Transaction> fetchHistoryOffset(String accountId, int offset, int limit) {
+    // 🐛 BUG: O(N) DB scan with OFFSET skips records when concurrent writes occur!
+    String sql = String.format("SELECT id, amount, created_at FROM transactions WHERE account_id='%s' ORDER BY created_at DESC LIMIT %d OFFSET %d", accountId, limit, offset);
+    return jdbcTemplate.query(sql, new TransactionRowMapper());
+}`
+    },
     causes: [
       "SQL OFFSET requires the database engine to scan and discard offset N rows, degrading query performance to O(N).",
       "Concurrent inserts shift row positions, leading to duplicate items across pages or missed transaction records."
@@ -92,12 +106,27 @@ public List<Transaction> fetchCustomerHistory(String accountId, Instant lastDate
     difficulty: "2025–2026 • High Impact",
     category: "Installment Loss & Capital Yield",
     prompt: `"Buy-Now-Pay-Later (BNPL) splits a $400 order into 4 equal installments of $100. Merchants pay a 4.0% MDR fee up front ($16). However, installment defaults occur across installments 2, 3, and 4 at a 1.2% loss rate. Write a financial cash flow calculator to evaluate net bank yield."`,
-    legacyLang: "Python",
-    legacyCode: `# ❌ LEGACY BUGGY CODE: Flawed yield model ignores installment default risk
+    legacyCode: {
+      python: `# ❌ LEGACY BUGGY CODE: Flawed yield model ignores installment default risk
 def calculate_bnpl_profit(order_amount: float) -> float:
     mdr_revenue = order_amount * 0.04
     # 🐛 BUG: Assumes 100% of customers pay all 4 installments! Zero loss reserve factored!
     return mdr_revenue  # Overstates profit by $3.60 on a $400 purchase.`,
+
+      go: `// ❌ LEGACY BUGGY CODE: Flawed yield model ignores installment default risk
+func CalculateBnplProfit(orderAmount float64) float64 {
+	mdrRevenue := orderAmount * 0.04
+	// 🐛 BUG: Assumes 100% of customers pay all 4 installments! Zero loss reserve factored!
+	return mdrRevenue // Overstates profit by $3.60 on a $400 purchase.
+}`,
+
+      java: `// ❌ LEGACY BUGGY CODE: Flawed yield model ignores installment default risk
+public double calculateBnplProfit(double orderAmount) {
+    double mdrRevenue = orderAmount * 0.04;
+    // 🐛 BUG: Assumes 100% of customers pay all 4 installments! Zero loss reserve factored!
+    return mdrRevenue; // Overstates profit by $3.60 on a $400 purchase.
+}`
+    },
     causes: [
       "Assumed zero installment defaults, overstating net profit margins on BNPL financing products."
     ],
@@ -146,12 +175,26 @@ def calculate_bnpl_profit(order_amount: float) -> float:
     difficulty: "2025–2026 • Distributed Systems",
     category: "Cross-Border FX & Liquidity",
     prompt: `"Cross-border payments require converting USD to EUR at fluctuating FX rates. The legacy service caches FX rates globally without locking or timestamp validation, causing stale rate arbitrage losses during market spikes. Write a thread-safe FX settlement rate engine with max 2-second rate validity."`,
-    legacyLang: "Java",
-    legacyCode: `// ❌ LEGACY BUGGY CODE: Global static variable without synchronization
+    legacyCode: {
+      python: `# ❌ LEGACY BUGGY CODE: Global static variable without cache TTL or locking
+USD_TO_EUR_RATE = 0.85 # 🐛 BUG: Stale rate used indefinitely!
+
+def get_fx_rate():
+    return USD_TO_EUR_RATE`,
+
+      go: `// ❌ LEGACY BUGGY CODE: Global unsynchronized variable without cache TTL
+var usdToEurRate = 0.85 // 🐛 BUG: Stale rate used indefinitely!
+
+func GetFxRate() float64 {
+	return usdToEurRate
+}`,
+
+      java: `// ❌ LEGACY BUGGY CODE: Global static variable without synchronization or TTL
 public class FxRateCache {
     private static double usdToEurRate = 0.85; // 🐛 BUG: Stale rate used indefinitely!
     public static double getRate() { return usdToEurRate; }
-}`,
+}`
+    },
     causes: [
       "Global unsynchronized FX rate storage leads to race conditions and stale rate execution.",
       "Lack of TTL cache invalidation allows users to execute trades at expired, arbitrage-vulnerable prices."
@@ -223,19 +266,35 @@ func (e *FxEngine) GetRate(fetcher func() float64) float64 {
     difficulty: "Mid 2025 • High Concurrency",
     category: "Idempotency & Distributed Locks",
     prompt: `"Users generating virtual cards under slow cellular connections tap the 'Create Card' button repeatedly. The legacy backend lacks idempotency keys, creating duplicate virtual cards and draining merchant credit limits. Write an idempotent card creation handler using Redis distributed locks."`,
-    legacyLang: "Python",
-    legacyCode: `# ❌ LEGACY BUGGY CODE: No lock or deduplication key check
+    legacyCode: {
+      python: `# ❌ LEGACY BUGGY CODE: No lock or deduplication key check
 @app.route('/create-card', methods=['POST'])
 def create_card():
     # 🐛 BUG: Duplicate HTTP POST creates 2 distinct virtual card numbers!
     card = card_service.generate_new_card(request.json['user_id'])
     return jsonify(card)`,
+
+      go: `// ❌ LEGACY BUGGY CODE: No lock or deduplication key check
+func CreateCardHandler(w http.ResponseWriter, r *http.Request) {
+	// 🐛 BUG: Duplicate HTTP POST creates 2 distinct virtual card numbers!
+	card := generateNewCard(r.FormValue("user_id"))
+	json.NewEncoder(w).Encode(card)
+}`,
+
+      java: `// ❌ LEGACY BUGGY CODE: No lock or deduplication key check
+@PostMapping("/create-card")
+public ResponseEntity<VirtualCard> createCard(@RequestBody CardRequest req) {
+    // 🐛 BUG: Duplicate HTTP POST creates 2 distinct virtual card numbers!
+    VirtualCard card = cardService.generateNewCard(req.getUserId());
+    return ResponseEntity.ok(card);
+}`
+    },
     causes: [
       "Absence of API idempotency key handling allowed parallel duplicate POST requests to execute.",
       "Race conditions in card generation database inserts caused duplicate card provisioning."
     ],
     solutions: [
-      "Redis `SET key value NX PX 5000` atomic lock per `(user_id, idempotency_key)`.",
+      "Redis \`SET key value NX PX 5000\` atomic lock per \`(user_id, idempotency_key)\`.",
       "Cached idempotency response storage ensures duplicate requests receive the exact initial card response."
     ],
     code: {
@@ -309,18 +368,30 @@ def idempotent_create_card(user_id: str, idempotency_key: str, card_generator_fu
     difficulty: "Mid 2024 • Logic & Testing",
     category: "Boolean Algebra & Short-Circuit Bugs",
     prompt: `"A security alert system uses 3 flags: is_new_device, is_foreign_ip, is_high_amount. The alert should trigger IF (is_new_device AND is_foreign_ip) OR (is_foreign_ip AND is_high_amount) OR (is_new_device AND is_high_amount). The legacy code used incorrect operator precedence, causing false negative security alerts."`,
-    legacyLang: "Java",
-    legacyCode: `// ❌ LEGACY BUGGY CODE: Operator precedence flaw without grouping parentheses
+    legacyCode: {
+      python: `# ❌ LEGACY BUGGY CODE: Operator precedence flaw without grouping parentheses
+def should_trigger_alert(is_new_device, is_foreign_ip, is_high_amount):
+    # 🐛 BUG: Operator precedence evaluates AND before OR incorrectly!
+    return is_new_device and is_foreign_ip or is_foreign_ip and is_high_amount or is_new_device and is_high_amount # Flawed precedence!`,
+
+      go: `// ❌ LEGACY BUGGY CODE: Operator precedence flaw without grouping parentheses
+func ShouldTriggerAlert(newDev, foreignIP, highAmt bool) bool {
+	// 🐛 BUG: Operator precedence evaluates AND before OR incorrectly!
+	return newDev && foreignIP || foreignIP && highAmt || newDev && highAmt
+}`,
+
+      java: `// ❌ LEGACY BUGGY CODE: Operator precedence flaw without grouping parentheses
 public boolean shouldTriggerAlert(boolean newDev, boolean foreignIp, boolean highAmt) {
     // 🐛 BUG: Operator precedence evaluates AND before OR incorrectly!
-    return newDev && foreignIp || foreignIp && highAmt || newDev && highAmt; // Flawed boolean reduction!
-}`,
+    return newDev && foreignIp || foreignIp && highAmt || newDev && highAmt; // Flawed precedence!
+}`
+    },
     causes: [
       "Unparenthesized boolean expression relied on implicit operator precedence, resulting in missed alert triggers."
     ],
     solutions: [
       "Majority-voting logic: Alert triggers if sum of true flags >= 2.",
-      "Clean parenthesized boolean evaluation: `(A && B) || (B && C) || (A && C)`."
+      "Clean parenthesized boolean evaluation: \`(A && B) || (B && C) || (A && C)\`."
     ],
     code: {
       python: `def should_trigger_alert(is_new_device: bool, is_foreign_ip: bool, is_high_amount: bool) -> bool:
@@ -351,20 +422,32 @@ public boolean shouldTriggerAlert(boolean newDev, boolean foreignIp, boolean hig
     difficulty: "Early 2024 • Event Streaming",
     category: "EBCDIC Parsing & Kafka Ordering",
     prompt: `"Legacy mainframe EBCDIC copybook files are streamed to Kafka topics. The legacy parser used non-atomic batch writes, causing out-of-order transaction events and unparseable binary header corruption in downstream microservices. Write a partition-keyed Kafka producer guaranteeing strict per-account event ordering."`,
-    legacyLang: "Go",
-    legacyCode: `// ❌ LEGACY BUGGY CODE: No partition key assigned to Kafka messages
+    legacyCode: {
+      python: `# ❌ LEGACY BUGGY CODE: No partition key assigned to Kafka messages
+def produce_mainframe_event(producer, event_data):
+    # 🐛 BUG: Round-robin partitioning sends account events across multiple partitions!
+    producer.send('mainframe-txs', value=event_data.encode('utf-8'))`,
+
+      go: `// ❌ LEGACY BUGGY CODE: No partition key assigned to Kafka messages
 func ProduceMainframeEvent(producer sarama.SyncProducer, event Event) error {
-    // 🐛 BUG: Round-robin partitioning sends account events across multiple partitions!
-    msg := &sarama.ProducerMessage{Topic: "mainframe-txs", Value: sarama.StringEncoder(event.Data)}
-    _, _, err := producer.SendMessage(msg)
-    return err
+	// 🐛 BUG: Round-robin partitioning sends account events across multiple partitions!
+	msg := &sarama.ProducerMessage{Topic: "mainframe-txs", Value: sarama.StringEncoder(event.Data)}
+	_, _, err := producer.SendMessage(msg)
+	return err
 }`,
+
+      java: `// ❌ LEGACY BUGGY CODE: No partition key assigned to Kafka messages
+public void produceMainframeEvent(KafkaTemplate<String, String> kafka, String eventData) {
+    // 🐛 BUG: Round-robin partitioning sends account events across multiple partitions!
+    kafka.send("mainframe-txs", eventData);
+}`
+    },
     causes: [
       "Absence of message partition key caused Kafka to distribute transactions across partitions round-robin, breaking sequential ordering.",
       "Downstream consumers processed out-of-order events (e.g. account closure processed before deposit)."
     ],
     solutions: [
-      "Set `account_id` as the explicit Kafka message partition key.",
+      "Set \`account_id\` as the explicit Kafka message partition key.",
       "Guarantees all transactions for a given account land in the exact same partition in strict sequential order."
     ],
     code: {
@@ -410,11 +493,24 @@ def send_mainframe_event(account_id: str, event_payload: dict):
     difficulty: "2023–2024 • System Math",
     category: "Interchange & Interchange-Plus Models",
     prompt: `"Evaluate the interchange economics of mobile wallet payments (Apple Pay / Google Pay). Interchange fee is 1.75% + $0.10. Network assessment fee is 0.13%. Tokenization fee is $0.02. On a $50 mobile payment transaction, calculate merchant net payout and bank gross revenue."`,
-    legacyLang: "Python",
-    legacyCode: `# ❌ LEGACY BUGGY CODE: Missing fixed network fees
+    legacyCode: {
+      python: `# ❌ LEGACY BUGGY CODE: Missing fixed network fees
 def calc_interchange(amount):
     # 🐛 BUG: Ignores fixed $0.10 interchange fee and $0.02 tokenization fee!
     return amount * 0.0175`,
+
+      go: `// ❌ LEGACY BUGGY CODE: Missing fixed network fees
+func CalcInterchange(amount float64) float64 {
+	// 🐛 BUG: Ignores fixed $0.10 interchange fee and $0.02 tokenization fee!
+	return amount * 0.0175
+}`,
+
+      java: `// ❌ LEGACY BUGGY CODE: Missing fixed network fees
+public double calcInterchange(double amount) {
+    // 🐛 BUG: Ignores fixed $0.10 interchange fee and $0.02 tokenization fee!
+    return amount * 0.0175;
+}`
+    },
     causes: [
       "Omitted fixed per-transaction fee components ($0.10 interchange + $0.02 tokenization).",
       "Failed to include 0.13% card network assessment fee."

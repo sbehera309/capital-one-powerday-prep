@@ -53,16 +53,24 @@ export function renderTechnicalCases(containerEl, navContainerEl, mobileSelectEl
           </p>
         </div>
 
-        <!-- Legacy Buggy Code -->
+        <!-- Multi-Language Legacy Buggy Code Block -->
         <div class="bg-slate-950 rounded-xl border border-rose-900/50 overflow-hidden space-y-0">
           <div class="bg-rose-950/60 px-4 py-2 border-b border-rose-900/50 flex items-center justify-between text-xs">
             <span class="font-bold text-rose-400 flex items-center gap-1.5">
-              <span>⚠️</span> <span>Legacy Buggy Code (${c.legacyLang})</span>
+              <span>⚠️</span> <span>Legacy Buggy Code (Inspect & Debug Yourself)</span>
             </span>
-            <span class="text-rose-400/80 font-mono text-[11px]">Inspect & Debug</span>
+            <span class="text-rose-400/80 font-mono text-[11px]">Contains Logic Flaws</span>
           </div>
           <div class="p-4 overflow-x-auto font-mono text-xs bg-slate-950">
-            <pre class="text-xs text-rose-200 leading-relaxed"><code>${escapeHTML(c.legacyCode)}</code></pre>
+            <div class="code-block lang-python" style="display: ${currentLang === 'python' ? 'block' : 'none'};">
+              <pre class="text-xs text-rose-200 leading-relaxed"><code>${escapeHTML(c.legacyCode.python)}</code></pre>
+            </div>
+            <div class="code-block lang-go" style="display: ${currentLang === 'go' ? 'block' : 'none'};">
+              <pre class="text-xs text-rose-200 leading-relaxed"><code>${escapeHTML(c.legacyCode.go)}</code></pre>
+            </div>
+            <div class="code-block lang-java" style="display: ${currentLang === 'java' ? 'block' : 'none'};">
+              <pre class="text-xs text-rose-200 leading-relaxed"><code>${escapeHTML(c.legacyCode.java)}</code></pre>
+            </div>
           </div>
         </div>
 
