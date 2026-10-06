@@ -56,28 +56,64 @@ export const cheatsheetData = {
           type: "Relational ACID DB",
           latency: "2ms - 10ms",
           bestFor: "Financial ledger balance accounting, multi-table ACID transactions, serializable isolation.",
-          keyPoints: ["Supports complex SQL joins & secondary indexes", "Storage auto-scales up to 128TB per instance", "Up to 15 read replicas with < 20ms replication lag"]
+          pros: [
+            "Multi-table serializable ACID transactions & SQL joins",
+            "Storage auto-scales up to 128TB per instance with 6-way AZ replication",
+            "Up to 15 low-latency read replicas (< 20ms replication lag)"
+          ],
+          cons: [
+            "Connection pool limits require PgBouncer / HikariCP management",
+            "Write throughput bounded by primary writer instance scale"
+          ],
+          verdict: "Primary database for ledger accounting, user balances, and strict transaction compliance."
         },
         {
           name: "Amazon DynamoDB (NoSQL)",
           type: "Key-Value / Document Store",
           latency: "1ms - 5ms",
           bestFor: "High-throughput key lookups, credit card swipe balance checks, user session profiles.",
-          keyPoints: ["Single-digit millisecond latency at arbitrary PB scale", "Global Tables for active-active multi-region replication", "Zero connection pool limits"]
+          pros: [
+            "Single-digit millisecond latency at arbitrary Petabyte scale",
+            "Global Tables for active-active multi-region replication",
+            "Serverless connection handling (zero DB connection pool limits)"
+          ],
+          cons: [
+            "Item size limit capped at 400KB per item",
+            "Complex multi-table queries require single-table design modeling"
+          ],
+          verdict: "Primary datastore for POS swipe auth, session locks, and active-active multi-region user data."
         },
         {
           name: "ElastiCache Redis (In-Memory)",
           type: "Key-Value Data Structure Cache",
           latency: "< 1ms",
           bestFor: "Sub-millisecond rate limiters (ZSET sliding window), hot card balance caching, distributed locks (SETNX).",
-          keyPoints: ["In-memory single-threaded execution", "Supports Sorted Sets, Hashes, Bitmaps, Pub/Sub", "Volatile storage requiring fallback to persistent DB"]
+          pros: [
+            "Sub-millisecond in-memory read & write execution",
+            "Rich data structures (Sorted Sets, Hashes, Bitmaps, HyperLogLog, Pub/Sub)",
+            "Atomic Lua script execution (EVALSHA for race-free rate limits)"
+          ],
+          cons: [
+            "Volatile memory requires persistent DB fallback (Aurora/DynamoDB)",
+            "Single-threaded event loop can bottleneck on expensive O(N) operations"
+          ],
+          verdict: "Mandatory caching & distributed locking tier for rate limiters, session caches, and idempotency locks."
         },
         {
           name: "ClickHouse / Redshift (OLAP)",
           type: "Columnar Analytics Engine",
           latency: "10ms - 200ms",
           bestFor: "Real-time fraud detection analytics, aggregated queries over billions of transaction records.",
-          keyPoints: ["Column-oriented compression reduces disk IO by 10x-100x", "Optimized for append-heavy analytical queries", "Not suitable for single-row transactional writes"]
+          pros: [
+            "Columnar storage compression reduces disk I/O by 10x - 100x",
+            "Vectorized query execution processes 100M+ rows per second",
+            "Optimized for append-only log & analytical streaming ingestion"
+          ],
+          cons: [
+            "High latency for single-row transactional point lookups",
+            "Does not support multi-row transactional ACID updates"
+          ],
+          verdict: "Primary analytical warehouse for real-time fraud monitoring, transaction history reporting, and BI dashboards."
         }
       ]
     },
@@ -90,27 +126,51 @@ export const cheatsheetData = {
       items: [
         {
           name: "AWS Network Load Balancer (NLB - L4)",
-          layer: "Layer 4 (Transport)",
-          features: "TCP / UDP / TLS / gRPC forwarding. Operates at transport layer with static IP per AZ.",
-          latency: "Sub-1ms latency overhead",
-          throughput: "Millions of QPS without pre-warming",
-          whenToUse: "High-throughput payment ingest APIs, gRPC internal service mesh, static IP whitelisting."
+          type: "Layer 4 (Transport)",
+          latency: "Sub-1ms",
+          bestFor: "High-throughput payment ingest APIs, gRPC internal service mesh, static IP whitelisting.",
+          pros: [
+            "Handles millions of QPS instantly without pre-warming",
+            "Sub-1ms latency overhead at transport layer (TCP/UDP/TLS/gRPC)",
+            "Provides static Elastic IP address per Availability Zone"
+          ],
+          cons: [
+            "No HTTP path-based or header-based routing rules",
+            "No integrated AWS WAF inspection at Layer 7"
+          ],
+          verdict: "Ideal for high-volume TCP payment gateways, internal gRPC microservice traffic, and IP whitelisting."
         },
         {
           name: "AWS Application Load Balancer (ALB - L7)",
-          layer: "Layer 7 (Application)",
-          features: "HTTP / HTTPS / HTTP/2 path & host routing, TLS termination, AWS WAF integration, sticky sessions.",
-          latency: "2ms - 5ms routing overhead",
-          throughput: "Auto-scales with pre-warming for major spikes",
-          whenToUse: "RESTful web services, microservices requiring path-based routing (e.g. /v1/auth vs /v1/pay)."
+          type: "Layer 7 (Application)",
+          latency: "2ms - 5ms",
+          bestFor: "RESTful web services, microservices requiring path-based routing (e.g. /v1/auth vs /v1/pay).",
+          pros: [
+            "HTTP / HTTPS / HTTP/2 path, host, and header-based routing",
+            "Native integration with AWS WAF for layer 7 DDoS & SQLi protection",
+            "TLS termination and sticky session routing"
+          ],
+          cons: [
+            "Requires pre-warming for sudden massive traffic spikes (e.g. 10x flash sales)",
+            "Slightly higher latency overhead than L4 NLB (2ms-5ms vs sub-ms)"
+          ],
+          verdict: "Standard load balancer for web APIs, containerized Fargate microservices, and public endpoints."
         },
         {
           name: "Amazon API Gateway (L7 Gateway)",
-          layer: "Layer 7 (API Management)",
-          features: "Rate limiting / throttling (Token Bucket), API key usage plans, JWT/Cognito auth, request validation, OpenAPI spec support.",
-          latency: "10ms - 30ms latency overhead",
-          throughput: "Managed throttling limits (e.g. 10k RPS soft limit)",
-          whenToUse: "Edge API facing public mobile apps, partner integration endpoints, serverless triggers to Lambda."
+          type: "Layer 7 (API Management)",
+          latency: "10ms - 30ms",
+          bestFor: "Edge API facing public mobile apps, partner integration endpoints, serverless triggers to Lambda.",
+          pros: [
+            "Built-in rate limiting & throttling per client API key (Token Bucket)",
+            "API usage plans, OAuth2 / JWT / Cognito authentication",
+            "Native request payload validation & OpenAPI specification import"
+          ],
+          cons: [
+            "10ms-30ms gateway latency overhead",
+            "Managed account throttling limits requiring quota increases"
+          ],
+          verdict: "Primary public edge gateway for mobile apps, partner developers, and serverless API backends."
         }
       ]
     },
