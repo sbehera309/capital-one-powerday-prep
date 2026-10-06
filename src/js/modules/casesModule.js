@@ -85,29 +85,33 @@ export function renderTechnicalCases(containerEl, navContainerEl, mobileSelectEl
         </div>
 
         <!-- Hidden Solution Container -->
-        <div id="sol-container-${c.id}" class="space-y-4 pt-2" style="display: none;">
+        <div id="sol-container-${c.id}" class="space-y-5 pt-2" style="display: none;">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
             <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-              <h4 class="font-bold text-rose-400 uppercase text-xs">Identified Root Causes</h4>
-              <ul class="space-y-1 text-slate-400">
-                ${c.causes.map(cause => `<li>• ${escapeHTML(cause)}</li>`).join('')}
+              <h4 class="font-bold text-rose-400 uppercase text-xs flex items-center gap-1.5">
+                <span>🔍</span> <span>Identified Root Causes</span>
+              </h4>
+              <ul class="space-y-1 text-slate-300">
+                ${c.causes.map(cause => `<li class="flex items-start gap-1.5"><span class="text-rose-400">•</span> <span>${escapeHTML(cause)}</span></li>`).join('')}
               </ul>
             </div>
             <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-              <h4 class="font-bold text-emerald-400 uppercase text-xs">Architectural Solution</h4>
-              <ul class="space-y-1 text-slate-400">
-                ${c.solutions.map(sol => `<li>• ${escapeHTML(sol)}</li>`).join('')}
+              <h4 class="font-bold text-emerald-400 uppercase text-xs flex items-center gap-1.5">
+                <span>💡</span> <span>Architectural Solution</span>
+              </h4>
+              <ul class="space-y-1 text-slate-300">
+                ${c.solutions.map(sol => `<li class="flex items-start gap-1.5"><span class="text-emerald-400">•</span> <span>${escapeHTML(sol)}</span></li>`).join('')}
               </ul>
             </div>
           </div>
 
           <!-- Production Refactored Code Block -->
-          <div class="bg-slate-950 rounded-xl border border-emerald-900/50 overflow-hidden">
+          <div class="bg-slate-950 rounded-xl border border-emerald-900/50 overflow-hidden shadow-xs">
             <div class="bg-emerald-950/40 px-4 py-2 border-b border-emerald-900/50 flex items-center justify-between text-xs">
               <span class="font-bold text-emerald-400 flex items-center gap-1.5">
                 <span>✅</span> <span>Refactored Production Code</span>
               </span>
-              <span class="text-slate-500 font-mono text-[11px]">Multi-Language Solution</span>
+              <span class="text-slate-400 font-mono text-[11px]">Multi-Language Solution</span>
             </div>
             <div class="p-4 overflow-x-auto font-mono text-xs">
               <div class="code-block lang-python" style="display: ${currentLang === 'python' ? 'block' : 'none'};">
@@ -121,6 +125,66 @@ export function renderTechnicalCases(containerEl, navContainerEl, mobileSelectEl
               </div>
             </div>
           </div>
+
+          <!-- Deep-Dive Explanation & Interview Thought Process Card -->
+          ${c.explanation ? `
+            <div class="bg-slate-950 rounded-xl border border-cyan-900/50 p-4 sm:p-5 space-y-4 shadow-sm">
+              <div class="border-b border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <h4 class="font-extrabold text-cyan-400 text-xs sm:text-sm uppercase flex items-center gap-2">
+                  <span>🧠</span> <span>Deep-Dive Solution Breakdown & Interview Thought Process</span>
+                </h4>
+                <span class="text-[10px] px-2.5 py-0.5 rounded-full font-mono bg-cyan-950/80 text-cyan-300 border border-cyan-800/80 font-semibold w-fit">
+                  Senior/Principal Response Framework
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <!-- 1. Clarifying Questions -->
+                <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+                  <span class="text-[11px] font-bold text-cyan-400 uppercase tracking-wider block flex items-center gap-1.5">
+                    <span>❓</span> <span>1. Clarifying Questions to Ask Interviewer</span>
+                  </span>
+                  <ul class="space-y-1.5 text-slate-300">
+                    ${c.explanation.clarifyingQuestions.map(q => `<li class="flex items-start gap-1.5"><span class="text-cyan-400 font-bold">•</span> <span>${escapeHTML(q)}</span></li>`).join('')}
+                  </ul>
+                </div>
+
+                <!-- 2. Identifying the Hidden Trap -->
+                <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+                  <span class="text-[11px] font-bold text-rose-400 uppercase tracking-wider block flex items-center gap-1.5">
+                    <span>⚠️</span> <span>2. Identifying the Hidden Trap</span>
+                  </span>
+                  <p class="text-slate-300 leading-relaxed">${escapeHTML(c.explanation.hiddenTrap)}</p>
+                </div>
+
+                <!-- 3. Step-by-Step Technical Rationale -->
+                <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2 md:col-span-2">
+                  <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
+                    <span>🔬</span> <span>3. Step-by-Step Technical Rationale & Performance</span>
+                  </span>
+                  <p class="text-slate-300 leading-relaxed whitespace-pre-line">${escapeHTML(c.explanation.technicalRationale)}</p>
+                </div>
+
+                <!-- 4. Alternatives Considered vs Solution Selection -->
+                <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2 md:col-span-2">
+                  <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider block flex items-center gap-1.5">
+                    <span>⚖️</span> <span>4. Alternatives Considered vs Solution Selection</span>
+                  </span>
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                    ${c.explanation.alternatives.map(alt => `
+                      <div class="p-3 rounded-lg border ${alt.status === 'Selected' ? 'bg-emerald-950/20 border-emerald-800/80' : 'bg-slate-950 border-slate-800'} space-y-1">
+                        <div class="flex items-center justify-between">
+                          <span class="font-bold ${alt.status === 'Selected' ? 'text-emerald-300' : 'text-slate-200'}">${escapeHTML(alt.name)}</span>
+                          <span class="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold uppercase ${alt.status === 'Selected' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400'}">${escapeHTML(alt.status)}</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-tight">${escapeHTML(alt.reason)}</p>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ` : ''}
         </div>
 
       </div>

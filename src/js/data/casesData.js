@@ -1,4 +1,5 @@
 // Structured Dataset for Technical Cases (Sorted by Recency: 2025–2026 First)
+// Enhanced with Comprehensive Engineering Explanations & Interview Thought Process Frameworks
 
 export const casesData = [
   {
@@ -95,6 +96,32 @@ public List<Transaction> fetchCustomerHistory(String accountId, Instant lastDate
     params.add(limit);
     return jdbcTemplate.query(sql, params.toArray(), new TransactionRowMapper());
 }`
+    },
+    explanation: {
+      clarifyingQuestions: [
+        "What is the expected table size and write volume (QPS) for transaction history?",
+        "Do transactions arrive in strict chronological order or can late-arriving events occur?",
+        "Does the frontend UI require jumping to arbitrary page numbers (e.g. Page 450), or infinite scrolling?"
+      ],
+      hiddenTrap: "SQL OFFSET N degrades query execution time to O(N) because database storage engines (InnoDB/Postgres) must scan disk blocks and discard the first N rows sequentially. Furthermore, under high concurrent write throughput (e.g., real-time credit card authorizations), inserting a record while a user scrolls from Page 1 to Page 2 shifts all row indexes, causing duplicated records on Page 2 or permanently skipped transactions.",
+      technicalRationale: "Keyset (cursor-based) pagination uses tuple filtering `(created_at, id) < (last_date, last_id)` backed by a composite index `(account_id, created_at DESC, id DESC)`. The database engine performs a logarithmic B-Tree seek directly to the last seen cursor position in O(log N) time, fetching exactly LIMIT records without scanning prior rows.",
+      alternatives: [
+        {
+          name: "SQL OFFSET / LIMIT",
+          status: "Rejected",
+          reason: "Degrades to O(N) performance on deep pages and causes duplicate/missing records under concurrent inserts."
+        },
+        {
+          name: "Elasticsearch Search-After",
+          status: "Considered",
+          reason: "Viable for complex text search, but rejected for primary transaction history due to 1-second indexing refresh lag and operational overhead."
+        },
+        {
+          name: "Keyset Tuple Pagination (Selected)",
+          status: "Selected",
+          reason: "Sub-10ms performance at arbitrary table depth with guaranteed deterministic page boundaries under concurrent writes."
+        }
+      ]
     }
   },
   {
@@ -164,6 +191,32 @@ public double calculateBnplProfit(double orderAmount) {
     double profit = mdr - loss;
     return new BnplYield(orderVal, mdr, payout, loss, profit);
 }`
+    },
+    explanation: {
+      clarifyingQuestions: [
+        "Is the merchant payout settled immediately at transaction time (T+0), or per installment?",
+        "Does the 1.2% default rate apply to gross order value or remaining uncollected debt?",
+        "Are late fees or collection recovery offsets factored into the net yield calculation?"
+      ],
+      hiddenTrap: "Naive financial models assume 100% installment collection efficiency, treating gross Merchant Discount Rate (MDR) revenue as 100% net profit. Because Installment 1 ($100) is paid up-front, the bank retains credit exposure only on Installments 2, 3, and 4 (75% of capital = $300). Ignoring default risk overstates net bank yield by $3.60 on a $400 transaction, leading to unprofitable underwriting.",
+      technicalRationale: "Net bank profit is modeled as Upfront MDR Fee minus Expected Credit Loss (ECL). Upfront MDR = $400 * 4.0% = $16.00. Expected Default Loss = ($400 * 75%) * 1.2% = $3.60. Net Bank Profit = $16.00 - $3.60 = $12.40 (a net yield of 3.10% on $400 GMV).",
+      alternatives: [
+        {
+          name: "Gross Revenue Model (No Reserve)",
+          status: "Rejected",
+          reason: "Violates CECL banking accounting standards and overstates portfolio yield by 29%."
+        },
+        {
+          name: "Flat GMV Default Reserve",
+          status: "Considered",
+          reason: "Inaccurate because Installment 1 is collected immediately at checkout without default exposure."
+        },
+        {
+          name: "Uncollected Capital ECL Model (Selected)",
+          status: "Selected",
+          reason: "Precision credit risk modeling aligned with banking capital reserves and IFRS 9 guidelines."
+        }
+      ]
     }
   },
   {
@@ -255,6 +308,32 @@ func (e *FxEngine) GetRate(fetcher func() float64) float64 {
         return current.rate();
     }
 }`
+    },
+    explanation: {
+      clarifyingQuestions: [
+        "What is the upstream FX market provider update frequency and rate limit?",
+        "What is the read QPS vs write update rate for currency pairs?",
+        "How do we handle network outages when fetching fresh FX market rates?"
+      ],
+      hiddenTrap: "Global unsynchronized state causes data races across application threads. More critically, serving stale FX rates without a Time-To-Live (TTL) expiration window exposes the bank to latency arbitrage attacks—where algorithmic traders exploit expired FX rates during high volatility, causing substantial settlement loss.",
+      technicalRationale: "Thread safety is achieved via read-write locks (`sync.RWMutex` in Go or `ConcurrentHashMap` in Java), allowing high-throughput concurrent reads. High-resolution epoch timestamp checks enforce a strict 2.0-second TTL validity window. If the cache expires, execution locks write access, fetches fresh rate ticks, and updates the timestamp atomically.",
+      alternatives: [
+        {
+          name: "Direct Upstream Fetch per Transaction",
+          status: "Rejected",
+          reason: "Adds 150ms–300ms network latency per payment and breaches upstream rate limit quotas."
+        },
+        {
+          name: "Unsynchronized Static Caching",
+          status: "Rejected",
+          reason: "Causes data race crashes and serves stale prices, exposing bank to FX arbitrage losses."
+        },
+        {
+          name: "RWMutex + 2s Timestamp TTL (Selected)",
+          status: "Selected",
+          reason: "Provides sub-millisecond local memory lookup speed with strict 2-second rate freshness."
+        }
+      ]
     }
   },
   {
@@ -294,7 +373,7 @@ public ResponseEntity<VirtualCard> createCard(@RequestBody CardRequest req) {
       "Race conditions in card generation database inserts caused duplicate card provisioning."
     ],
     solutions: [
-      "Redis \`SET key value NX PX 5000\` atomic lock per \`(user_id, idempotency_key)\`.",
+      "Redis `SET key value NX PX 5000` atomic lock per `(user_id, idempotency_key)`.",
       "Cached idempotency response storage ensures duplicate requests receive the exact initial card response."
     ],
     code: {
@@ -357,6 +436,32 @@ def idempotent_create_card(user_id: str, idempotency_key: str, card_generator_fu
     }
     throw new ConcurrentRequestException("Duplicate request blocked");
 }`
+    },
+    explanation: {
+      clarifyingQuestions: [
+        "How is the `Idempotency-Key` header generated by the mobile client (e.g. UUIDv4 per intent)?",
+        "How long should the generated virtual card response be cached in Redis? (e.g. 24 hours)",
+        "How do we handle cases where card creation fails mid-execution (e.g. DB connection timeout)?"
+      ],
+      hiddenTrap: "When mobile networks experience packet loss, mobile apps automatically retry HTTP POST requests. Without server-side idempotency, two identical requests hit separate application servers concurrently. Both pass validation checks and issue two separate virtual cards, exhausting user credit limits and causing account synchronization corruption.",
+      technicalRationale: "An atomic Redis `SET lock_key LOCKED NX PX 5000` operation acquires a distributed lock in < 1ms across horizontal cluster nodes. If a request with the same `Idempotency-Key` arrives while processing, Redis rejects lock acquisition and returns HTTP 409 Conflict. Once complete, the response payload is cached in Redis for 24 hours (`EX 86400`), guaranteeing identical replay responses.",
+      alternatives: [
+        {
+          name: "DB Unique Constraint Only",
+          status: "Considered",
+          reason: "Prevents duplicate rows, but throws raw database constraint violation errors instead of returning the generated card details."
+        },
+        {
+          name: "In-Memory Process Lock",
+          status: "Rejected",
+          reason: "Fails in multi-node load-balanced server environments where requests hit different servers."
+        },
+        {
+          name: "Redis Atomic Lock + 24h Response Cache (Selected)",
+          status: "Selected",
+          reason: "Distributed, multi-region capable, and adheres to enterprise API idempotency standards."
+        }
+      ]
     }
   },
   {
@@ -391,7 +496,7 @@ public boolean shouldTriggerAlert(boolean newDev, boolean foreignIp, boolean hig
     ],
     solutions: [
       "Majority-voting logic: Alert triggers if sum of true flags >= 2.",
-      "Clean parenthesized boolean evaluation: \`(A && B) || (B && C) || (A && C)\`."
+      "Clean parenthesized boolean evaluation: `(A && B) || (B && C) || (A && C)`."
     ],
     code: {
       python: `def should_trigger_alert(is_new_device: bool, is_foreign_ip: bool, is_high_amount: bool) -> bool:
@@ -411,6 +516,32 @@ public boolean shouldTriggerAlert(boolean newDev, boolean foreignIp, boolean hig
     int riskCount = (newDev ? 1 : 0) + (foreignIp ? 1 : 0) + (highAmt ? 1 : 0);
     return riskCount >= 2;
 }`
+    },
+    explanation: {
+      clarifyingQuestions: [
+        "Are all 3 security risk flags weighted equally in risk scoring?",
+        "Should the logic support dynamic weights (e.g. `is_foreign_ip` = 2 points)?",
+        "How is this evaluated under high-throughput authorization pipelines?"
+      ],
+      hiddenTrap: "Writing complex unparenthesized boolean expressions `A && B || B && C || A && C` relies on compiler-specific operator precedence rules. Subtle bugs emerge when developers misinterpret short-circuit evaluation order, leading to silent false negatives where critical fraud alerts fail to fire.",
+      technicalRationale: "Refactoring to majority-voting arithmetic (`(A ? 1 : 0) + (B ? 1 : 0) + (C ? 1 : 0) >= 2`) converts fragile boolean logic into deterministic integer counting. It mathematically guarantees that any combination of 2 or 3 active risk flags triggers an alert, eliminating boolean operator precedence bugs entirely.",
+      alternatives: [
+        {
+          name: "Unparenthesized Boolean Chain",
+          status: "Rejected",
+          reason: "High risk of operator precedence bugs and poor readability during code reviews."
+        },
+        {
+          name: "Parenthesized Grouping `(A&&B)||(B&&C)||(A&&C)`",
+          status: "Considered",
+          reason: "Correct, but harder to extend when adding a 4th risk flag."
+        },
+        {
+          name: "Majority Integer Risk Accumulator (Selected)",
+          status: "Selected",
+          reason: "Extensible, 100% testable against all 8 truth table permutations, and self-documenting."
+        }
+      ]
     }
   },
   {
@@ -447,7 +578,7 @@ public void produceMainframeEvent(KafkaTemplate<String, String> kafka, String ev
       "Downstream consumers processed out-of-order events (e.g. account closure processed before deposit)."
     ],
     solutions: [
-      "Set \`account_id\` as the explicit Kafka message partition key.",
+      "Set `account_id` as the explicit Kafka message partition key.",
       "Guarantees all transactions for a given account land in the exact same partition in strict sequential order."
     ],
     code: {
@@ -482,6 +613,32 @@ def send_mainframe_event(account_id: str, event_payload: dict):
     );
     kafkaTemplate.send(record);
 }`
+    },
+    explanation: {
+      clarifyingQuestions: [
+        "Are events for different bank accounts independent and able to process concurrently?",
+        "What is the Kafka topic partition count and replication factor?",
+        "How do downstream consumers handle event replay or failed offsets?"
+      ],
+      hiddenTrap: "When Kafka messages are published without a partition key (`key=null`), Kafka's default partitioner distributes messages using round-robin round robin across all topic partitions. Because consumers process different partitions independently in parallel, downstream microservices receive out-of-order events (e.g., an `ACCOUNT_CLOSED` event arrives before a `DEPOSIT` event), breaking financial ledger sequence integrity.",
+      technicalRationale: "Setting `account_id` as the explicit Kafka message key routes all transactions for a specific bank account to the exact same Kafka partition via `murmur2(account_id) % num_partitions`. Kafka guarantees strict FIFO message ordering within a single partition, ensuring downstream consumer workers process account history sequentially.",
+      alternatives: [
+        {
+          name: "Single Kafka Topic Partition",
+          status: "Rejected",
+          reason: "Guarantees global ordering but bottlenecking ingestion throughput to a single broker node."
+        },
+        {
+          name: "Round-Robin Keyless Publishing",
+          status: "Rejected",
+          reason: "Causes out-of-order event consumption across consumer group threads."
+        },
+        {
+          name: "Account-ID Partition Key Routing (Selected)",
+          status: "Selected",
+          reason: "Scales horizontally across hundreds of partitions while maintaining 100% per-account sequence ordering."
+        }
+      ]
     }
   },
   {
@@ -558,6 +715,32 @@ public double calcInterchange(double amount) {
     double total = interchange + network + token;
     return new PaymentEconomics(amount, interchange, network, token, total, amount - total);
 }`
+    },
+    explanation: {
+      clarifyingQuestions: [
+        "What pricing model is used (Interchange-Plus vs Tiered Flat Rate)?",
+        "Does the issuer bank or acquiring merchant absorb the tokenization fee?",
+        "Are card-not-present (CNP) vs card-present (CP) fee structures differentiated?"
+      ],
+      hiddenTrap: "Engineers often calculate card fees by multiplying the variable percentage ($1.75\%$) while omitting fixed per-transaction cents ($\$0.10$ interchange fee and $\$0.02$ Apple/Google Pay tokenization fee). On micro-transactions ($<\$10$), fixed fees constitute over 50% of the total processing cost. Omitting fixed cents distorts revenue modeling by up to 15%.",
+      technicalRationale: "Full fee breakdown on a $50 payment:\n1. Interchange Fee: ($50 * 0.0175) + $0.10 = $0.875 + $0.10 = $0.975\n2. Network Assessment Fee: ($50 * 0.0013) = $0.065\n3. Tokenization Fee: $0.02\nTotal Processing Fee = $0.975 + $0.065 + $0.02 = $1.06.\nMerchant Net Payout = $50.00 - $1.06 = $48.94.",
+      alternatives: [
+        {
+          name: "Variable Percentage Only",
+          status: "Rejected",
+          reason: "Ignores fixed per-transaction cents, underestimating fees on micro-transactions."
+        },
+        {
+          name: "Blended Flat-Rate (e.g. 2.9% + $0.30)",
+          status: "Considered",
+          reason: "Simplified Stripe-style model, but inaccurate for enterprise interchange-plus bank clearing."
+        },
+        {
+          name: "Full Interchange-Plus Network Pricing (Selected)",
+          status: "Selected",
+          reason: "Matches Visa/Mastercard interchange schedule specifications with 100% financial accuracy."
+        }
+      ]
     }
   }
 ];
