@@ -70,10 +70,11 @@ export function renderSystemDesign(containerEl, navContainerEl, mobileSelectEl) 
               </div>
             </div>
 
-            <!-- SVG Topology Interactive Diagram Area -->
+            <!-- SVG Topology Interactive Diagram Area (4-Tier Vertical Architectural Flow) -->
             <div class="p-4 sm:p-6 space-y-4">
               <div class="grid grid-cols-1 gap-2 relative">
-                <!-- Row 1 Node -->
+                
+                <!-- Tier 1 Node: Client / Ingress -->
                 <div id="${q.id.replace('sys-', '')}-node-1" class="cursor-pointer p-3 rounded-xl border border-blue-500 bg-blue-500/20 transition-all duration-300 relative group node-active">
                   <div class="flex items-center justify-between">
                     <span id="${q.id.replace('sys-', '')}-node-1-title" class="text-xs font-bold text-white">${escapeHTML(sim.scenarios[0].nodes[0].title)}</span>
@@ -82,40 +83,46 @@ export function renderSystemDesign(containerEl, navContainerEl, mobileSelectEl) 
                   <div id="${q.id.replace('sys-', '')}-node-1-sub" class="text-[11px] text-slate-400 mt-0.5">${escapeHTML(sim.scenarios[0].nodes[0].sub)}</div>
                 </div>
 
-                <!-- SVG Connecting Line -->
-                <div class="w-full h-8 relative my-1">
-                  <svg class="w-full h-full absolute inset-0 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 30">
-                    <path id="${q.id.replace('sys-', '')}-line-0-1" class="flow-line" d="M 200 0 L 200 30" />
+                <!-- SVG Flow Line 1 -> 2 -->
+                <div class="w-full h-7 relative my-0.5">
+                  <svg class="w-full h-full absolute inset-0 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 28">
+                    <path id="${q.id.replace('sys-', '')}-line-0-1" class="flow-line" d="M 200 0 L 200 28" />
                   </svg>
                 </div>
 
-                <!-- Row 2 Nodes -->
-                <div class="grid grid-cols-2 gap-3">
-                  <div id="${q.id.replace('sys-', '')}-node-2" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-950 transition-all duration-300 relative group">
-                    <div class="flex items-center justify-between">
-                      <span id="${q.id.replace('sys-', '')}-node-2-title" class="text-xs font-bold text-white">${escapeHTML(sim.scenarios[0].nodes[1].title)}</span>
-                      <span id="${q.id.replace('sys-', '')}-node-2-badge" class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-bold text-[9px]">WAITING</span>
-                    </div>
-                    <div id="${q.id.replace('sys-', '')}-node-2-sub" class="text-[11px] text-slate-400 mt-0.5">${escapeHTML(sim.scenarios[0].nodes[1].sub)}</div>
+                <!-- Tier 2 Node: API Gateway & Auth Services -->
+                <div id="${q.id.replace('sys-', '')}-node-2" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-950 transition-all duration-300 relative group">
+                  <div class="flex items-center justify-between">
+                    <span id="${q.id.replace('sys-', '')}-node-2-title" class="text-xs font-bold text-white">${escapeHTML(sim.scenarios[0].nodes[1].title)}</span>
+                    <span id="${q.id.replace('sys-', '')}-node-2-badge" class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-bold text-[9px]">WAITING</span>
                   </div>
-
-                  <div id="${q.id.replace('sys-', '')}-node-3" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-950 transition-all duration-300 relative group">
-                    <div class="flex items-center justify-between">
-                      <span id="${q.id.replace('sys-', '')}-node-3-title" class="text-xs font-bold text-white">${escapeHTML(sim.scenarios[0].nodes[2].title)}</span>
-                      <span id="${q.id.replace('sys-', '')}-node-3-badge" class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-bold text-[9px]">WAITING</span>
-                    </div>
-                    <div id="${q.id.replace('sys-', '')}-node-3-sub" class="text-[11px] text-slate-400 mt-0.5">${escapeHTML(sim.scenarios[0].nodes[2].sub)}</div>
-                  </div>
+                  <div id="${q.id.replace('sys-', '')}-node-2-sub" class="text-[11px] text-slate-400 mt-0.5">${escapeHTML(sim.scenarios[0].nodes[1].sub)}</div>
                 </div>
 
-                <!-- SVG Connecting Line -->
-                <div class="w-full h-8 relative my-1">
-                  <svg class="w-full h-full absolute inset-0 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 30">
-                    <path id="${q.id.replace('sys-', '')}-line-1-2" class="flow-line" d="M 200 0 L 100 30 M 200 0 L 300 30" />
+                <!-- SVG Flow Line 2 -> 3 -->
+                <div class="w-full h-7 relative my-0.5">
+                  <svg class="w-full h-full absolute inset-0 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 28">
+                    <path id="${q.id.replace('sys-', '')}-line-1-2" class="flow-line" d="M 200 0 L 200 28" />
                   </svg>
                 </div>
 
-                <!-- Row 3 Node -->
+                <!-- Tier 3 Node: Transactional Database (OLTP) -->
+                <div id="${q.id.replace('sys-', '')}-node-3" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-950 transition-all duration-300 relative group">
+                  <div class="flex items-center justify-between">
+                    <span id="${q.id.replace('sys-', '')}-node-3-title" class="text-xs font-bold text-white">${escapeHTML(sim.scenarios[0].nodes[2].title)}</span>
+                    <span id="${q.id.replace('sys-', '')}-node-3-badge" class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-bold text-[9px]">WAITING</span>
+                  </div>
+                  <div id="${q.id.replace('sys-', '')}-node-3-sub" class="text-[11px] text-slate-400 mt-0.5">${escapeHTML(sim.scenarios[0].nodes[2].sub)}</div>
+                </div>
+
+                <!-- SVG Flow Line 3 -> 4 (CDC Stream / OLAP Pipeline) -->
+                <div class="w-full h-7 relative my-0.5">
+                  <svg class="w-full h-full absolute inset-0 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 28">
+                    <path id="${q.id.replace('sys-', '')}-line-2-3" class="flow-line" d="M 200 0 L 200 28" />
+                  </svg>
+                </div>
+
+                <!-- Tier 4 Node: Change Data Capture & Analytics Warehouse (OLAP) -->
                 <div id="${q.id.replace('sys-', '')}-node-4" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-950 transition-all duration-300 relative group">
                   <div class="flex items-center justify-between">
                     <span id="${q.id.replace('sys-', '')}-node-4-title" class="text-xs font-bold text-white">${escapeHTML(sim.scenarios[0].nodes[3].title)}</span>
@@ -123,6 +130,7 @@ export function renderSystemDesign(containerEl, navContainerEl, mobileSelectEl) 
                   </div>
                   <div id="${q.id.replace('sys-', '')}-node-4-sub" class="text-[11px] text-slate-400 mt-0.5">${escapeHTML(sim.scenarios[0].nodes[3].sub)}</div>
                 </div>
+
               </div>
 
               <!-- Interactive Step Inspector Controls -->
@@ -135,7 +143,7 @@ export function renderSystemDesign(containerEl, navContainerEl, mobileSelectEl) 
                 <div class="flex items-center gap-2 pt-1">
                   <button onclick="window.stepPrevFlow('${q.id.replace('sys-', '')}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">⏮ Prev</button>
                   <button id="${q.id.replace('sys-', '')}-play-btn" onclick="window.playFlow('${q.id.replace('sys-', '')}')" class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white shadow-xs">▶ Play Animation</button>
-                  <button onclick="window.stepNextFlow('${q.id.replace('sys-', '')}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">Next ⏭</button>
+                  <button onclick="window.stepNextFlow('${q.id.replace('sys-', '')}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-750 text-xs font-bold text-slate-300">Next ⏭</button>
                   <button onclick="window.resetFlow('${q.id.replace('sys-', '')}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-400 ml-auto">🔄 Reset</button>
                 </div>
               </div>
@@ -253,8 +261,8 @@ function renderSimStep(qId) {
   const scenario = data.scenarios[state.scenarioIdx];
   const step = scenario.steps[state.stepIdx];
 
-  // Update SVG line highlighting
-  ['line-0-1', 'line-1-2'].forEach(lId => {
+  // Update SVG line highlighting for vertical 4-tier pipeline
+  ['line-0-1', 'line-1-2', 'line-2-3'].forEach(lId => {
     const lineEl = document.getElementById(qId + '-' + lId);
     if (lineEl) {
       lineEl.setAttribute('class', (step.lineId === lId) ? "flow-line-active" : "flow-line");
