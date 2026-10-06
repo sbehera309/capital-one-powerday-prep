@@ -9,27 +9,17 @@
     pre code {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 4px;
-    }
-    button, input, select {
-      touch-action: manipulation;
-    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    button, input, select { touch-action: manipulation; }
+    .perspective-1000 { perspective: 1000px; }
+    .flashcard-inner { transition: transform 0.6s; transform-style: preserve-3d; }
+    .flashcard-inner.flipped { transform: rotateY(180deg); }
+    .flashcard-front, .flashcard-back { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .flashcard-back { transform: rotateY(180deg); }
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 antialiased font-sans min-h-screen pb-12">
@@ -44,19 +34,20 @@
           </div>
           <div>
             <h1 class="text-base sm:text-lg font-bold text-white leading-tight">Capital One PowerDay Prep</h1>
-            <p class="text-[11px] sm:text-xs text-slate-400">Technical Case & System Design Compendium</p>
+            <p class="text-[11px] sm:text-xs text-slate-400">Technical Case & System Design Compendium (2025–2026)</p>
           </div>
         </div>
 
         <!-- Global Language Selector -->
-        <div class="flex items-center gap-1.5 bg-slate-950 border border-slate-800 p-1 rounded-xl">
-          <button onclick="setGlobalLang('python')" id="lang-btn-python" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-xs">
+        <div class="flex items-center gap-1 bg-slate-950 border border-slate-800 p-1 rounded-xl shadow-xs">
+          <span class="text-[10px] uppercase font-bold text-slate-500 px-1.5 hidden sm:inline">Lang:</span>
+          <button onclick="setGlobalLang('python')" id="lang-btn-python" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-xs border border-blue-400">
             Python
           </button>
-          <button onclick="setGlobalLang('go')" id="lang-btn-go" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white">
+          <button onclick="setGlobalLang('go')" id="lang-btn-go" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white border border-transparent">
             Go
           </button>
-          <button onclick="setGlobalLang('java')" id="lang-btn-java" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white">
+          <button onclick="setGlobalLang('java')" id="lang-btn-java" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white border border-transparent">
             Java
           </button>
         </div>
@@ -64,19 +55,25 @@
 
       <!-- Main Navigation Bar -->
       <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 border-t border-slate-800 pt-2.5">
-        <button onclick="switchTab('tech-cases')" id="tab-btn-tech-cases" class="flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white shadow-xs flex items-center gap-1.5 min-h-[38px]">
+        <button onclick="switchTab('tech-cases')" id="tab-btn-tech-cases" class="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white shadow-xs flex items-center gap-1.5 min-h-[38px]">
           <span>📋</span> <span>Tech Cases</span>
         </button>
-        <button onclick="switchTab('system-design')" id="tab-btn-system-design" class="flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
+        <button onclick="switchTab('system-design')" id="tab-btn-system-design" class="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
           <span>🏗️</span> <span>System Design</span>
         </button>
-        <button onclick="switchTab('calculators')" id="tab-btn-calculators" class="flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
+        <button onclick="switchTab('flashcards')" id="tab-btn-flashcards" class="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
+          <span>🎴</span> <span>Flashcards</span>
+        </button>
+        <button onclick="switchTab('mock-interview')" id="tab-btn-mock-interview" class="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
+          <span>⏱️</span> <span>Mock Interview</span>
+        </button>
+        <button onclick="switchTab('calculators')" id="tab-btn-calculators" class="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
           <span>🧮</span> <span>Sizing Math</span>
         </button>
-        <button onclick="switchTab('cheat-sheet')" id="tab-btn-cheat-sheet" class="flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
+        <button onclick="switchTab('cheat-sheet')" id="tab-btn-cheat-sheet" class="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
           <span>💡</span> <span>Cheat Sheet</span>
         </button>
-        <button onclick="switchTab('quiz')" id="tab-btn-quiz" class="flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
+        <button onclick="switchTab('quiz')" id="tab-btn-quiz" class="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]">
           <span>⚡</span> <span>Practice Quiz</span>
         </button>
       </div>
@@ -88,7 +85,7 @@
     <!-- Global Search Bar -->
     <div class="bg-slate-850 border border-slate-800 p-2.5 sm:p-3 rounded-xl shadow-xs">
       <div class="relative">
-        <input type="text" id="searchInput" onkeyup="filterContent()" placeholder="Search cases, Redis Lua, Flink, Kafka, formulas..." 
+        <input type="text" id="searchInput" onkeyup="filterContent()" placeholder="Search cases, Redis Lua, Flink, Kafka, BNPL, FX, formulas..." 
                class="w-full pl-9 pr-4 py-2 text-xs rounded-lg border border-slate-700 bg-slate-950 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[40px]">
         <svg class="w-4 h-4 absolute left-3 top-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -106,10 +103,13 @@
           <option value="case-3">Case 3: 3-Boolean Security Alert Logic</option>
           <option value="case-4">Case 4: Mainframe to Real-Time Kafka Streaming</option>
           <option value="case-5">Case 5: Mobile Payments Unit Economics</option>
+          <option value="case-6">Case 6: BNPL Cash Flow & MDR Yield Model (NEW)</option>
+          <option value="case-7">Case 7: Real-Time Cross-Border FX Settlement (NEW)</option>
         </select>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Sidebar Navigation -->
         <div class="hidden lg:block lg:col-span-1 space-y-2">
           <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2 mb-2">Technical Case Studies</h3>
           
@@ -154,12 +154,33 @@
               <span class="text-xs font-bold text-rose-400">Case 5</span>
               <span class="text-[11px] px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-400 font-semibold">2023-2024</span>
             </div>
-            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Mobile Payments Unit Econ</div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Mobile Payments Economics</div>
             <div class="text-[11px] text-slate-400">Break-Even & Margin Math</div>
+          </button>
+
+          <button onclick="selectCase('case-6')" id="nav-case-6" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 case-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-cyan-400">Case 6</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-semibold">2025-2026</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">BNPL Cash Flow & MDR</div>
+            <div class="text-[11px] text-slate-400">Installment Loss & Capital Yield</div>
+          </button>
+
+          <button onclick="selectCase('case-7')" id="nav-case-7" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 case-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-teal-400">Case 7</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-400 font-semibold">2025-2026</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Cross-Border FX Settlement</div>
+            <div class="text-[11px] text-slate-400">Spread Engine & Liquidity Buffer</div>
           </button>
         </div>
 
+        <!-- Case Detail Panes -->
         <div class="lg:col-span-3 space-y-6">
+          
+          <!-- CASE 1 -->
           <div id="case-1" class="case-detail-pane space-y-4 sm:space-y-6">
             <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
@@ -180,57 +201,25 @@
                 </p>
               </div>
 
-              <div class="space-y-3">
-                <h3 class="text-sm sm:text-base font-bold text-white">Part A: Legacy Code Analysis & Evaluation</h3>
-                <div class="p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs space-y-2">
-                  <p class="font-semibold text-amber-400">Legacy Python Function:</p>
-                  <pre class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-slate-200 overflow-x-auto"><code>def retrieve_recent(self, customer_id, curr_time):
-    result = []
-    for i in range(5):
-        val = self.store.retrieve(customer_id, curr_time - 5 + i + 1)
-        if val is not None:
-            result.append(val)
-    return result</code></pre>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1">
-                    <span class="text-xs font-bold text-blue-400">Q1: Complexity & Network</span>
-                    <p class="text-xs text-slate-400">Time complexity is <strong>O(T)</strong> where T = 5. Makes 5 sequential point-lookup network round-trips returning records from <code>curr_time - 4</code> to <code>curr_time</code>.</p>
-                  </div>
-                  <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1">
-                    <span class="text-xs font-bold text-blue-400">Q2: Dynamic Window</span>
-                    <p class="text-xs text-slate-400">Refactor to accept dynamic window <strong>T (in minutes)</strong> starting from <code>curr_time - time_window_minutes + 1</code>.</p>
-                  </div>
-                  <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1">
-                    <span class="text-xs font-bold text-rose-400">Q3: Bottleneck at Scale</span>
-                    <p class="text-xs text-slate-400">Iterating minute-by-minute introduces the <strong>Chatty API / N+1 Query anti-pattern</strong>. If T=60, service executes 60 sequential database roundtrips!</p>
+              <!-- Multi-Language Snippet Header -->
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> Code Solution (O(1) Single Partition Range Query)
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
                   </div>
                 </div>
-              </div>
-
-              <div class="space-y-3">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                  <h3 class="text-sm sm:text-base font-bold text-white">Part B: Optimized Production Implementation</h3>
-                  <span class="text-xs font-mono text-emerald-400">Single Partition Range Query (O(1) Call)</span>
-                </div>
-
-                <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
-                  <div class="bg-slate-900 px-3.5 py-2 border-b border-slate-800 flex items-center justify-between">
-                    <span class="text-xs font-bold text-white">Production Refactoring Code</span>
-                    <span class="text-[11px] font-mono text-slate-400">Redis / Cassandra</span>
-                  </div>
-                  <div class="p-3.5 overflow-x-auto">
-                    <div class="code-block lang-python">
-                      <pre class="text-xs text-slate-200"><code>class CustomerDataStore:
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>class CustomerDataStore:
     def __init__(self, storage_client):
         self.store = storage_client
 
     def retrieve_recent(self, customer_id: int, curr_time: int, time_window_minutes: int) -> list:
-        """
-        Retrieves historical customer interactions within [curr_time - time_window_minutes + 1, curr_time].
-        Replaces O(T) sequential network calls with a single partition range query.
-        """
         if time_window_minutes <= 0:
             return []
         start_time = curr_time - time_window_minutes + 1
@@ -239,10 +228,10 @@
             start_timestamp=start_time,
             end_timestamp=curr_time
         )</code></pre>
-                    </div>
+                  </div>
 
-                    <div class="code-block lang-go hidden">
-                      <pre class="text-xs text-slate-200"><code>package main
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>package main
 
 type StorageClient interface {
 	RetrieveRange(customerID int64, startTimestamp, endTimestamp int64) ([]string, error)
@@ -252,60 +241,411 @@ type CustomerDataStore struct {
 	store StorageClient
 }
 
-func NewCustomerDataStore(client StorageClient) *CustomerDataStore {
-	return &CustomerDataStore{store: client}
-}
-
 func (cds *CustomerDataStore) RetrieveRecent(customerID int64, currTime int64, timeWindowMinutes int64) ([]string, error) {
-	if timeWindowMinutes <= 0 {
-		return []string{}, nil
-	}
+	if timeWindowMinutes <= 0 { return []string{}, nil }
 	startTime := currTime - timeWindowMinutes + 1
 	return cds.store.RetrieveRange(customerID, startTime, currTime)
 }</code></pre>
-                    </div>
+                  </div>
 
-                    <div class="code-block lang-java hidden">
-                      <pre class="text-xs text-slate-200"><code>package com.capitalone.prep;
-
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>package com.capitalone.prep;
 import java.util.Collections;
 import java.util.List;
 
 public class CustomerDataStore {
-
-    public interface StorageClient {
-        List&lt;String&gt; retrieveRange(long customerId, long startTimestamp, long endTimestamp);
-    }
-
     private final StorageClient store;
-
-    public CustomerDataStore(StorageClient storageClient) {
-        this.store = storageClient;
-    }
+    public CustomerDataStore(StorageClient store) { this.store = store; }
 
     public List&lt;String&gt; retrieveRecent(long customerId, long currTime, long timeWindowMinutes) {
-        if (timeWindowMinutes <= 0) {
-            return Collections.emptyList();
-        }
+        if (timeWindowMinutes <= 0) return Collections.emptyList();
         long startTime = currTime - timeWindowMinutes + 1;
         return store.retrieveRange(customerId, startTime, currTime);
     }
 }</code></pre>
-                    </div>
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
+
+          <!-- CASE 2 -->
+          <div id="case-2" class="case-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Technical Case 2</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Virtual Card Generation (Serverless vs. ECS Fargate TCO & Logic Bug)</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] text-slate-400">Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">Mid 2025 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> Virtual Card Logic Bug Fix
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
+                </div>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>def generate_virtual_card(db, user_id: str, expiry_hours: int, is_one_time: bool) -> str:
+    if is_one_time:
+        return db.create_new_card(user_id, ttl_hours=expiry_hours)
+    existing_card = db.find_active_reusable_card(user_id)
+    if existing_card:
+        return existing_card
+    return db.create_new_card(user_id, ttl_hours=None)</code></pre>
+                  </div>
+
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func GenerateVirtualCard(db CardDatabase, userID string, expiryHours int, isOneTime bool) (string, error) {
+	if isOneTime { return db.CreateNewCard(userID, &expiryHours) }
+	existingCard, err := db.FindActiveReusableCard(userID)
+	if err == nil && existingCard != "" { return existingCard, nil }
+	return db.CreateNewCard(userID, nil)
+}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class VirtualCardService {
+    public String generateVirtualCard(CardDatabase db, String userId, int expiryHours, boolean isOneTime) {
+        if (isOneTime) return db.createNewCard(userId, expiryHours);
+        String existingCard = db.findActiveReusableCard(userId);
+        if (existingCard != null && !existingCard.isEmpty()) return existingCard;
+        return db.createNewCard(userId, null);
+    }
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CASE 3 -->
+          <div id="case-3" class="case-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Technical Case 3</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">3-Boolean Security Alert Truth Table & Logic Optimization</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] text-slate-400">Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">Mid 2024 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> De Morgan's Security Expression Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
+                </div>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>def should_flag_transaction(is_foreign: bool, is_high_value: bool, is_new_merchant: bool) -> bool:
+    return is_foreign or (is_high_value and is_new_merchant)</code></pre>
+                  </div>
+
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func ShouldFlagTransaction(isForeign, isHighValue, isNewMerchant bool) bool {
+	return isForeign || (isHighValue && isNewMerchant)
+}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class SecurityAlertEvaluator {
+    public static boolean shouldFlagTransaction(boolean isForeign, boolean isHighValue, boolean isNewMerchant) {
+        return isForeign || (isHighValue && isNewMerchant);
+    }
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CASE 4 -->
+          <div id="case-4" class="case-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Technical Case 4</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Mainframe to Real-Time Kafka Streaming ($1.25M Fraud ROI)</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] text-slate-400">Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">Early 2024 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> CDC & Dual-Write Ingestion Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
+                </div>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>class MainframeCdcIngestionService:
+    def __init__(self, kafka_producer, db_client):
+        self.producer = kafka_producer
+        self.db = db_client
+
+    def process_transaction_event(self, account_id: str, amount: float, merchant: str) -> dict:
+        txn_id = self.db.insert_transaction(account_id, amount, merchant, status='PENDING')
+        payload = {"transaction_id": txn_id, "account_id": account_id, "amount": amount}
+        self.producer.send("transaction-events", key=account_id, value=json.dumps(payload))
+        return payload</code></pre>
+                  </div>
+
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func (s *MainframeCdcService) ProcessTransactionEvent(ctx context.Context, accountID string, amount float64, merchant string) (*TransactionEvent, error) {
+	txnID, err := s.db.InsertTransaction(accountID, amount, merchant)
+	if err != nil { return nil, err }
+	event := &TransactionEvent{TransactionID: txnID, AccountID: accountID, Amount: amount}
+	payload, _ := json.Marshal(event)
+	s.producer.Send("transaction-events", accountID, payload)
+	return event, nil
+}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class KafkaCdcIngestion {
+    public String processEvent(String accountId, double amount, String merchant) {
+        String txnId = db.insertTransaction(accountId, amount, merchant);
+        String jsonPayload = String.format("{"transaction_id":"%s","account_id":"%s","amount":%.2f}", txnId, accountId, amount);
+        producer.send("transaction-events", accountId, jsonPayload);
+        return txnId;
+    }
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CASE 5 -->
+          <div id="case-5" class="case-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">Technical Case 5</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Mobile Payments Unit Economics & Margin Breakeven Math</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] text-slate-400">Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">2023 – 2024 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> Unit Economics Margin Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
+                </div>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>def calculate_payment_margin(amount: float) -> dict:
+    revenue = (amount * 0.0175) + 0.10
+    processing_cost = (amount * 0.005) + 0.03
+    return {"amount": amount, "revenue": round(revenue, 2), "net_margin": round(revenue - processing_cost, 2)}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func CalculatePaymentMargin(amount float64) (float64, float64) {
+	revenue := (amount * 0.0175) + 0.10
+	cost := (amount * 0.005) + 0.03
+	return revenue, revenue - cost
+}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class PaymentEconomics {
+    public static double getNetMargin(double amount) {
+        double revenue = (amount * 0.0175) + 0.10;
+        double cost = (amount * 0.005) + 0.03;
+        return revenue - cost;
+    }
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CASE 6 (NEW) -->
+          <div id="case-6" class="case-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Technical Case 6 (New)</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">BNPL Cash Flow & Merchant Discount Rate (MDR) Yield Model</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] text-slate-400">Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">2025–2026 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
+                <span class="text-xs font-bold text-cyan-400 uppercase">Business Context</span>
+                <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                  Capital One is evaluating a Buy-Now-Pay-Later (BNPL) product offering 4 interest-free bi-weekly installments on $200 average order values. Instead of charging consumer APR, Capital One collects a Merchant Discount Rate (MDR) fee upfront (e.g. 3.5%). Calculate net yield after accounting for expected credit loss (2.5% default rate) and short-term cost of capital (4.0% interest).
+                </p>
+              </div>
+
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> BNPL Yield Calculator Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
+                </div>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>class BnplYieldCalculator:
+    def __init__(self, default_rate: float = 0.025, cost_of_capital: float = 0.04):
+        self.default_rate = default_rate
+        self.cost_of_capital = cost_of_capital
+
+    def calculate_net_margin(self, order_value: float, mdr_percentage: float, installments: int = 4) -> dict:
+        merchant_fee = order_value * (mdr_percentage / 100.0)
+        expected_loss = order_value * self.default_rate
+        capital_cost = order_value * (self.cost_of_capital / (12 / installments))
+        net_profit = merchant_fee - (expected_loss + capital_cost)
+        return {"order_value": order_value, "net_profit": round(net_profit, 2), "is_profitable": net_profit > 0}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func (c *BnplYieldCalculator) CalculateNetMargin(orderValue, mdrPct float64, installments int) BnplResult {
+	merchantFee := orderValue * (mdrPct / 100.0)
+	expectedLoss := orderValue * c.DefaultRate
+	capitalCost := orderValue * (c.CostOfCapital / (12.0 / float64(installments)))
+	netProfit := merchantFee - (expectedLoss + capitalCost)
+	return BnplResult{OrderValue: orderValue, NetProfit: math.Round(netProfit*100)/100, IsProfitable: netProfit > 0}
+}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class BnplYieldCalculator {
+    public Result calculateNetMargin(double orderValue, double mdrPercentage, int installments) {
+        double merchantFee = orderValue * (mdrPercentage / 100.0);
+        double expectedLoss = orderValue * defaultRate;
+        double capitalCost = orderValue * (costOfCapital / (12.0 / installments));
+        double netProfit = merchantFee - (expectedLoss + capitalCost);
+        return new Result(orderValue, merchantFee, expectedLoss, capitalCost, Math.round(netProfit * 100.0)/100.0, netProfit > 0);
+    }
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CASE 7 (NEW) -->
+          <div id="case-7" class="case-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">Technical Case 7 (New)</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Real-Time Cross-Border FX Settlement & Liquidity Buffer Engine</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] text-slate-400">Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">2025–2026 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
+                <span class="text-xs font-bold text-teal-400 uppercase">Business Context</span>
+                <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                  International credit card transactions require instant spot-rate FX currency conversion (e.g. USD to EUR) with spread pricing (15 bps) while validating that Capital One's Nostro currency buffer has sufficient liquidity to avoid SWIFT settlement delays.
+                </p>
+              </div>
+
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> FX Settlement Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
+                </div>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>class FxSettlementEngine:
+    def __init__(self, fx_spread_bps: float = 15.0):
+        self.fx_spread_bps = fx_spread_bps
+
+    def execute_conversion(self, amount_usd: float, spot_rate_eur: float, account_buffer_eur: float) -> dict:
+        effective_rate = spot_rate_eur * (1.0 - (self.fx_spread_bps / 10000.0))
+        converted_eur = amount_usd * effective_rate
+        approved = account_buffer_eur >= converted_eur
+        return {"settled_eur": round(converted_eur, 2), "approved": approved, "status": "SETTLED_INSTANT" if approved else "QUEUED_SWIFT"}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func (e *FxSettlementEngine) ExecuteConversion(amountUSD, spotRateEUR, bufferEUR float64) FxResult {
+	effectiveRate := spotRateEUR * (1.0 - (e.SpreadBps / 10000.0))
+	convertedEUR := amountUSD * effectiveRate
+	approved := bufferEUR >= convertedEUR
+	return FxResult{AmountUSD: amountUSD, SettledEUR: math.Round(convertedEUR*100)/100, Approved: approved}
+}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class FxSettlementEngine {
+    public FxResult executeConversion(double amountUsd, double spotRateEur, double accountBufferEur) {
+        double effectiveRate = spotRateEur * (1.0 - (spreadBps / 10000.0));
+        double convertedEur = amountUsd * effectiveRate;
+        boolean approved = accountBufferEur >= convertedEur;
+        return new FxResult(amountUsd, spotRateEur, effectiveRate, Math.round(convertedEur * 100.0)/100.0, approved);
+    }
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: SYSTEM DESIGN (EXPANDED IN-DEPTH) -->
+    <!-- TAB 2: SYSTEM DESIGN -->
     <div id="tab-system-design" class="tab-content hidden space-y-4">
-      
-      <!-- Mobile Quick Selector for System Design -->
       <div class="block lg:hidden bg-slate-850 border border-slate-800 p-3 rounded-xl shadow-xs space-y-2">
         <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Select System Design Question:</label>
         <select id="mobile-sys-select" onchange="selectSysQ(this.value)" class="w-full p-2.5 text-xs rounded-lg border border-slate-700 bg-slate-950 text-slate-100 font-semibold min-h-[44px]">
@@ -317,12 +657,12 @@ public class CustomerDataStore {
           <option value="sys-q6">Q6: Enterprise Multi-Channel Notification Engine (2024)</option>
           <option value="sys-q7">Q7: Distributed Banking Cache Architecture (Early 2024)</option>
           <option value="sys-q8">Q8: Smart Meter Telemetry Ingestion 10M Meters (2023-2024)</option>
+          <option value="sys-q9">Q9: Multi-Region Active-Active Core Banking System (NEW 2025-2026)</option>
         </select>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        
-        <!-- Sidebar Navigation (Desktop lg+) -->
+        <!-- Sidebar Navigation -->
         <div class="hidden lg:block lg:col-span-1 space-y-2">
           <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2 mb-2">System Design Questions</h3>
           
@@ -397,9 +737,18 @@ public class CustomerDataStore {
             <div class="text-xs font-semibold line-clamp-1 text-slate-100">Smart Meter Telemetry</div>
             <div class="text-[11px] text-slate-400">10M Meters, TimescaleDB & Athena</div>
           </button>
+
+          <button onclick="selectSysQ('sys-q9')" id="nav-sys-q9" class="w-full text-left p-3 rounded-xl border border-slate-800 transition-all bg-slate-850 hover:border-blue-500 shadow-xs flex flex-col gap-1 sys-nav-item">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-pink-400">Question 9</span>
+              <span class="text-[11px] px-1.5 py-0.5 rounded bg-pink-500/10 text-pink-400 font-semibold">2025–2026</span>
+            </div>
+            <div class="text-xs font-semibold line-clamp-1 text-slate-100">Active-Active Multi-Region</div>
+            <div class="text-[11px] text-slate-400">Raft Consensus & CRDT Consistency</div>
+          </button>
         </div>
 
-        <!-- System Design Detail Content -->
+        <!-- Detail Content -->
         <div class="lg:col-span-3 space-y-6">
           
           <!-- SYS Q1 -->
@@ -412,68 +761,50 @@ public class CustomerDataStore {
                 </div>
                 <div class="sm:text-right">
                   <span class="text-[11px] font-medium text-slate-400">Reported Recency:</span>
-                  <div class="text-xs font-bold text-emerald-400">2025 – 2026 PowerDay Loops (Lead & Senior SWE)</div>
+                  <div class="text-xs font-bold text-emerald-400">2025 – 2026 PowerDay Loops</div>
                 </div>
               </div>
 
-              <!-- Prompt Block -->
-              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
-                <span class="text-xs font-bold text-blue-400 uppercase">Exact Interview Prompt</span>
-                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
-                  "Design a credit card account management application for a bank. The application must support customer credit card applications, viewing balance and real-time transaction activity, making monthly statement payments (minimum vs. custom balance), and generating daily, weekly, and monthly spending analytics."
-                </p>
-              </div>
-
-              <!-- SLAs & Core Requirements -->
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
-                  <span class="font-bold text-blue-400 uppercase">SLA & Availability</span>
-                  <p class="text-slate-400">Sub-second balance views with <strong>99.99% availability</strong>.</p>
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> Payment Gateway Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
                 </div>
-                <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
-                  <span class="font-bold text-emerald-400 uppercase">Double-Debit Prevention</span>
-                  <p class="text-slate-400">Zero double-debits on monthly payments during asynchronous ACH clearance (1–3 business days).</p>
-                </div>
-                <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
-                  <span class="font-bold text-purple-400 uppercase">OLTP / OLAP Isolation</span>
-                  <p class="text-slate-400">Spending analytics queries must not impact primary transactional database performance.</p>
-                </div>
-              </div>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>class AccountPaymentGateway:
+    def submit_payment(self, account_id: str, amount: float, idempotency_key: str) -> dict:
+        lock_key = f"payment:{idempotency_key}"
+        if not self.redis.set(lock_key, "PROCESSING", nx=True, ex=86400):
+            return {"status": "DUPLICATE_PAYMENT_BLOCKED"}
+        payment_id = self.db.schedule_ach_payment(account_id, amount)
+        return {"payment_id": payment_id, "status": "SCHEDULED_ACH"}</code></pre>
+                  </div>
 
-              <!-- High-Level Data Flow -->
-              <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl font-mono text-xs overflow-x-auto space-y-1 custom-scrollbar">
-                <span class="text-[11px] font-bold text-blue-400 font-sans uppercase">High-Level Data Flow Architecture</span>
-                <pre class="text-slate-200 text-[11px] sm:text-xs">
-[Client Mobile / Web] ──► [API Gateway (JWT Auth, SETNX Idempotency Check)]
-                                │
-                                ▼
-                   [Card Account Microservice]
-                   ┌────────────┼────────────┐
-                   ▼            ▼            ▼
-             [App Svc]    [Payment Svc]  [Analytics Svc]
-                │               │              │
-                ▼               ▼              ▼
-          [Underwriting DB] [Ledger DB]  [ClickHouse OLAP]
-                                │              ▲
-                                └─► [Debezium CDC] ──► [Kafka] ──┘</pre>
-              </div>
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func (g *PaymentGateway) SubmitPayment(ctx context.Context, accountID string, amount float64, key string) (string, error) {
+	lockKey := "payment:" + key
+	ok, _ := g.rdb.SetNX(ctx, lockKey, "PROCESSING", 24*time.Hour).Result()
+	if !ok { return "", fmt.Errorf("DUPLICATE_PAYMENT") }
+	return g.db.ScheduleAchPayment(accountID, amount)
+}</code></pre>
+                  </div>
 
-              <!-- Deep-Dive Component Blueprint -->
-              <div class="space-y-3 text-xs">
-                <h3 class="text-sm font-bold text-white uppercase">Detailed Component Blueprint & Solutions</h3>
-                
-                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-                  <strong class="text-blue-400 block">1. ACH Payment Asynchrony & Idempotency Engine</strong>
-                  <p class="text-slate-400 leading-relaxed">
-                    Payment submissions include an <code>Idempotency-Key</code> header validated in Redis via <code>SETNX payment:{key} "PROCESSING" EX 86400</code>. Since ACH transfers require 1–3 business days to settle over the NACHA network, payment records are inserted into Aurora PostgreSQL with status <code>SCHEDULED_ACH</code>. The customer's available credit line is conditionally updated immediately to provide instant feedback, while the ledger entry awaits final NACHA settlement.
-                  </p>
-                </div>
-
-                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-                  <strong class="text-emerald-400 block">2. Separating OLTP from OLAP via Change Data Capture (CDC)</strong>
-                  <p class="text-slate-400 leading-relaxed">
-                    To prevent heavy aggregation queries (<code>SUM(...) GROUP BY category</code>) from locking OLTP transactional databases, we use <strong>Debezium CDC</strong>. Debezium reads Aurora PostgreSQL Write-Ahead Logs (WAL) in real-time and streams row updates into a Kafka topic (<code>account-transactions</code>). Micro-batch sink connectors ingest these events into a columnar OLAP database (<strong>ClickHouse or Amazon Redshift</strong>), enabling sub-second spending analytics dashboards without touching the primary ledger DB.
-                  </p>
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class PaymentLedgerGateway {
+    public String submitPayment(String accountId, double amount, String idempotencyKey) {
+        String lockKey = "payment:" + idempotencyKey;
+        if (!"OK".equals(jedis.set(lockKey, "PROCESSING", "NX", "EX", 86400))) return "DUPLICATE_PAYMENT_BLOCKED";
+        return db.scheduleAchPayment(accountId, amount);
+    }
+}</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -493,57 +824,40 @@ public class CustomerDataStore {
                 </div>
               </div>
 
-              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
-                <span class="text-xs font-bold text-emerald-400 uppercase">Exact Interview Prompt</span>
-                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
-                  "Design a system that tracks a customer's available credit in real time across multiple concurrent authorized users (e.g., primary cardholder and authorized users swiping cards simultaneously). If an account has a $1,000 credit limit and two transactions of $600 occur at the exact same millisecond, exactly one must approve and one must decline."
-                </p>
-              </div>
-
-              <div class="bg-emerald-500/10 border border-emerald-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
-                <h4 class="font-bold text-emerald-400">Architecture Solution: Redis Lua Distributed Atomicity</h4>
-                <p class="text-slate-400 leading-relaxed">
-                  <strong>The Concurrency Problem:</strong> Reading balance in application memory → validating limit → writing back creates a race condition where both concurrent $600 transactions see $1,000 available credit and both approve ($1,200 total spend!).<br>
-                  <strong>The Solution:</strong> Maintain active available credit in an in-memory Redis cluster partitioned by <code>account_id</code>. Execute balance validation and decrement atomically inside an embedded Lua script. Because Redis executes Lua scripts on a single-threaded server loop, race conditions are mathematically impossible.
-                </p>
-                <pre class="bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-slate-200 overflow-x-auto text-[11px] sm:text-xs"><code>-- KEYS[1] = account:{account_id}:available_credit
--- ARGV[1] = transaction_amount
-local available = tonumber(redis.call('GET', KEYS[1]))
-local amount = tonumber(ARGV[1])
-if available and available >= amount then
-    redis.call('DECRBY', KEYS[1], amount)
-    return 1 -- APPROVED
-else
-    return 0 -- DECLINED (INSUFFICIENT_CREDIT)
-end</code></pre>
-              </div>
-
-              <!-- Multi-Language Implementation -->
-              <div class="rounded-xl border border-slate-800 bg-slate-950 p-4">
-                <span class="text-xs font-bold text-white mb-2 block">Multi-Language Production Service Integration</span>
-                <div class="code-block lang-python">
-                  <pre class="text-xs text-slate-200"><code>class CreditReservationService:
-    def __init__(self, redis_client: redis.Redis):
-        self.r = redis_client
-        self._script = self.r.register_script(LUA_SCRIPT)
-
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> Redis Lua Atomic Credit Reservation Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
+                </div>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>class CreditReservationService:
     def reserve_credit(self, account_id: str, amount: float) -> bool:
         key = f"account:{account_id}:available_credit"
         return self._script(keys=[key], args=[int(amount)]) == 1</code></pre>
-                </div>
-                <div class="code-block lang-go hidden">
-                  <pre class="text-xs text-slate-200"><code>func (s *CreditReservationService) ReserveCredit(ctx context.Context, accountID string, amount int64) (bool, error) {
+                  </div>
+
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func (s *CreditReservationService) ReserveCredit(ctx context.Context, accountID string, amount int64) (bool, error) {
 	key := "account:" + accountID + ":available_credit"
 	res, err := s.rdb.Eval(ctx, reserveLuaScript, []string{key}, amount).Result()
 	return res.(int64) == 1, err
 }</code></pre>
-                </div>
-                <div class="code-block lang-java hidden">
-                  <pre class="text-xs text-slate-200"><code>public boolean reserveCredit(String accountId, long amount) {
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public boolean reserveCredit(String accountId, long amount) {
     String key = "account:" + accountId + ":available_credit";
     Object result = jedis.eval(LUA_SCRIPT, Collections.singletonList(key), Collections.singletonList(String.valueOf(amount)));
     return Long.valueOf(1).equals(result);
 }</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -563,34 +877,41 @@ end</code></pre>
                 </div>
               </div>
 
-              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
-                <span class="text-xs font-bold text-amber-400 uppercase">Exact Interview Prompt</span>
-                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
-                  "Design a low-latency distributed rate limiter to protect customer-facing APIs from brute-force login attacks, automated scraping, and DDoS attempts. SLA Constraint: Overhead &lt; 5ms; limit each API key or IP address to 100 requests per minute."
-                </p>
-              </div>
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> Redis ZSET Sliding Window Rate Limiter Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
+                </div>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>class DistributedRateLimiter:
+    def allow_request(self, api_key: str, limit: int = 100, window_ms: int = 60000) -> bool:
+        now_ms = int(time.time() * 1000)
+        return self._script(keys=[f"rate:{api_key}"], args=[now_ms, window_ms, limit]) == 1</code></pre>
+                  </div>
 
-              <div class="bg-amber-500/10 border border-amber-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
-                <h4 class="font-bold text-amber-400">Solution: Redis Sorted Set (ZSET) Sliding Window Counter</h4>
-                <p class="text-slate-400 leading-relaxed">
-                  <strong>Why Fixed Window Fails:</strong> Fixed window rate limiters allow double the allowed request volume across window boundaries (e.g., 100 requests at 00:59 and 100 requests at 01:01).<br>
-                  <strong>ZSET Sliding Window:</strong> Uses timestamps as elements and scores in Redis Sorted Sets. Purges elements older than <code>now - 60s</code> before counting active requests.
-                </p>
-                <pre class="bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-slate-200 overflow-x-auto text-[11px] sm:text-xs"><code>local key = KEYS[1]
-local now = tonumber(ARGV[1])
-local window = tonumber(ARGV[2])
-local limit = tonumber(ARGV[3])
-local clearBefore = now - window
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func (rl *DistributedRateLimiter) AllowRequest(ctx context.Context, apiKey string, limit int, windowMs int64) (bool, error) {
+	nowMs := time.Now().UnixNano() / 1e6
+	res, err := rl.rdb.Eval(ctx, slidingWindowLua, []string{"rate:" + apiKey}, nowMs, windowMs, limit).Result()
+	return res.(int64) == 1, err
+}</code></pre>
+                  </div>
 
-redis.call('ZREMRANGEBYSCORE', key, 0, clearBefore)
-local currentRequests = redis.call('ZCARD', key)
-if currentRequests < limit then
-    redis.call('ZADD', key, now, now)
-    redis.call('EXPIRE', key, math.ceil(window / 1000))
-    return 1 -- ALLOWED (HTTP 200)
-else
-    return 0 -- RATE LIMITED (HTTP 429)
-end</code></pre>
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public boolean allowRequest(String apiKey, int limit, long windowMs) {
+    long nowMs = System.currentTimeMillis();
+    Object res = jedis.eval(LUA_SLIDING_WINDOW, Collections.singletonList("rate:" + apiKey), Arrays.asList(String.valueOf(nowMs), String.valueOf(windowMs), String.valueOf(limit)));
+    return Long.valueOf(1).equals(res);
+}</code></pre>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -609,27 +930,45 @@ end</code></pre>
                 </div>
               </div>
 
-              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
-                <span class="text-xs font-bold text-purple-400 uppercase">Exact Interview Prompt & Constraints</span>
-                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
-                  "Design the authorization pipeline that ingests point-of-sale credit card swipe authorizations, evaluates limits and fraud heuristics, and returns an approval or decline in under 100ms. Scale: 10,000 writes/sec peak load; P99 latency &lt; 80ms."
-                </p>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1.5">
-                  <strong class="text-blue-400 uppercase">1. Synchronous Fast Path (&lt; 50ms SLA)</strong>
-                  <p class="text-slate-400 leading-relaxed">
-                    Queries Redis Cluster to verify card status (Active vs Frozen), available credit, and 1-minute local frequency (<code>INCR velocity:{card_id}:1min</code>). If valid, decrements credit in Redis and immediately returns HTTP 200 APPROVED to the POS terminal.
-                  </p>
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> Impossible Travel Speed Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
                 </div>
-                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1.5">
-                  <strong class="text-purple-400 uppercase">2. Asynchronous Slow Path (Kafka + Flink)</strong>
-                  <p class="text-slate-400 leading-relaxed">
-                    Emits transaction events to Kafka topic <code>txn-authorizations</code> partitioned by <code>account_id</code>. Apache Flink windowed stream processing evaluates "Impossible Travel" anomalies over a 10-minute sliding window:<br>
-                    <code class="text-purple-400 font-mono">Velocity Speed = Distance(Loc2, Loc1) / (Time2 - Time1)</code><br>
-                    If speed &gt; 600 mph, emits a high-priority security event and sets card state to RESTRICTED in Redis.
-                  </p>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>def evaluate_impossible_travel(last_lat: float, last_lon: float, last_time: int, curr_lat: float, curr_lon: float, curr_time: int) -> bool:
+    dist_miles = haversine_distance(last_lat, last_lon, curr_lat, curr_lon)
+    time_hours = (curr_time - last_time) / 3600.0
+    if time_hours <= 0: return True
+    return (dist_miles / time_hours) > 600.0</code></pre>
+                  </div>
+
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func EvaluateImpossibleTravel(lastLat, lastLon float64, lastTime int64, currLat, currLon float64, currTime int64) bool {
+	dist := HaversineDistance(lastLat, lastLon, currLat, currLon)
+	hours := float64(currTime-lastTime) / 3600.0
+	if hours <= 0 { return true }
+	return (dist / hours) > 600.0
+}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class FraudVelocityEvaluator {
+    public static boolean isImpossibleTravel(double lat1, double lon1, long time1, double lat2, double lon2, long time2) {
+        double dist = haversine(lat1, lon1, lat2, lon2);
+        double hours = (time2 - time1) / 3600.0;
+        if (hours <= 0) return true;
+        return (dist / hours) > 600.0;
+    }
+}</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -649,27 +988,50 @@ end</code></pre>
                 </div>
               </div>
 
-              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
-                <span class="text-xs font-bold text-rose-400 uppercase">Exact Interview Prompt</span>
-                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
-                  "Design a real-time money transfer system where User A sends $100 to User B via email or phone number. Non-Functional Requirements: Strict ACID consistency on ledger updates, sub-second processing, and zero double-spending during network retries."
-                </p>
-              </div>
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> Double-Entry Ledger Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
+                </div>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>def execute_p2p_transfer(db_conn, sender_id: str, receiver_id: str, amount: float):
+    with db_conn.transaction():
+        sender_bal = db_conn.query("SELECT balance FROM accounts WHERE id = %s FOR UPDATE", sender_id)
+        if sender_bal < amount: raise InsufficientFundsException()
+        txn_id = uuid.uuid4()
+        db_conn.execute("INSERT INTO ledger VALUES (%s, %s, %s, 'DEBIT')", (txn_id, sender_id, -amount))
+        db_conn.execute("INSERT INTO ledger VALUES (%s, %s, %s, 'CREDIT')", (txn_id, receiver_id, amount))</code></pre>
+                  </div>
 
-              <div class="bg-rose-500/10 border border-rose-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
-                <h4 class="font-bold text-rose-400">Double-Entry Append-Only Bookkeeping & Saga Pattern</h4>
-                <p class="text-slate-400 leading-relaxed">
-                  <strong>Rule 1:</strong> Never mutate balance columns with <code>UPDATE accounts SET balance = balance - 100</code>.<br>
-                  <strong>Rule 2:</strong> Insert immutable paired DEBIT and CREDIT ledger rows inside a single database transaction:
-                </p>
-                <pre class="bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-slate-200 overflow-x-auto text-[11px] sm:text-xs"><code>BEGIN TRANSACTION;
-SELECT balance FROM accounts WHERE account_id = 'A' FOR UPDATE;
--- Verify balance >= 100
-INSERT INTO ledger_entries (entry_id, transaction_id, account_id, amount, currency, entry_type)
-VALUES 
-  (gen_random_uuid(), 'tx-123', 'A', -100.00, 'USD', 'DEBIT'),
-  (gen_random_uuid(), 'tx-123', 'B', 100.00, 'USD', 'CREDIT');
-COMMIT;</code></pre>
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func ExecuteP2PTransfer(ctx context.Context, tx *sql.Tx, senderID, receiverID string, amount float64) error {
+	var bal float64
+	err := tx.QueryRowContext(ctx, "SELECT balance FROM accounts WHERE id = $1 FOR UPDATE", senderID).Scan(&bal)
+	if err != nil || bal < amount { return errors.New("INSUFFICIENT_FUNDS") }
+	txnID := uuid.New().String()
+	tx.ExecContext(ctx, "INSERT INTO ledger VALUES ($1, $2, $3, 'DEBIT')", txnID, senderID, -amount)
+	tx.ExecContext(ctx, "INSERT INTO ledger VALUES ($1, $2, $3, 'CREDIT')", txnID, receiverID, amount)
+	return nil
+}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class PeerToPeerLedger {
+    public void executeTransfer(Connection conn, String senderId, String receiverId, double amount) throws Exception {
+        conn.setAutoCommit(false);
+        // FOR UPDATE lock and paired DEBIT / CREDIT ledger inserts...
+        conn.commit();
+    }
+}</code></pre>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -688,21 +1050,47 @@ COMMIT;</code></pre>
                 </div>
               </div>
 
-              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
-                <span class="text-xs font-bold text-indigo-400 uppercase">Exact Interview Prompt</span>
-                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
-                  "Design an event-driven system that triggers real-time alerts (SMS, Email, Push Notifications) for card transactions, account changes, and security events. Core Requirements: User notification preference filtering, priority queuing (fraud alerts within 2 seconds; marketing delayed), and isolation against third-party provider failures."
-                </p>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
-                  <strong class="text-indigo-400">1. Priority Queuing & Dynamic Scaling</strong>
-                  <p class="text-slate-400 leading-relaxed">Allocate separate SQS queues partitioned by urgency: <code>fraud-sms-queue</code> (&lt;2s SLA), <code>transaction-push-queue</code>, and <code>marketing-email-queue</code>. Worker pools scale independently via CloudWatch metrics.</p>
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> SQS Priority DLQ Retry Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
                 </div>
-                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
-                  <strong class="text-rose-400">2. Circuit Breakers & Dead-Letter Queues (DLQ)</strong>
-                  <p class="text-slate-400 leading-relaxed">Wrap external provider API invocations in circuit breakers. If Twilio/SendGrid returns HTTP 429 or 503, workers release messages with exponential backoff visibility timeout (<code>2^retry × 5s</code>). Route to <code>sms-dlq</code> after 3 failed attempts.</p>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>def send_notification_with_retry(sns_client, payload: dict, max_retries: int = 3):
+    for attempt in range(1, max_retries + 1):
+        try: return sns_client.publish(TopicArn=payload['topic'], Message=payload['body'])
+        except Exception:
+            if attempt == max_retries: send_to_dlq(payload)
+            time.sleep(2 ** attempt)</code></pre>
+                  </div>
+
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func SendWithRetry(ctx context.Context, client SnsClient, payload NotificationPayload) error {
+	for attempt := 1; attempt <= 3; attempt++ {
+		if err := client.Publish(ctx, payload); err == nil { return nil }
+		time.Sleep(time.Duration(1<<attempt) * time.Second)
+	}
+	return SendToDLQ(ctx, payload)
+}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class NotificationRetryManager {
+    public void dispatch(NotificationPayload payload) {
+        for (int i = 1; i <= 3; i++) {
+            try { provider.send(payload); return; } catch(Exception e) { try{Thread.sleep((long)Math.pow(2, i)*1000);}catch(Exception ignored){} }
+        }
+        dlq.send(payload);
+    }
+}</code></pre>
+                  </div>
                 </div>
               </div>
             </div>
@@ -714,7 +1102,7 @@ COMMIT;</code></pre>
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
                 <div>
                   <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">System Design Question 7</span>
-                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Distributed Banking Cache Architecture</h2>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Distributed Banking Cache Architecture & Cache Stampede Defense</h2>
                 </div>
                 <div class="sm:text-right">
                   <span class="text-[11px] font-medium text-slate-400">Reported Recency:</span>
@@ -722,20 +1110,65 @@ COMMIT;</code></pre>
                 </div>
               </div>
 
-              <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
-                <span class="text-xs font-bold text-cyan-400 uppercase">Exact Interview Prompt</span>
-                <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
-                  "Design a distributed caching layer for mobile banking APIs serving customer balances and transaction summaries. Address cache stampedes, invalidation policies, and read-your-own-writes consistency."
-                </p>
-              </div>
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> Cache Stampede SETNX Lock Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
+                </div>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>def get_account_balance(redis_client, db_client, account_id: str) -> float:
+    cache_key = f"balance:{account_id}"
+    val = redis_client.get(cache_key)
+    if val: return float(val)
+    if redis_client.set(f"lock:{cache_key}", "1", nx=True, ex=5):
+        bal = db_client.query_balance(account_id)
+        redis_client.set(cache_key, str(bal), ex=300)
+        redis_client.delete(f"lock:{cache_key}")
+        return bal
+    time.sleep(0.05)
+    return get_account_balance(redis_client, db_client, account_id)</code></pre>
+                  </div>
 
-              <div class="bg-cyan-500/10 border border-cyan-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
-                <h4 class="font-bold text-cyan-400">Core Architecture Principles</h4>
-                <ul class="space-y-1.5 text-slate-400 list-disc pl-4 leading-relaxed">
-                  <li><strong>1. Caching Pattern: Cache-Aside with Write-Through Invalidation:</strong> On account mutation, write directly to primary DB, then immediately evict or update Redis key within the same transaction.</li>
-                  <li><strong>2. Mitigating Cache Stampedes (Dog-Piling):</strong> Use Distributed Mutex Locking (<code>SETNX lock:account:{id}</code>). If a high-traffic cache key expires, only the first worker thread is permitted to query the database and rebuild cache; all other threads wait 50ms and retry reading cache.</li>
-                  <li><strong>3. Read-Your-Own-Writes Consistency:</strong> Return monotonic <code>mutation_version</code> token in mutation headers. If an incoming read hits a replica with an older version, bypass cache and force a read from primary DB.</li>
-                </ul>
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func GetAccountBalance(ctx context.Context, rdb *redis.Client, db Database, accountID string) (float64, error) {
+	cacheKey := "balance:" + accountID
+	if val, err := rdb.Get(ctx, cacheKey).Float64(); err == nil { return val, nil }
+	if ok, _ := rdb.SetNX(ctx, "lock:"+cacheKey, "1", 5*time.Second).Result(); ok {
+		bal, _ := db.QueryBalance(accountID)
+		rdb.Set(ctx, cacheKey, bal, 300*time.Second)
+		rdb.Del(ctx, "lock:"+cacheKey)
+		return bal, nil
+	}
+	time.Sleep(50 * time.Millisecond)
+	return GetAccountBalance(ctx, rdb, db, accountID)
+}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class CacheAsideManager {
+    public double getBalance(String accountId) {
+        String key = "balance:" + accountId;
+        String val = jedis.get(key);
+        if (val != null) return Double.parseDouble(val);
+        if ("OK".equals(jedis.set("lock:" + key, "1", "NX", "EX", 5))) {
+            double bal = db.queryBalance(accountId);
+            jedis.setex(key, 300, String.valueOf(bal));
+            jedis.del("lock:" + key);
+            return bal;
+        }
+        try { Thread.sleep(50); } catch(Exception ignored){}
+        return getBalance(accountId);
+    }
+}</code></pre>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -746,31 +1179,134 @@ COMMIT;</code></pre>
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
                 <div>
                   <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">System Design Question 8</span>
-                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Smart Meter Telemetry Ingestion (Electric Utility Data)</h2>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Smart Meter Telemetry Ingestion (10M Meters, 960M Events/Day)</h2>
                 </div>
                 <div class="sm:text-right">
                   <span class="text-[11px] font-medium text-slate-400">Reported Recency:</span>
-                  <div class="text-xs font-bold text-emerald-400">2023 – Early 2024 PowerDay Loops</div>
+                  <div class="text-xs font-bold text-emerald-400">2023 – 2024 PowerDay Loops</div>
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> TimescaleDB Batch Ingestor Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
+                </div>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>def batch_insert_telemetry(db_conn, records: list):
+    query = "INSERT INTO meter_readings (meter_id, timestamp, kw_reading) VALUES %s"
+    psycopg2.extras.execute_values(db_conn.cursor(), query, records, page_size=1000)
+    db_conn.commit()</code></pre>
+                  </div>
+
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>func BatchInsertTelemetry(ctx context.Context, db *sql.DB, records []TelemetryRecord) error {
+	tx, _ := db.BeginTx(ctx, nil)
+	stmt, _ := tx.PrepareContext(ctx, "INSERT INTO meter_readings VALUES ($1, $2, $3)")
+	for _, r := range records { stmt.ExecContext(ctx, r.MeterID, r.Timestamp, r.Reading) }
+	return tx.Commit()
+}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class SmartMeterTelemetryIngestor {
+    public void batchInsert(Connection conn, List&lt;Reading&gt; readings) throws Exception {
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO meter_readings VALUES (?, ?, ?)");
+        for (Reading r : readings) { ps.setString(1, r.meterId); ps.setLong(2, r.timestamp); ps.setDouble(3, r.kw); ps.addBatch(); }
+        ps.executeBatch();
+    }
+}</code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYS Q9 (NEW) -->
+          <div id="sys-q9" class="sys-detail-pane hidden space-y-4 sm:space-y-6">
+            <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+                <div>
+                  <span class="text-xs font-bold text-pink-400 uppercase tracking-wider">System Design Question 9 (New)</span>
+                  <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">Active-Active Multi-Region Core Banking & Global Consistency</h2>
+                </div>
+                <div class="sm:text-right">
+                  <span class="text-[11px] font-medium text-slate-400">Reported Recency:</span>
+                  <div class="text-xs font-bold text-emerald-400">2025–2026 PowerDay Loops</div>
                 </div>
               </div>
 
               <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 space-y-1">
-                <span class="text-xs font-bold text-teal-400 uppercase">Exact Interview Prompt</span>
+                <span class="text-xs font-bold text-pink-400 uppercase">Exact Interview Prompt</span>
                 <p class="text-xs sm:text-sm italic text-slate-400 leading-relaxed">
-                  "10 million smart meters transmit electricity usage metrics every 15 minutes. Design a scalable telemetry ingestion pipeline that supports customer dashboards and long-term analytics."
+                  "Design an Active-Active multi-region core banking architecture deployed across AWS us-east-1 (N. Virginia) and us-west-2 (Oregon). The system must guarantee zero RPO (no lost transactions) and sub-100ms API response times even during complete regional AWS outages."
                 </p>
               </div>
 
-              <div class="bg-teal-500/10 border border-teal-500/20 p-3.5 sm:p-4 rounded-xl text-xs space-y-2">
-                <h4 class="font-bold text-teal-400">Math & Tiered Storage Blueprint</h4>
-                <div class="space-y-1 font-mono text-[11px] text-slate-400">
-                  <p>• Daily Writes = 10,000,000 × (24 × 60 / 15) = 10M × 96 = <strong>960 Million events/day</strong></p>
-                  <p>• Ingestion Throughput = 960,000,000 / 86,400 ≈ <strong>11,111 RPS</strong></p>
-                  <p>• Daily Data Volume (200 B payload) = 960M × 200 B ≈ <strong>192 GB/day</strong></p>
+              <div class="rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
+                <div class="bg-slate-900 px-3.5 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                  <span class="text-xs font-bold text-white flex items-center gap-2">
+                    <span>💻</span> Multi-Region CRDT Balance Code
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <button onclick="setGlobalLang('python')" data-lang="python" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400">Python</button>
+                    <button onclick="setGlobalLang('go')" data-lang="go" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Go</button>
+                    <button onclick="setGlobalLang('java')" data-lang="java" class="card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900">Java</button>
+                  </div>
                 </div>
-                <p class="text-slate-400 leading-relaxed mt-2">
-                  <strong>Tiered Storage Architecture:</strong> Ingest via AWS IoT Core (MQTT) → Kinesis Data Streams → <strong>Hot Storage (0–30 Days):</strong> Time-Series DB (TimescaleDB / InfluxDB) partitioned by meter_id → <strong>Cold Storage (Historical Archival):</strong> Compress and store raw data in Amazon S3 (Apache Parquet format) queried on-demand via Amazon Athena.
-                </p>
+                <div class="p-3.5 overflow-x-auto">
+                  <div class="code-block lang-python">
+                    <pre class="text-xs text-slate-200"><code>class MultiRegionCoreBanking:
+    def __init__(self, region_id: str):
+        self.region_id = region_id
+        self.credits = {region_id: 0.0}
+        self.debits = {region_id: 0.0}
+
+    def credit(self, amount: float):
+        self.credits[self.region_id] = self.credits.get(self.region_id, 0.0) + amount
+
+    def debit(self, amount: float):
+        self.debits[self.region_id] = self.debits.get(self.region_id, 0.0) + amount
+
+    def value(self) -> float:
+        return sum(self.credits.values()) - sum(self.debits.values())</code></pre>
+                  </div>
+
+                  <div class="code-block lang-go hidden">
+                    <pre class="text-xs text-slate-200"><code>type PNCounterCRDT struct {
+	RegionID string
+	Credits  map[string]float64
+	Debits   map[string]float64
+}
+
+func (c *PNCounterCRDT) Value() float64 {
+	var total float64
+	for _, v := range c.Credits { total += v }
+	for _, v := range c.Debits { total -= v }
+	return total
+}</code></pre>
+                  </div>
+
+                  <div class="code-block lang-java hidden">
+                    <pre class="text-xs text-slate-200"><code>public class MultiRegionCoreBanking {
+    private final String regionId;
+    private final ConcurrentHashMap&lt;String, Double&gt; credits = new ConcurrentHashMap&lt;&gt;();
+    private final ConcurrentHashMap&lt;String, Double&gt; debits = new ConcurrentHashMap&lt;&gt;();
+
+    public MultiRegionCoreBanking(String regionId) { this.regionId = regionId; }
+    public double getBalance() {
+        return credits.values().stream().mapToDouble(Double::doubleValue).sum() - debits.values().stream().mapToDouble(Double::doubleValue).sum();
+    }
+}</code></pre>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -779,24 +1315,234 @@ COMMIT;</code></pre>
       </div>
     </div>
 
-    <!-- TAB 3: CALCULATORS -->
-    <div id="tab-calculators" class="tab-content hidden space-y-4 sm:space-y-6">
-      <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-6">
-        <div>
-          <h2 class="text-base sm:text-lg font-bold text-white">Interactive Sizing & TCO Math Calculators</h2>
-          <p class="text-xs text-slate-400">Test capacity math scenarios live during interview prep.</p>
+    <!-- TAB 3: FLASHCARDS -->
+    <div id="tab-flashcards" class="tab-content hidden space-y-6">
+      <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Interactive Study Deck</span>
+            <h2 class="text-lg sm:text-xl font-extrabold text-white">Capital One System Design & Coding Flashcards</h2>
+            <p class="text-xs text-slate-400">Click any card to flip and reveal the engineering solution / trade-off.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-xl text-xs space-y-0.5">
+              <span class="text-slate-400 text-[10px] uppercase font-bold block">Progress:</span>
+              <span id="flashcard-progress" class="font-bold text-emerald-400 text-sm">0 / 4 Mastered</span>
+            </div>
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Card 1 -->
+          <div class="perspective-1000 h-64 cursor-pointer" onclick="flipCard(this)">
+            <div class="flashcard-inner relative w-full h-full rounded-2xl border border-slate-800 bg-slate-950 p-5 shadow-xs flex flex-col justify-between">
+              <div class="flashcard-front space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-400">Concept #1</span>
+                  <span class="text-[11px] text-slate-500">Tap to flip 🔄</span>
+                </div>
+                <h3 class="text-sm font-bold text-white leading-snug">Why use Redis Lua Scripting for credit limit authorization in Q2?</h3>
+                <p class="text-xs text-slate-400">What race condition does it prevent when two swipes occur simultaneously?</p>
+              </div>
+              <div class="flashcard-back absolute inset-0 bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-3 flex flex-col justify-between">
+                <div class="space-y-2">
+                  <span class="text-[10px] uppercase font-bold text-emerald-400">Answer & Architecture</span>
+                  <p class="text-xs text-slate-300 leading-relaxed">
+                    Redis executes Lua scripts atomically on a single thread. It prevents race conditions where concurrent swipes both read $1,000 credit limit and both approve ($1,200 total spend).
+                  </p>
+                </div>
+                <div class="flex gap-2" onclick="event.stopPropagation()">
+                  <button onclick="markFlashcard(this, true)" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white">Mastered</button>
+                  <button onclick="markFlashcard(this, false)" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300">Needs Review</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="perspective-1000 h-64 cursor-pointer" onclick="flipCard(this)">
+            <div class="flashcard-inner relative w-full h-full rounded-2xl border border-slate-800 bg-slate-950 p-5 shadow-xs flex flex-col justify-between">
+              <div class="flashcard-front space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400">Concept #2</span>
+                  <span class="text-[11px] text-slate-500">Tap to flip 🔄</span>
+                </div>
+                <h3 class="text-sm font-bold text-white leading-snug">Fixed Window vs. ZSET Sliding Window Rate Limiter?</h3>
+                <p class="text-xs text-slate-400">Why does fixed window fail at window boundaries?</p>
+              </div>
+              <div class="flashcard-back absolute inset-0 bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-3 flex flex-col justify-between">
+                <div class="space-y-2">
+                  <span class="text-[10px] uppercase font-bold text-amber-400">Answer & Architecture</span>
+                  <p class="text-xs text-slate-300 leading-relaxed">
+                    Fixed window allows 2x limit spike across boundary (e.g. 100 requests at 0:59 and 100 at 1:01). ZSET sliding window purges elements older than now - window, guaranteeing accurate rate caps.
+                  </p>
+                </div>
+                <div class="flex gap-2" onclick="event.stopPropagation()">
+                  <button onclick="markFlashcard(this, true)" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white">Mastered</button>
+                  <button onclick="markFlashcard(this, false)" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300">Needs Review</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="perspective-1000 h-64 cursor-pointer" onclick="flipCard(this)">
+            <div class="flashcard-inner relative w-full h-full rounded-2xl border border-slate-800 bg-slate-950 p-5 shadow-xs flex flex-col justify-between">
+              <div class="flashcard-front space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-rose-500/10 text-rose-400">Concept #3</span>
+                  <span class="text-[11px] text-slate-500">Tap to flip 🔄</span>
+                </div>
+                <h3 class="text-sm font-bold text-white leading-snug">Why strict Double-Entry Accounting for P2P Payments (Q5)?</h3>
+                <p class="text-xs text-slate-400">Why not use simple UPDATE balance statements?</p>
+              </div>
+              <div class="flashcard-back absolute inset-0 bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-3 flex flex-col justify-between">
+                <div class="space-y-2">
+                  <span class="text-[10px] uppercase font-bold text-rose-400">Answer & Architecture</span>
+                  <p class="text-xs text-slate-300 leading-relaxed">
+                    Direct balance updates lack auditability and risk phantom updates during retries. Double-entry inserts paired immutable DEBIT and CREDIT rows inside an ACID transaction.
+                  </p>
+                </div>
+                <div class="flex gap-2" onclick="event.stopPropagation()">
+                  <button onclick="markFlashcard(this, true)" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white">Mastered</button>
+                  <button onclick="markFlashcard(this, false)" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300">Needs Review</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="perspective-1000 h-64 cursor-pointer" onclick="flipCard(this)">
+            <div class="flashcard-inner relative w-full h-full rounded-2xl border border-slate-800 bg-slate-950 p-5 shadow-xs flex flex-col justify-between">
+              <div class="flashcard-front space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-purple-500/10 text-purple-400">Concept #4</span>
+                  <span class="text-[11px] text-slate-500">Tap to flip 🔄</span>
+                </div>
+                <h3 class="text-sm font-bold text-white leading-snug">How to isolate OLTP ledger from OLAP spending analytics (Q1)?</h3>
+                <p class="text-xs text-slate-400">What tool bridges PostgreSQL to ClickHouse?</p>
+              </div>
+              <div class="flashcard-back absolute inset-0 bg-slate-900 border border-slate-700 rounded-2xl p-5 space-y-3 flex flex-col justify-between">
+                <div class="space-y-2">
+                  <span class="text-[10px] uppercase font-bold text-purple-400">Answer & Architecture</span>
+                  <p class="text-xs text-slate-300 leading-relaxed">
+                    Debezium Change Data Capture (CDC) streams Aurora Postgres Write-Ahead Logs (WAL) into Kafka without overhead. Kafka sinks populate ClickHouse for sub-second analytics.
+                  </p>
+                </div>
+                <div class="flex gap-2" onclick="event.stopPropagation()">
+                  <button onclick="markFlashcard(this, true)" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white">Mastered</button>
+                  <button onclick="markFlashcard(this, false)" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300">Needs Review</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: MOCK INTERVIEW SIMULATOR -->
+    <div id="tab-mock-interview" class="tab-content hidden space-y-6">
+      <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">PowerDay Simulator</span>
+            <h2 class="text-lg sm:text-xl font-extrabold text-white">45-Minute System Design Mock Interview</h2>
+            <p class="text-xs text-slate-400">Simulate a full Capital One live interview loop with timed phases and rubric checklists.</p>
+          </div>
+          
+          <div class="flex items-center gap-3">
+            <div id="mock-timer-display" class="font-mono text-xl font-extrabold text-amber-400 bg-slate-950 border border-slate-800 px-4 py-2 rounded-xl">
+              45:00
+            </div>
+            <button id="timer-toggle-btn" onclick="toggleMockTimer()" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs">
+              Start Timer
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-4 text-xs">
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+              <span class="font-bold text-blue-400 uppercase">Phase 1: Scope & Clarifying Questions (0 - 5 min)</span>
+              <span class="text-[11px] text-slate-500">5 Mins</span>
+            </div>
+            <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-600">
+              <span>Ask about Active Users (DAU/MAU) & Peak Transactions per Second (TPS).</span>
+            </label>
+            <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-600">
+              <span>Clarify Availability SLA (99.99%) & P99 Latency budget (&lt; 100ms).</span>
+            </label>
+          </div>
+
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+              <span class="font-bold text-emerald-400 uppercase">Phase 2: High-Level Data Flow & Capacity Math (5 - 20 min)</span>
+              <span class="text-[11px] text-slate-500">15 Mins</span>
+            </div>
+            <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-emerald-600">
+              <span>Calculate RPS conversion (e.g. 10M req/day = 116 Avg RPS, 464 Peak RPS).</span>
+            </label>
+            <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-emerald-600">
+              <span>Draw end-to-end data flow: Client -&gt; API Gateway -&gt; Microservices -&gt; DB / Cache.</span>
+            </label>
+          </div>
+
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+              <span class="font-bold text-purple-400 uppercase">Phase 3: Deep Dive Subsystem & Schema Design (20 - 35 min)</span>
+              <span class="text-[11px] text-slate-500">15 Mins</span>
+            </div>
+            <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-purple-600">
+              <span>Detail database choice (Aurora PostgreSQL vs. DynamoDB vs. ClickHouse).</span>
+            </label>
+            <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-purple-600">
+              <span>Explain concurrency handling (Redis Lua atomic script / SELECT FOR UPDATE).</span>
+            </label>
+          </div>
+
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+              <span class="font-bold text-rose-400 uppercase">Phase 4: Resiliency, Failure Modes & Executive Pitch (35 - 45 min)</span>
+              <span class="text-[11px] text-slate-500">10 Mins</span>
+            </div>
+            <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-rose-600">
+              <span>Discuss failure isolation: Dead Letter Queues (DLQ), Rate Limiting, & Circuit Breakers.</span>
+            </label>
+            <label class="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-rose-600">
+              <span>Deliver 2-minute clear executive pitch summarizing trade-offs and cost vs performance.</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: SIZING MATH CALCULATORS -->
+    <div id="tab-calculators" class="tab-content hidden space-y-6">
+      <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
+        <div>
+          <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Capacity Planning</span>
+          <h2 class="text-lg sm:text-xl font-extrabold text-white">System Design Sizing Math Calculators</h2>
+          <p class="text-xs text-slate-400">Interactive tools for calculating RPS, throughput, and storage capacity horizons for Capital One interviews.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="bg-slate-950 p-4 sm:p-5 rounded-xl border border-slate-800 space-y-4">
-            <h3 class="text-xs sm:text-sm font-bold text-blue-400 uppercase">1. Requests Per Second (RPS) Calculator</h3>
+            <h3 class="text-xs sm:text-sm font-bold text-blue-400 uppercase">1. RPS & Throughput Calculator</h3>
             <div class="space-y-3 text-xs">
               <div>
-                <label class="block font-medium text-slate-400 mb-1">Monthly Active Requests (Millions):</label>
+                <label class="block font-medium text-slate-400 mb-1">Monthly Active Transactions (Millions):</label>
                 <input type="number" inputmode="decimal" id="calc-monthly-req" value="60" oninput="runCalculations()" class="w-full p-2.5 rounded-lg border border-slate-700 bg-slate-900 text-slate-100 font-semibold text-sm min-h-[44px]">
               </div>
               <div>
-                <label class="block font-medium text-slate-400 mb-1">Peak Load Multiplier:</label>
+                <label class="block font-medium text-slate-400 mb-1">Peak-to-Average Traffic Multiplier:</label>
                 <input type="number" inputmode="decimal" id="calc-peak-mult" value="4" oninput="runCalculations()" class="w-full p-2.5 rounded-lg border border-slate-700 bg-slate-900 text-slate-100 font-semibold text-sm min-h-[44px]">
               </div>
               <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl space-y-1.5 font-mono">
@@ -827,7 +1573,7 @@ COMMIT;</code></pre>
       </div>
     </div>
 
-    <!-- TAB 4: EXPANDED CHEAT SHEET -->
+    <!-- TAB 6: CHEAT SHEET -->
     <div id="tab-cheat-sheet" class="tab-content hidden space-y-6">
       <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
         <div>
@@ -911,41 +1657,10 @@ COMMIT;</code></pre>
             </table>
           </div>
         </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 text-xs">
-          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-            <h3 class="font-bold text-blue-400 uppercase">RPS Conversion Anchors</h3>
-            <ul class="space-y-1.5 font-mono text-[11px] text-slate-400">
-              <li>• 1 Million req/day ≈ <strong>12 RPS</strong></li>
-              <li>• 10 Million req/day ≈ <strong>116 RPS</strong></li>
-              <li>• 100 Million req/day ≈ <strong>1,160 RPS</strong></li>
-              <li>• 1 Day = <strong>86,400 seconds</strong></li>
-            </ul>
-          </div>
-
-          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-            <h3 class="font-bold text-emerald-400 uppercase">Data Sizing Hierarchy</h3>
-            <ul class="space-y-1.5 font-mono text-[11px] text-slate-400">
-              <li>• 1 KB = 1,000 Bytes (10^3)</li>
-              <li>• 1 MB = 1,000 KB (10^6 Bytes)</li>
-              <li>• 1 GB = 1,000 MB (10^9 Bytes)</li>
-              <li>• 1 TB = 1,000 GB (10^12 Bytes)</li>
-            </ul>
-          </div>
-
-          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-            <h3 class="font-bold text-purple-400 uppercase">Interview Delivery Pitch</h3>
-            <div class="space-y-1.5 text-[11px] text-slate-400 leading-relaxed">
-              <p><strong>Tech Case:</strong> Clarify Metrics → Capacity Math → Code Trade-offs → Direct Pitch</p>
-              <p><strong>System Design:</strong> Scope & SLAs → Data Flow → Data Model → Failure Isolation</p>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
 
-    <!-- TAB 5: PRACTICE QUIZ -->
+    <!-- TAB 7: PRACTICE QUIZ -->
     <div id="tab-quiz" class="tab-content hidden space-y-4 sm:space-y-6">
       <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-6">
         <div>
@@ -985,23 +1700,28 @@ COMMIT;</code></pre>
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.getElementById('tab-' + tabId).classList.remove('hidden');
+      const target = document.getElementById('tab-' + tabId);
+      if (target) target.classList.remove('hidden');
 
-      const tabs = ['tech-cases', 'system-design', 'calculators', 'cheat-sheet', 'quiz'];
+      const tabs = ['tech-cases', 'system-design', 'flashcards', 'mock-interview', 'calculators', 'cheat-sheet', 'quiz'];
       tabs.forEach(t => {
         const btn = document.getElementById('tab-btn-' + t);
-        if (t === tabId) {
-          btn.className = "flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white shadow-xs flex items-center gap-1.5 min-h-[38px]";
-        } else {
-          btn.className = "flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]";
+        if (btn) {
+          if (t === tabId) {
+            btn.className = "flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold transition-all bg-blue-600 text-white shadow-xs flex items-center gap-1.5 min-h-[38px]";
+          } else {
+            btn.className = "flex-shrink-0 px-3 py-2 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-1.5 min-h-[38px]";
+          }
         }
       });
+      setGlobalLang(currentLang);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function selectCase(caseId) {
       document.querySelectorAll('.case-detail-pane').forEach(el => el.classList.add('hidden'));
-      document.getElementById(caseId).classList.remove('hidden');
+      const target = document.getElementById(caseId);
+      if (target) target.classList.remove('hidden');
 
       document.querySelectorAll('.case-nav-item').forEach(el => {
         el.classList.remove('border-blue-500', 'bg-blue-500/10');
@@ -1011,11 +1731,14 @@ COMMIT;</code></pre>
 
       const mobileSelect = document.getElementById('mobile-case-select');
       if (mobileSelect) mobileSelect.value = caseId;
+
+      setGlobalLang(currentLang);
     }
 
     function selectSysQ(sysId) {
       document.querySelectorAll('.sys-detail-pane').forEach(el => el.classList.add('hidden'));
-      document.getElementById(sysId).classList.remove('hidden');
+      const target = document.getElementById(sysId);
+      if (target) target.classList.remove('hidden');
 
       document.querySelectorAll('.sys-nav-item').forEach(el => {
         el.classList.remove('border-blue-500', 'bg-blue-500/10');
@@ -1025,22 +1748,44 @@ COMMIT;</code></pre>
 
       const mobileSelect = document.getElementById('mobile-sys-select');
       if (mobileSelect) mobileSelect.value = sysId;
+
+      setGlobalLang(currentLang);
     }
 
     function setGlobalLang(lang) {
       currentLang = lang;
       const langs = ['python', 'go', 'java'];
+      
+      // 1. Update Header Buttons
       langs.forEach(l => {
         const btn = document.getElementById('lang-btn-' + l);
-        if (l === lang) {
-          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-xs";
-        } else {
-          btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white";
+        if (btn) {
+          if (l === lang) {
+            btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-xs border border-blue-400";
+          } else {
+            btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white border border-transparent";
+          }
         }
+      });
 
+      // 2. Update Card Sub-Buttons
+      document.querySelectorAll('.card-lang-btn').forEach(btn => {
+        const cardLang = btn.getAttribute('data-lang');
+        if (cardLang === lang) {
+          btn.className = "card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 text-white shadow-xs border border-blue-400";
+        } else {
+          btn.className = "card-lang-btn px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-400 hover:text-white border border-slate-800 bg-slate-900";
+        }
+      });
+
+      // 3. Update Code Block Visibilities
+      langs.forEach(l => {
         document.querySelectorAll('.code-block.lang-' + l).forEach(el => {
-          if (l === lang) el.classList.remove('hidden');
-          else el.classList.add('hidden');
+          if (l === lang) {
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
         });
       });
     }
@@ -1088,8 +1833,52 @@ COMMIT;</code></pre>
       }
     }
 
-    // Initialize
+    function flipCard(cardEl) {
+      const inner = cardEl.querySelector('.flashcard-inner');
+      inner.classList.toggle('flipped');
+    }
+
+    let masteredCount = 0;
+    function markFlashcard(btn, isMastered) {
+      const card = btn.closest('.perspective-1000');
+      if (isMastered) {
+        card.style.opacity = '0.6';
+        masteredCount++;
+      } else {
+        card.style.opacity = '1';
+      }
+      document.getElementById('flashcard-progress').textContent = masteredCount + " / 4 Mastered";
+    }
+
+    let timerInterval = null;
+    let secondsRemaining = 45 * 60;
+    function toggleMockTimer() {
+      const btn = document.getElementById('timer-toggle-btn');
+      const display = document.getElementById('mock-timer-display');
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.textContent = "Resume Timer";
+        btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-xs";
+      } else {
+        btn.textContent = "Pause Timer";
+        btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white shadow-xs";
+        timerInterval = setInterval(() => {
+          if (secondsRemaining <= 0) {
+            clearInterval(timerInterval);
+            display.textContent = "00:00 - Time Up!";
+            return;
+          }
+          secondsRemaining--;
+          const mins = Math.floor(secondsRemaining / 60);
+          const secs = secondsRemaining % 60;
+          display.textContent = (mins < 10 ? '0' : '') + mins + ":" + (secs < 10 ? '0' : '') + secs;
+        }, 1000);
+      }
+    }
+
     runCalculations();
+    setGlobalLang('python');
   </script>
 </body>
 </html>
