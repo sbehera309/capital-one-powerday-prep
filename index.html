@@ -771,7 +771,6 @@
         <!-- Detail Content -->
         <div class="lg:col-span-3 space-y-6">
           
-          <!-- Helper macro container rendered dynamically for Q1 to Q9 -->
 
           <!-- SYS QUESTION 1 -->
           <div id="sys-q1" class="sys-detail-pane space-y-4 sm:space-y-6 ">
@@ -2700,48 +2699,158 @@
       </div>
     </div>
 
-    <!-- TAB 6: CHEAT SHEET -->
+    <!-- TAB 6: CHEAT SHEET (ENHANCED & CLARIFIED FOR POSTGRES vs DYNAMODB & REDIS SETNX & DEBEZIUM) -->
     <div id="tab-cheat-sheet" class="tab-content hidden space-y-6">
       <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
-        <div class="border-b border-slate-800 pb-4">
-          <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Quick Reference Guide</span>
-          <h2 class="text-lg sm:text-xl font-extrabold text-white">Capital One Architecture & Cloud Trade-Offs Cheat Sheet</h2>
+        <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Quick Reference & Interview Cheat Sheet</span>
+            <h2 class="text-lg sm:text-xl font-extrabold text-white">System Design Trade-offs & Cloud Architectural Primitives</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/30 font-bold self-start sm:self-auto">
+            PowerDay 2025–2026 Core Reference
+          </span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-            <h3 class="font-bold text-blue-400 uppercase text-xs">1. AWS Serverless (Lambda) vs. Containers (ECS Fargate)</h3>
-            <ul class="space-y-1 text-slate-300 text-[11px]">
-              <li>• <strong>Lambda Pros:</strong> Auto-scales to 0, zero idle cost, managed scaling.</li>
-              <li>• <strong>Lambda Cons:</strong> Cold starts (~800ms), 15-min timeout limit, memory caps.</li>
-              <li>• <strong>ECS Fargate Pros:</strong> Zero cold starts, long-running WebSocket/gRPC streams, predictable cost at high throughput.</li>
-              <li>• <strong>ECS Fargate Cons:</strong> Pay for idle capacity, requires minimum task scaling.</li>
-            </ul>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs">
+          <!-- Card 1: Postgres vs DynamoDB -->
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+              <h3 class="font-bold text-emerald-400 uppercase text-xs flex items-center gap-1.5">
+                <span>🗄️</span> <span>1. PostgreSQL vs. DynamoDB</span>
+              </h3>
+              <span class="text-[10px] font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Database Trade-off</span>
+            </div>
+            
+            <div class="space-y-2 text-[11px] text-slate-300">
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
+                <strong class="text-emerald-400 font-bold text-xs block">PostgreSQL (Relational RDBMS / OLTP)</strong>
+                <p>• <strong>When to Use:</strong> Double-entry payment ledgers, account balances, strict foreign-key relations, multi-table transactions, and keyset pagination.</p>
+                <p>• <strong>Pros:</strong> Full ACID compliance, strong consistency, rich SQL expressions, flexible secondary indexes.</p>
+                <p>• <strong>Cons:</strong> Write scaling requires complex sharding; connection pooling overhead (HikariCP / PgBouncer required).</p>
+              </div>
+
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
+                <strong class="text-amber-400 font-bold text-xs block">DynamoDB (NoSQL Key-Value / Document)</strong>
+                <p>• <strong>When to Use:</strong> Single-key lookups (Partition Key + Sort Key), idempotency key logs, user session tokens, and PCI audit trails.</p>
+                <p>• <strong>Pros:</strong> Single-digit millisecond latency at any scale, serverless (unlimited write auto-scaling, no connection pools).</p>
+                <p>• <strong>Cons:</strong> No JOINs, multi-attribute queries require Global Secondary Indexes (GSIs), hard 400 KB item size limit.</p>
+              </div>
+            </div>
           </div>
 
-          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-            <h3 class="font-bold text-emerald-400 uppercase text-xs">2. Relational (PostgreSQL) vs. NoSQL (DynamoDB / Cassandra)</h3>
-            <ul class="space-y-1 text-slate-300 text-[11px]">
-              <li>• <strong>Postgres (RDBMS):</strong> ACID transactions, complex JOINs, double-entry ledgers, keyset pagination.</li>
-              <li>• <strong>DynamoDB (NoSQL):</strong> Single-digit millisecond latency at any scale, partition-key lookup, managed multi-region.</li>
-              <li>• <strong>ClickHouse / TimescaleDB:</strong> Columnar OLAP engines for spending analytics & 10M smart meter telemetry.</li>
-            </ul>
+          <!-- Card 2: Redis SETNX vs ElastiCache -->
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+              <h3 class="font-bold text-blue-400 uppercase text-xs flex items-center gap-1.5">
+                <span>⚡</span> <span>2. ElastiCache vs. Redis SETNX Lock</span>
+              </h3>
+              <span class="text-[10px] font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Concurrency Primitives</span>
+            </div>
+            
+            <div class="space-y-2 text-[11px] text-slate-300">
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
+                <strong class="text-blue-400 font-bold text-xs block">AWS ElastiCache (Redis Managed Cluster)</strong>
+                <p>• The <strong>managed cloud infrastructure / cluster software</strong> that hosts in-memory data (multi-AZ failover, cluster sharding, replication, and memory persistence).</p>
+              </div>
+
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
+                <strong class="text-cyan-300 font-bold text-xs block">Redis SETNX (`SET if Not eXists`) Atomic Command</strong>
+                <p>• An <strong>atomic command / lock primitive</strong> executed inside Redis (<code>SET key val NX EX 30</code>).</p>
+                <p>• Returns <code>1</code> if key is new (lock acquired), or <code>0</code> if key already exists (lock denied).</p>
+                <p>• <strong>Idempotency Use Case:</strong> Blocks duplicate payment requests (double-charging) in 1.2ms without hitting PostgreSQL.</p>
+                <p>• <strong>Cache Stampede Mutex:</strong> Ensures only 1 thread queries PostgreSQL on a cache miss while 10,000 requests wait for Redis to refresh.</p>
+              </div>
+            </div>
           </div>
 
-          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-            <h3 class="font-bold text-amber-400 uppercase text-xs">3. Consistency Trade-offs (Strong vs Eventual)</h3>
-            <ul class="space-y-1 text-slate-300 text-[11px]">
-              <li>• <strong>Strong Consistency:</strong> Core ledger transfers, credit limit authorization (Redis Lua, Raft consensus).</li>
-              <li>• <strong>Eventual Consistency:</strong> Debezium CDC -> Kafka -> ClickHouse analytics charts, push notifications.</li>
-            </ul>
+          <!-- Card 3: Debezium CDC -->
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+              <h3 class="font-bold text-purple-400 uppercase text-xs flex items-center gap-1.5">
+                <span>🔄</span> <span>3. Debezium Change Data Capture (CDC)</span>
+              </h3>
+              <span class="text-[10px] font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Event Streaming</span>
+            </div>
+            
+            <div class="space-y-2 text-[11px] text-slate-300">
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
+                <strong class="text-purple-400 font-bold text-xs block">What is Debezium CDC?</strong>
+                <p>• An open-source Kafka Connect connector that captures database row changes in real time by reading the database's internal transaction log (<strong>PostgreSQL WAL</strong> or MySQL Binlog) directly from disk.</p>
+              </div>
+
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
+                <strong class="text-purple-300 font-bold text-xs block">Why Use CDC in Banking Architectures?</strong>
+                <p>• <strong>Zero OLTP DB Impact:</strong> Reads disk logs asynchronously with ZERO <code>SELECT</code> queries or table locks on PostgreSQL.</p>
+                <p>• <strong>Solves Dual-Write Bug:</strong> Eliminates inconsistencies caused by apps writing to DB and Kafka in separate steps.</p>
+                <p>• <strong>Real-Time Analytics Ingestion:</strong> Streams committed ledger changes into ClickHouse (for monthly spending category charts) or Elasticsearch in &lt; 10ms.</p>
+              </div>
+            </div>
           </div>
 
-          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-            <h3 class="font-bold text-rose-400 uppercase text-xs">4. Idempotency & Concurrency Patterns</h3>
-            <ul class="space-y-1 text-slate-300 text-[11px]">
-              <li>• <strong>Idempotency Key:</strong> Redis <code>SETNX lock:pay:{uuid} PROCESSING EX 86400</code> blocks duplicate HTTP POSTs.</li>
-              <li>• <strong>Cache Stampede Guard:</strong> Singleflight mutex lock ensures only 1 thread fetches missed key from DB.</li>
-            </ul>
+          <!-- Card 4: Lambda vs ECS -->
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+              <h3 class="font-bold text-amber-400 uppercase text-xs flex items-center gap-1.5">
+                <span>☁️</span> <span>4. AWS Lambda vs. AWS ECS Fargate</span>
+              </h3>
+              <span class="text-[10px] font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Compute Strategy</span>
+            </div>
+            
+            <div class="space-y-2 text-[11px] text-slate-300">
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
+                <strong class="text-amber-400 font-bold text-xs block">AWS Serverless (Lambda)</strong>
+                <p>• <strong>Pros:</strong> Auto-scales to 0 (zero cost when idle), zero OS management, ideal for event triggers (SQS/S3).</p>
+                <p>• <strong>Cons:</strong> Cold starts (~800ms VPC setup), 15-minute execution limit, unsuited for long-running WebSockets/gRPC.</p>
+              </div>
+
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
+                <strong class="text-yellow-300 font-bold text-xs block">AWS ECS Fargate (Containerized Microservices)</strong>
+                <p>• <strong>Pros:</strong> Zero cold starts, predictable low latency, supports long-running gRPC/WebSocket streams and high sustained RPS.</p>
+                <p>• <strong>Cons:</strong> Pay for baseline idle capacity; requires container orchestration tuning.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5: Consistency Models -->
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+              <h3 class="font-bold text-rose-400 uppercase text-xs flex items-center gap-1.5">
+                <span>⚖️</span> <span>5. Strong Consistency vs. Eventual Consistency</span>
+              </h3>
+              <span class="text-[10px] font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">CAP Theorem</span>
+            </div>
+            
+            <div class="space-y-2 text-[11px] text-slate-300">
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
+                <strong class="text-rose-400 font-bold text-xs block">Strong Consistency (PostgreSQL / Raft Consensus / Redis Lua)</strong>
+                <p>• <strong>Use Cases:</strong> Account ledger balances, credit limit authorizations, P2P money transfers.</p>
+                <p>• <strong>Trade-off:</strong> Higher latency (must wait for cross-node sync/locks); rejects writes if network split occurs (CAP: C over A).</p>
+              </div>
+
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
+                <strong class="text-rose-300 font-bold text-xs block">Eventual Consistency (Debezium CDC → Kafka → ClickHouse)</strong>
+                <p>• <strong>Use Cases:</strong> Monthly spending analytics charts, push notifications, audit logs.</p>
+                <p>• <strong>Trade-off:</strong> Sub-second propagation delay before updates reflect on analytics dashboards; maximum write throughput and 99.999% availability.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6: Interview Time Management Framework -->
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+              <h3 class="font-bold text-teal-400 uppercase text-xs flex items-center gap-1.5">
+                <span>⏱️</span> <span>6. PowerDay 45-Minute System Design Framework</span>
+              </h3>
+              <span class="text-[10px] font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Interview Strategy</span>
+            </div>
+            
+            <div class="space-y-1.5 text-[11px] text-slate-300">
+              <p>• <strong>0 – 5 min: Scope & Clarifying Questions</strong> (Establish RPS, SLAs, Read:Write ratio, Consistency requirements).</p>
+              <p>• <strong>5 – 20 min: High-Level Architecture Diagram</strong> (Draw boxes: Client → Gateway → Service → DB → Event Bus → Analytics).</p>
+              <p>• <strong>20 – 40 min: Deep Dives & Bottleneck Mitigations</strong> (Compare PostgreSQL vs DynamoDB, Redis SETNX locks, CDC WAL streaming, Raft consensus).</p>
+              <p>• <strong>40 – 45 min: Summary & Retrospective</strong> (Address single points of failure, security, and trade-offs).</p>
+            </div>
           </div>
         </div>
       </div>
