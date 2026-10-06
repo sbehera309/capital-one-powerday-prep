@@ -558,7 +558,7 @@ def calculate_profit(amount: float) -> float:
     }''',
                 "solution_go": '''func CalculateTransactionMargin(amount float64) MarginResult {
 	interchange := (amount * 0.0175) + 0.10
-	costs := (amount * 0.0015) + (amount * 0.0100) + (amount * 0.025)
+	costs := (amount * 0.0015) + (amount * 0.0100) + (amount * 0.0025)
 	net := interchange - costs
 	return MarginResult{Amount: amount, Interchange: interchange, NetMargin: net, IsProfitable: net > 0}
 }''',
@@ -683,13 +683,13 @@ def calculate_profit(amount: float) -> float:
         <select id="mobile-sys-select" onchange="selectSysQ(this.value)" class="w-full p-2.5 text-xs rounded-lg border border-slate-700 bg-slate-950 text-slate-100 font-semibold min-h-[44px]">
           <option value="sys-q1">Q1: Credit Card Account Management & Payment Portal (2025-2026)</option>
           <option value="sys-q2">Q2: Credit Limit Concurrent Throttler & Atomic Balance (2025-2026)</option>
-          <option value="sys-q3">Q3: Active-Active Multi-Region Core Banking System (NEW 2025-2026)</option>
-          <option value="sys-q4">Q4: Distributed API Rate Limiter & Core Banking Gateway (Late 2024)</option>
-          <option value="sys-q5">Q5: Real-Time POS Fraud Detection Engine (Mid 2024)</option>
-          <option value="sys-q6">Q6: Peer-to-Peer Payment Platform (Zelle / Venmo Clone) (2024-2025)</option>
-          <option value="sys-q7">Q7: Enterprise Multi-Channel Notification Engine (2024)</option>
-          <option value="sys-q8">Q8: Banking Distributed Cache Architecture & Stampede Guard (Early 2024)</option>
-          <option value="sys-q9">Q9: Smart Meter Telemetry 10M Ingestion (2023-2024)</option>
+          <option value="sys-q9">Q3: Active-Active Multi-Region Core Banking System (NEW 2025-2026)</option>
+          <option value="sys-q3">Q4: Distributed API Rate Limiter & Core Banking Gateway (Late 2024)</option>
+          <option value="sys-q4">Q5: Real-Time POS Fraud Detection Engine (Mid 2024)</option>
+          <option value="sys-q5">Q6: Peer-to-Peer Payment Platform (Zelle / Venmo Clone) (2024-2025)</option>
+          <option value="sys-q6">Q7: Enterprise Multi-Channel Notification Engine (2024)</option>
+          <option value="sys-q7">Q8: Banking Distributed Cache Architecture & Stampede Guard (Early 2024)</option>
+          <option value="sys-q8">Q9: Smart Meter Telemetry 10M Ingestion (2023-2024)</option>
         </select>
       </div>
 
@@ -1006,7 +1006,7 @@ def calculate_profit(amount: float) -> float:
                 </p>
               </div>
 
-              <!-- VISUAL SYSTEM DESIGN FRAMEWORK DIAGRAM (MATCHING USER REFERENCE LAYOUT) -->
+              <!-- VISUAL SYSTEM DESIGN FRAMEWORK DIAGRAM -->
               <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4 shadow-md overflow-hidden relative">
                 <!-- Top Bar: Title, Scenario Selector & Controls -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
@@ -1615,7 +1615,7 @@ def calculate_profit(amount: float) -> float:
 
   </main>
 
-  <!-- Interactive Bulletproof JavaScript Logic (Modular & Isolated) -->
+  <!-- Interactive Bulletproof JavaScript Logic (Modular & Complete Data for Q1 to Q9) -->
   <script>
     let currentLang = 'python';
 
@@ -1709,6 +1709,10 @@ def calculate_profit(amount: float) -> float:
         const target = document.getElementById(sysId);
         if (target) {
           target.classList.remove('hidden');
+          const qId = sysId.replace('sys-', '');
+          if (activeSimState[qId]) {
+            renderSimStep(qId);
+          }
         }
 
         document.querySelectorAll('.sys-nav-item').forEach(el => {
@@ -1753,7 +1757,7 @@ def calculate_profit(amount: float) -> float:
       }
     }
 
-    /* SYSTEM DESIGN ANIMATED TOPOLOGY DATA */
+    /* COMPLETE SYSTEM DESIGN ANIMATED TOPOLOGY DATA FOR ALL QUESTIONS Q1 TO Q9 */
     const sysSimData = {
       q1: {
         scenarios: [
@@ -1793,7 +1797,7 @@ def calculate_profit(amount: float) -> float:
           }
         ]
       },
-      q3: {
+      q9: {
         scenarios: [
           {
             name: "Scenario 1: Multi-Region Active-Active Consensus & Failover",
@@ -1808,6 +1812,120 @@ def calculate_profit(amount: float) -> float:
               { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Raft Consensus Synchronizes Across Regions", protocol: "Raft Consensus", headers: "Quorum: 3/5 Replicas Ack", body: "{\\n  \\"us_east_ack\\": true\\n}", action: "Raft consensus writes transaction synchronously to US-East & US-West nodes.", response: "Raft Committed", badge: "RAFT SYNC" },
               { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Total AWS US-East-1 Regional Outage Occurs!", protocol: "Route 53 Health Check", headers: "us-east-1: UNHEALTHY", body: "{\\n  \\"outage\\": true\\n}", action: "AWS US-East-1 loses total power. Health check fails after 2 consecutive probes.", response: "Health Check Failed", badge: "OUTAGE ALERT" },
               { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Route 53 DNS Failover to US-West-2 in 2.8s", protocol: "DNS Anycast Failover", headers: "Active: us-west-2", body: "{\\n  \\"recovered\\": true\\n}", action: "Route 53 shifts 100% traffic to US-West-2. Zero transaction data lost!", response: "100% Recovered (2.8s)", badge: "ZERO RPO" }
+            ]
+          }
+        ]
+      },
+      q3: {
+        scenarios: [
+          {
+            name: "Scenario 1: Under Quota Request (200 OK)",
+            nodes: [
+              { title: "Partner App", sub: "HTTP Request" },
+              { title: "Envoy Gateway", sub: "Extract API Key" },
+              { title: "Redis ZSET", sub: "Sliding Window" },
+              { title: "Core Banking", sub: "Process Request" }
+            ],
+            steps: [
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: Partner API Request", protocol: "HTTP/1.1 GET /v1/accounts", headers: "X-API-Key: key_partner_99", body: "{}", action: "Partner app sends GET request to core banking API.", response: "Pending...", badge: "REQUEST" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Envoy Gateway Key Check", protocol: "Envoy Filter Engine", headers: "Key: key_partner_99", body: "{\\n  \\"client_id\\": \\"client_fintech_99\\",\\n  \\"limit_per_min\\": 100\\n}", action: "Envoy extracts client ID and fetches rate limit quota profile.", response: "Routing to Redis Limiter", badge: "PROFILE OK" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Redis ZSET Sliding Window Counter", protocol: "Redis Pipeline", headers: "ZSET-Key: rate:client_fintech_99", body: "{\\n  \\"active_count_in_window\\": 42,\\n  \\"limit\\": 100,\\n  \\"allowed\\": true\\n}", action: "Redis purges timestamps older than now - 60s. Count = 42 < 100 limit.", response: "Allowed (42/100)", badge: "ZSET PASS" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Core Banking Service Responds with 200 OK", protocol: "gRPC Core Banking", headers: "X-RateLimit-Remaining: 57", body: "{\\n  \\"status\\": \\"SUCCESS\\"\\n}", action: "Core banking service returns account data with remaining quota headers.", response: "200 OK (Remaining: 57)", badge: "200 OK" }
+            ]
+          }
+        ]
+      },
+      q4: {
+        scenarios: [
+          {
+            name: "Scenario 1: Real-Time Fraud Evaluation (Sub-50ms)",
+            nodes: [
+              { title: "POS Terminal", sub: "NYC Swipe $45" },
+              { title: "Ingress Gateway", sub: "Fast Path Fork" },
+              { title: "Flink Stream", sub: "Velocity Check" },
+              { title: "ML Scorer", sub: "Score 8/100 (Low)" }
+            ],
+            steps: [
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: Merchant Swipes Card in New York City", protocol: "POS Auth Request", headers: "Terminal: NYC_Starbucks_102", body: "{\\n  \\"amount\\": 45.00,\\n  \\"city\\": \\"New York\\"\\n}", action: "POS terminal sends swipe data to fraud evaluation service.", response: "Pending Evaluation", badge: "SWIPED" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Fast Path Authorization Sub-50ms", protocol: "gRPC Pipeline", headers: "X-Trace-ID: trc_nyc_1", body: "{\\n  \\"fast_path_allowed\\": true\\n}", action: "Fast path verifies pin & card status, approving POS in 22ms while emitting event to Kafka.", response: "POS Approved (22ms)", badge: "APPROVED" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Flink Window Evaluates Distance Velocity", protocol: "Flink Stateful Stream", headers: "State: NYC (10m ago) -> NYC (now)", body: "{\\n  \\"velocity\\": 0\\n}", action: "Flink confirms distance between purchases is 0 miles. Normal pattern.", response: "Velocity Normal", badge: "FLINK OK" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Machine Learning Inference Score = 8/100", protocol: "Triton ML Model", headers: "Model: Fraud_v4_GBDT", body: "{\\n  \\"fraud_score\\": 8\\n}", action: "ML model scores transaction 8/100 risk. Transaction settled normally.", response: "Status: 200 OK", badge: "LOW RISK" }
+            ]
+          }
+        ]
+      },
+      q5: {
+        scenarios: [
+          {
+            name: "Scenario 1: Instant P2P Transfer (Double-Entry Ledger)",
+            nodes: [
+              { title: "Sender Mobile App", sub: "Transfer $200" },
+              { title: "API Gateway", sub: "Auth & Idempotency" },
+              { title: "Saga Orchestrator", sub: "Double Entry Ledger" },
+              { title: "Kafka Event Bus", sub: "Push Notification" }
+            ],
+            steps: [
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: User A Transfers $200 to User B", protocol: "HTTP/2 POST /v1/p2p/transfers", headers: "Idempotency-Key: p2p_99182a", body: "{\\n  \\"sender_id\\": \\"usr_A\\",\\n  \\"amount\\": 200.00\\n}", action: "Sender submits instant P2P transfer request.", response: "202 Accepted", badge: "SUBMITTED" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Gateway Validates Balance & Acquires Lock", protocol: "gRPC Validation", headers: "Redis-Lock: lock:p2p:99182a", body: "{\\n  \\"sender_balance\\": 1250.00\\n}", action: "Gateway verifies sender has sufficient balance > $200 transfer.", response: "Validation Passed", badge: "VALIDATED" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Double-Entry DB Transaction (PostgreSQL)", protocol: "PostgreSQL BEGIN ... COMMIT", headers: "Txn-Iso: SERIALIZABLE", body: "BEGIN; INSERT INTO ledger VALUES ('A', -200); INSERT INTO ledger VALUES ('B', 200); COMMIT;", action: "Executes paired DEBIT (-$200) and CREDIT (+$200). Sum = $0.", response: "DB Committed", badge: "COMMITTED" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Kafka Event Trigger & Push Notification", protocol: "Kafka c1.p2p.events", headers: "Event: P2PTransferCompleted", body: "{\\n  \\"transfer_id\\": \\"trf_881\\"\\n}", action: "Kafka event published. Receiver receives push notification: 'You received $200!'", response: "200 OK", badge: "COMPLETED" }
+            ]
+          }
+        ]
+      },
+      q6: {
+        scenarios: [
+          {
+            name: "Scenario 1: High-Priority Fraud SMS Alert",
+            nodes: [
+              { title: "Fraud Service", sub: "Emit High Priority" },
+              { title: "Notification Router", sub: "Preference Check" },
+              { title: "SQS FIFO Queue", sub: "high-priority.fifo" },
+              { title: "Twilio Worker", sub: "Delivered in <1.2s" }
+            ],
+            steps: [
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: Fraud Service Emits Alert Event", protocol: "gRPC Internal", headers: "Priority: HIGH", body: "{\\n  \\"user_id\\": \\"u_9921\\",\\n  \\"channel\\": \\"SMS\\"\\n}", action: "Fraud engine emits critical alert to notification engine.", response: "Routing Alert", badge: "EMITTED" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Preference Check Bypasses Quiet Hours", protocol: "User Preference DB", headers: "Is-Fraud: TRUE", body: "{\\n  \\"phone\\": \\"+15550192834\\"\\n}", action: "Fraud severity overrides quiet hours settings.", response: "Queued to High Priority", badge: "BYPASSED" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Pushed to High-Priority SQS FIFO Queue", protocol: "AWS SQS SendMessage", headers: "Queue: high-priority-alerts.fifo", body: "{\\n  \\"msg_id\\": \\"msg_88192\\"\\n}", action: "Alert pushes to dedicated high-priority queue, bypassing marketing batches.", response: "Enqueued", badge: "PRIORITY QUEUED" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Twilio Worker Delivers SMS to User Phone", protocol: "HTTPS POST Twilio API", headers: "Host: api.twilio.com", body: "{\\n  \\"status\\": \\"delivered\\"\\n}", action: "SMS delivered to user's phone in 1.18 seconds!", response: "DELIVERED (1.18s)", badge: "DELIVERED" }
+            ]
+          }
+        ]
+      },
+      q7: {
+        scenarios: [
+          {
+            name: "Scenario 1: Cache Miss Thundering Herd (Singleflight Lock)",
+            nodes: [
+              { title: "10,000 Concurrent Reqs", sub: "GET /profile/acc_99" },
+              { title: "Redis Cache Cluster", sub: "CACHE MISS (Expired)" },
+              { title: "Singleflight Mutex", sub: "1 Thread Queries DB" },
+              { title: "Redis Cache Update", sub: "9,999 Served from Redis" }
+            ],
+            steps: [
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: 10,000 Concurrent Requests for Hot Key", protocol: "HTTP GET /profile/acc_99", headers: "Connections: 10,000", body: "{}", action: "Hot cache key profile:acc_99 expires. 10,000 requests hit gateway simultaneously.", response: "Cache Lookup", badge: "10K REQS" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Redis Cluster Returns Cache Miss", protocol: "Redis GET profile:acc_99", headers: "Result: NULL", body: "{\\n  \\"hit\\": false\\n}", action: "Redis indicates key is missing.", response: "CACHE MISS", badge: "CACHE MISS" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Singleflight Mutex Lock Granted to Thread 1", protocol: "Redis SETNX lock:profile:acc_99 EX 5", headers: "Lock: Thread 1 GRANTED", body: "{\\n  \\"waiting_threads\\": 9999\\n}", action: "Thread 1 acquires lock & queries DB. Threads 2-10,000 enter spin-wait.", response: "DB Query In Flight", badge: "MUTEX LOCK" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Thread 1 Populates Redis -> 9,999 Requests Hit Cache!", protocol: "Redis SET profile:acc_99 EX 300", headers: "TTL: 300s", body: "{\\n  \\"served_from_redis\\": 9999\\n}", action: "Thread 1 writes profile to Redis. 9,999 waiting requests fetch result from Redis instantly!", response: "200 OK (DB Protected)", badge: "STAMPEDE GUARDED" }
+            ]
+          }
+        ]
+      },
+      q8: {
+        scenarios: [
+          {
+            name: "Scenario 1: 10M Smart Meter Telemetry Ingestion",
+            nodes: [
+              { title: "10M Smart Meters", sub: "15s Telemetry Pulse" },
+              { title: "AWS Kinesis Broker", sub: "700k msgs/sec Ingest" },
+              { title: "Flink Windowing", sub: "5-min Rolling Avg" },
+              { title: "TimescaleDB & S3", sub: "Hypertables & Parquet" }
+            ],
+            steps: [
+              { nodeIdx: 0, lineId: "line-0-1", title: "Step 1: 10 Million Smart Meters Transmit Data", protocol: "MQTT over TLS 1.3", headers: "Topic: telemetry/meters", body: "{\\n  \\"kw_usage\\": 4.2\\n}", action: "Meters stream usage data every 15 seconds.", response: "MQTT Ack", badge: "MQTT INGEST" },
+              { nodeIdx: 1, lineId: "line-1-2", title: "Step 2: Kinesis Shards Aggregate Stream Data", protocol: "AWS Kinesis Data Streams", headers: "Shards: 64", body: "{\\n  \\"msgs_sec\\": 700000\\n}", action: "64 Kinesis shards ingest 700,000 messages/sec smoothly.", response: "Kinesis Partitioned", badge: "KINESIS OK" },
+              { nodeIdx: 2, lineId: "line-1-2", title: "Step 3: Flink Windowing Detects Grid Overload Surges", protocol: "Flink Tumbling Window (5m)", headers: "Window: 13:00 - 13:05", body: "{\\n  \\"status\\": \\"NORMAL\\"\\n}", action: "Flink computes 5-minute rolling averages per transformer district.", response: "Stream Windowed", badge: "FLINK STREAM" },
+              { nodeIdx: 3, lineId: "line-1-2", title: "Step 4: Batch Writes to TimescaleDB & S3 Parquet", protocol: "TimescaleDB Hypertable & S3", headers: "Table: meter_telemetry", body: "{\\n  \\"archived\\": true\\n}", action: "Data written to TimescaleDB for dashboards and archived to S3 Parquet for Athena.", response: "Stored & Archived", badge: "TIMESCALEDB" }
             ]
           }
         ]
@@ -2163,4 +2281,4 @@ def calculate_profit(amount: float) -> float:
 </html>''')
 
 create_index_html()
-print("Successfully generated modular, bulletproof index.html with recency-ordered cases and isolated tabs.")
+print("Successfully generated build_index_html.py with complete sysSimData for Q1..Q9 and bulletproof case switching.")
