@@ -30,7 +30,10 @@ export function renderSystemDesign(containerEl, navContainerEl, mobileSelectEl) 
 
   // 3. Render System Design Panes & Interactive Topology Simulators
   containerEl.innerHTML = sysDesignQuestions.map((q, idx) => {
-    const sim = sysSimData[q.id.replace('sys-', '')] || sysSimData['q1'];
+    const simKey = q.id.replace('sys-', '');
+    const sim = sysSimData[simKey] || sysSimData['q1'];
+    const nodes = sim.scenarios[0].nodes;
+
     return `
       <div id="${q.id}" class="sys-detail-pane space-y-4 sm:space-y-6" style="display: ${idx === 0 ? 'block' : 'none'};">
         <div class="bg-slate-850 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
@@ -64,87 +67,48 @@ export function renderSystemDesign(containerEl, navContainerEl, mobileSelectEl) 
               </div>
               <div class="flex items-center gap-2">
                 <label class="text-[11px] font-medium text-slate-400">Scenario:</label>
-                <select id="${q.id.replace('sys-', '')}-scenario-select" onchange="window.changeScenario('${q.id.replace('sys-', '')}', this.value)" class="bg-slate-850 border border-slate-700 text-xs text-slate-200 rounded-lg px-2.5 py-1 focus:outline-none focus:border-blue-500">
+                <select id="${simKey}-scenario-select" onchange="window.changeScenario('${simKey}', this.value)" class="bg-slate-850 border border-slate-700 text-xs text-slate-200 rounded-lg px-2.5 py-1 focus:outline-none focus:border-blue-500">
                   ${sim.scenarios.map((scen, sIdx) => `<option value="${sIdx}">${escapeHTML(scen.name)}</option>`).join('')}
                 </select>
               </div>
             </div>
 
-            <!-- SVG Topology Interactive Diagram Area (4-Tier Vertical Architectural Flow) -->
+            <!-- Dynamic Multi-Tier Architectural Topology Diagram Area -->
             <div class="p-4 sm:p-6 space-y-4">
-              <div class="grid grid-cols-1 gap-2 relative">
-                
-                <!-- Tier 1 Node: Client / Ingress -->
-                <div id="${q.id.replace('sys-', '')}-node-1" class="cursor-pointer p-3 rounded-xl border border-blue-500 bg-blue-500/20 transition-all duration-300 relative group node-active">
-                  <div class="flex items-center justify-between">
-                    <span id="${q.id.replace('sys-', '')}-node-1-title" class="text-xs font-bold text-white">${escapeHTML(sim.scenarios[0].nodes[0].title)}</span>
-                    <span id="${q.id.replace('sys-', '')}-node-1-badge" class="px-1.5 py-0.5 rounded bg-blue-600 text-white font-bold text-[9px]">ACTIVE</span>
+              <div class="grid grid-cols-1 gap-1 relative">
+                ${nodes.map((node, nIdx) => `
+                  <!-- Node ${nIdx + 1} -->
+                  <div id="${simKey}-node-${nIdx + 1}" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-950 transition-all duration-300 relative group ${nIdx === 0 ? 'border-blue-500 bg-blue-500/20 node-active' : ''}">
+                    <div class="flex items-center justify-between">
+                      <span id="${simKey}-node-${nIdx + 1}-title" class="text-xs font-bold text-white">${escapeHTML(node.title)}</span>
+                      <span id="${simKey}-node-${nIdx + 1}-badge" class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-bold text-[9px]">${nIdx === 0 ? 'ACTIVE' : 'WAITING'}</span>
+                    </div>
+                    <div id="${simKey}-node-${nIdx + 1}-sub" class="text-[11px] text-slate-400 mt-0.5">${escapeHTML(node.sub)}</div>
                   </div>
-                  <div id="${q.id.replace('sys-', '')}-node-1-sub" class="text-[11px] text-slate-400 mt-0.5">${escapeHTML(sim.scenarios[0].nodes[0].sub)}</div>
-                </div>
 
-                <!-- SVG Flow Line 1 -> 2 -->
-                <div class="w-full h-7 relative my-0.5">
-                  <svg class="w-full h-full absolute inset-0 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 28">
-                    <path id="${q.id.replace('sys-', '')}-line-0-1" class="flow-line" d="M 200 0 L 200 28" />
-                  </svg>
-                </div>
-
-                <!-- Tier 2 Node: API Gateway & Auth Services -->
-                <div id="${q.id.replace('sys-', '')}-node-2" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-950 transition-all duration-300 relative group">
-                  <div class="flex items-center justify-between">
-                    <span id="${q.id.replace('sys-', '')}-node-2-title" class="text-xs font-bold text-white">${escapeHTML(sim.scenarios[0].nodes[1].title)}</span>
-                    <span id="${q.id.replace('sys-', '')}-node-2-badge" class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-bold text-[9px]">WAITING</span>
-                  </div>
-                  <div id="${q.id.replace('sys-', '')}-node-2-sub" class="text-[11px] text-slate-400 mt-0.5">${escapeHTML(sim.scenarios[0].nodes[1].sub)}</div>
-                </div>
-
-                <!-- SVG Flow Line 2 -> 3 -->
-                <div class="w-full h-7 relative my-0.5">
-                  <svg class="w-full h-full absolute inset-0 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 28">
-                    <path id="${q.id.replace('sys-', '')}-line-1-2" class="flow-line" d="M 200 0 L 200 28" />
-                  </svg>
-                </div>
-
-                <!-- Tier 3 Node: Transactional Database (OLTP) -->
-                <div id="${q.id.replace('sys-', '')}-node-3" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-950 transition-all duration-300 relative group">
-                  <div class="flex items-center justify-between">
-                    <span id="${q.id.replace('sys-', '')}-node-3-title" class="text-xs font-bold text-white">${escapeHTML(sim.scenarios[0].nodes[2].title)}</span>
-                    <span id="${q.id.replace('sys-', '')}-node-3-badge" class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-bold text-[9px]">WAITING</span>
-                  </div>
-                  <div id="${q.id.replace('sys-', '')}-node-3-sub" class="text-[11px] text-slate-400 mt-0.5">${escapeHTML(sim.scenarios[0].nodes[2].sub)}</div>
-                </div>
-
-                <!-- SVG Flow Line 3 -> 4 (CDC Stream / OLAP Pipeline) -->
-                <div class="w-full h-7 relative my-0.5">
-                  <svg class="w-full h-full absolute inset-0 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 28">
-                    <path id="${q.id.replace('sys-', '')}-line-2-3" class="flow-line" d="M 200 0 L 200 28" />
-                  </svg>
-                </div>
-
-                <!-- Tier 4 Node: Change Data Capture & Analytics Warehouse (OLAP) -->
-                <div id="${q.id.replace('sys-', '')}-node-4" class="cursor-pointer p-3 rounded-xl border border-slate-800 bg-slate-950 transition-all duration-300 relative group">
-                  <div class="flex items-center justify-between">
-                    <span id="${q.id.replace('sys-', '')}-node-4-title" class="text-xs font-bold text-white">${escapeHTML(sim.scenarios[0].nodes[3].title)}</span>
-                    <span id="${q.id.replace('sys-', '')}-node-4-badge" class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-bold text-[9px]">WAITING</span>
-                  </div>
-                  <div id="${q.id.replace('sys-', '')}-node-4-sub" class="text-[11px] text-slate-400 mt-0.5">${escapeHTML(sim.scenarios[0].nodes[3].sub)}</div>
-                </div>
-
+                  ${nIdx < nodes.length - 1 ? `
+                    <!-- Flow Line ${nIdx} -> ${nIdx + 1} -->
+                    <div class="w-full h-6 relative my-0.5">
+                      <svg class="w-full h-full absolute inset-0 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 24">
+                        <path id="${simKey}-line-${nIdx}-${nIdx + 1}" class="flow-line" d="M 200 0 L 200 24" />
+                      </svg>
+                    </div>
+                  ` : ''}
+                `).join('')}
               </div>
 
               <!-- Interactive Step Inspector Controls -->
               <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <span id="${q.id.replace('sys-', '')}-step-title" class="text-xs font-bold text-blue-400">Step 1: Initiation</span>
-                  <span id="${q.id.replace('sys-', '')}-step-protocol" class="text-[11px] font-mono text-cyan-400">HTTP/2 TLS 1.3</span>
+                  <span id="${simKey}-step-title" class="text-xs font-bold text-blue-400">Step 1: Initiation</span>
+                  <span id="${simKey}-step-protocol" class="text-[11px] font-mono text-cyan-400">HTTP/2 TLS 1.3</span>
                 </div>
-                <p id="${q.id.replace('sys-', '')}-step-action" class="text-xs text-slate-300 leading-relaxed">Click play or step through to simulate high-throughput traffic flow.</p>
+                <p id="${simKey}-step-action" class="text-xs text-slate-300 leading-relaxed">Click play or step through to simulate high-throughput traffic flow.</p>
                 <div class="flex items-center gap-2 pt-1">
-                  <button onclick="window.stepPrevFlow('${q.id.replace('sys-', '')}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">⏮ Prev</button>
-                  <button id="${q.id.replace('sys-', '')}-play-btn" onclick="window.playFlow('${q.id.replace('sys-', '')}')" class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white shadow-xs">▶ Play Animation</button>
-                  <button onclick="window.stepNextFlow('${q.id.replace('sys-', '')}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-750 text-xs font-bold text-slate-300">Next ⏭</button>
-                  <button onclick="window.resetFlow('${q.id.replace('sys-', '')}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-400 ml-auto">🔄 Reset</button>
+                  <button onclick="window.stepPrevFlow('${simKey}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">⏮ Prev</button>
+                  <button id="${simKey}-play-btn" onclick="window.playFlow('${simKey}')" class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white shadow-xs">▶ Play Animation</button>
+                  <button onclick="window.stepNextFlow('${simKey}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">Next ⏭</button>
+                  <button onclick="window.resetFlow('${simKey}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-400 ml-auto">🔄 Reset</button>
                 </div>
               </div>
             </div>
@@ -260,17 +224,19 @@ function renderSimStep(qId) {
 
   const scenario = data.scenarios[state.scenarioIdx];
   const step = scenario.steps[state.stepIdx];
+  const nodeCount = scenario.nodes.length;
 
-  // Update SVG line highlighting for vertical 4-tier pipeline
-  ['line-0-1', 'line-1-2', 'line-2-3'].forEach(lId => {
+  // Dynamically update SVG line highlighting
+  for (let l = 0; l < nodeCount - 1; l++) {
+    const lId = `line-${l}-${l + 1}`;
     const lineEl = document.getElementById(qId + '-' + lId);
     if (lineEl) {
       lineEl.setAttribute('class', (step.lineId === lId) ? "flow-line-active" : "flow-line");
     }
-  });
+  }
 
-  // Update Node states
-  for (let i = 1; i <= 4; i++) {
+  // Dynamically update Node states
+  for (let i = 1; i <= nodeCount; i++) {
     const nodeEl = document.getElementById(qId + '-node-' + i);
     const titleEl = document.getElementById(qId + '-node-' + i + '-title');
     const subEl = document.getElementById(qId + '-node-' + i + '-sub');
