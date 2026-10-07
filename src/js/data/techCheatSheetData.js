@@ -34,20 +34,22 @@ LIMIT $4;`,
       badge: "Financial Math",
       color: "cyan",
       category: "financial-math",
-      bugDescription: "Naive financial models treat gross Merchant Discount Rate (MDR) revenue as 100% net profit, ignoring expected credit default loss on outstanding uncollected future installments.",
-      fixPattern: "Factor expected credit loss (ECL) on the remaining 75% uncollected capital exposure across installments 2, 3, and 4.",
-      codeSnippet: `# ✅ Risk-Adjusted BNPL Yield Calculation
-upfront_mdr = order_val * 0.04
-uncollected_capital = order_val * 0.75 # Installments 2, 3, 4
-expected_default_loss = uncollected_capital * 0.012
-net_bank_profit = upfront_mdr - expected_default_loss # $16.00 - $3.60 = $12.40`,
+      bugDescription: "Flawed naive assumption: Net profit is assumed to be Gross MDR Fee ($400 × 4% = $16.00). Reality: Installment 1 ($100) is paid up-front at checkout with 0% risk. Credit default risk applies to the remaining 3 uncollected installments ($300 exposure = 75%). Ignoring default risk overstates profit by $3.60 (a 29% overestimation!).",
+      fixPattern: "Calculate Net Bank Profit = Upfront MDR Revenue ($16.00) - Expected Credit Loss Reserve ($300 × 1.2% = $3.60) = $12.40 Net Profit (3.10% Net Bank Yield).",
+      codeSnippet: `# ✅ Step-by-Step Risk-Adjusted BNPL Yield Model
+upfront_mdr = order_val * 0.04                  # $400 * 4.0% = $16.00 Gross Revenue
+merchant_payout = order_val - upfront_mdr        # $400 - $16.00 = $384.00 Payout
+uncollected_capital = order_val * 0.75           # Installments 2, 3, 4 = $300.00
+expected_default_loss = uncollected_capital * 0.012  # $300 * 1.2% = $3.60 Loss Reserve
+net_bank_profit = upfront_mdr - expected_default_loss  # $16.00 - $3.60 = $12.40 Profit
+net_bank_yield_pct = net_bank_profit / order_val       # $12.40 / $400 = 3.10% Yield`,
       keyFormulas: [
-        "Gross MDR Revenue = Order Value × 4.0%",
-        "Uncollected Capital Exposure = Order Value × 75%",
-        "Expected Loss = Uncollected Capital × Default Rate (1.2%)",
-        "Net Profit = $16.00 - $3.60 = $12.40 (3.10% Net Yield on $400 GMV)"
+        "Gross MDR Revenue = Order Value ($400) × 4.0% = $16.00",
+        "Uncollected Exposure = Order Value ($400) × 75% = $300.00",
+        "Expected Credit Loss (ECL) = $300.00 × 1.2% = $3.60",
+        "Net Profit = $16.00 - $3.60 = $12.40 (3.10% Net Yield on $400 GMV vs naive 4.00%)"
       ],
-      interviewerProTip: "Mention that factoring expected credit loss on uncollected debt aligns with CECL (Current Expected Credit Losses) and IFRS 9 banking accounting standards."
+      interviewerProTip: "State clearly to the interviewer: 'Because Installment 1 is paid up-front at checkout, credit exposure exists ONLY on Installments 2, 3, and 4 ($300). Under CECL / IFRS 9 banking rules, loss reserves must be applied against uncollected capital exposure ($300 × 1.2% = $3.60), resulting in a net profit of $12.40.'"
     },
     {
       id: "cs-case-3",

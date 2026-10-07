@@ -194,27 +194,27 @@ public double calculateBnplProfit(double orderAmount) {
     },
     explanation: {
       clarifyingQuestions: [
-        "Is the merchant payout settled immediately at transaction time (T+0), or per installment?",
-        "Does the 1.2% default rate apply to gross order value or remaining uncollected debt?",
-        "Are late fees or collection recovery offsets factored into the net yield calculation?"
+        "Is merchant payout settled immediately at checkout (T+0) or as installments are collected over time?",
+        "Does the 1.2% default loss rate apply to total order value ($400) or to uncollected future installments ($300)?",
+        "Are late payment penalty fees or debt collection recoveries included in net bank yield?"
       ],
-      hiddenTrap: "Naive financial models assume 100% installment collection efficiency, treating gross Merchant Discount Rate (MDR) revenue as 100% net profit. Because Installment 1 ($100) is paid up-front, the bank retains credit exposure only on Installments 2, 3, and 4 (75% of capital = $300). Ignoring default risk overstates net bank yield by $3.60 on a $400 transaction, leading to unprofitable underwriting.",
-      technicalRationale: "Net bank profit is modeled as Upfront MDR Fee minus Expected Credit Loss (ECL). Upfront MDR = $400 * 4.0% = $16.00. Expected Default Loss = ($400 * 75%) * 1.2% = $3.60. Net Bank Profit = $16.00 - $3.60 = $12.40 (a net yield of 3.10% on $400 GMV).",
+      hiddenTrap: "FLAWED NAIVE ASSUMPTION:\nMany developers assume net profit is simply Gross MDR Fee ($400 × 4.0% = $16.00), treating the product as having a 4.0% profit margin.\n\nTHE FINANCIAL RISK REALITY:\nInstallment 1 ($100) is paid immediately at checkout by the customer, so there is ZERO credit risk on Installment 1. The bank extends credit ONLY on Installments 2, 3, and 4 ($300 total or 75% of order value) over 90 days. If 1.2% of customers default across installments 2–4, the expected credit loss (ECL) is 1.2% of $300 = $3.60. Ignoring default risk overstates net bank profit by $3.60 (a 29% overestimation of net profit!).",
+      technicalRationale: "COMPLETE STEP-BY-STEP FINANCIAL MATH BREAKDOWN:\n\n1. Order Breakdown:\n   • Order Value = $400.00 split into 4 equal installments of $100.00.\n   • Installment 1 ($100.00): Paid up-front at checkout (0% default risk exposure).\n   • Installments 2, 3, 4 ($300.00): Outstanding uncollected credit exposure = $400.00 × 75%.\n\n2. Merchant Settlement:\n   • Merchant Discount Rate (MDR) = 4.0% up front.\n   • Gross MDR Revenue to Bank = $400.00 × 4.0% = $16.00.\n   • Net Merchant Payout = $400.00 - $16.00 = $384.00.\n\n3. Credit Loss Reserve (CECL / IFRS 9 Standard):\n   • Expected Default Loss = Uncollected Exposure × Default Rate\n   • Expected Default Loss = $300.00 × 1.2% = $3.60.\n\n4. Net Bank Profit & Portfolio Yield:\n   • Net Bank Profit = Gross MDR Revenue - Expected Default Loss\n   • Net Bank Profit = $16.00 - $3.60 = $12.40.\n   • Net Bank Yield % = $12.40 / $400.00 = 3.10% (vs naive 4.00% assumption).",
       alternatives: [
         {
-          name: "Gross Revenue Model (No Reserve)",
+          name: "Gross Revenue Model (Zero Loss Reserve)",
           status: "Rejected",
-          reason: "Violates CECL banking accounting standards and overstates portfolio yield by 29%."
+          reason: "Assumes 100% collection efficiency, overstating net bank profit by 29% ($16.00 vs $12.40) and violating CECL banking regulations."
         },
         {
-          name: "Flat GMV Default Reserve",
+          name: "Gross GMV Loss Reserve ($400 × 1.2%)",
           status: "Considered",
-          reason: "Inaccurate because Installment 1 is collected immediately at checkout without default exposure."
+          reason: "Flawed because Installment 1 ($100) is collected immediately at checkout without credit default exposure."
         },
         {
-          name: "Uncollected Capital ECL Model (Selected)",
+          name: "Uncollected Capital ECL Reserve (Selected)",
           status: "Selected",
-          reason: "Precision credit risk modeling aligned with banking capital reserves and IFRS 9 guidelines."
+          reason: "Accurate credit risk modeling ($300 uncollected exposure × 1.2% default rate = $3.60 loss), yielding exact $12.40 net profit (3.10% net yield)."
         }
       ]
     }
@@ -722,7 +722,7 @@ public double calcInterchange(double amount) {
         "Does the issuer bank or acquiring merchant absorb the tokenization fee?",
         "Are card-not-present (CNP) vs card-present (CP) fee structures differentiated?"
       ],
-      hiddenTrap: "Engineers often calculate card fees by multiplying the variable percentage ($1.75\%$) while omitting fixed per-transaction cents ($\$0.10$ interchange fee and $\$0.02$ Apple/Google Pay tokenization fee). On micro-transactions ($<\$10$), fixed fees constitute over 50% of the total processing cost. Omitting fixed cents distorts revenue modeling by up to 15%.",
+      hiddenTrap: "Engineers often calculate card fees by multiplying the variable percentage ($1.75\%)$) while omitting fixed per-transaction cents ($\$0.10$ interchange fee and $\$0.02$ Apple/Google Pay tokenization fee). On micro-transactions ($<\$10$), fixed fees constitute over 50% of the total processing cost. Omitting fixed cents distorts revenue modeling by up to 15%.",
       technicalRationale: "Full fee breakdown on a $50 payment:\n1. Interchange Fee: ($50 * 0.0175) + $0.10 = $0.875 + $0.10 = $0.975\n2. Network Assessment Fee: ($50 * 0.0013) = $0.065\n3. Tokenization Fee: $0.02\nTotal Processing Fee = $0.975 + $0.065 + $0.02 = $1.06.\nMerchant Net Payout = $50.00 - $1.06 = $48.94.",
       alternatives: [
         {
