@@ -1,6 +1,7 @@
 // Master Application Orchestrator & Router
 
 import { renderTechnicalCases, selectCase, toggleSolution, setGlobalLang } from './modules/casesModule.js';
+import { renderTechCheatSheet } from './modules/techCheatSheetModule.js';
 import { renderSystemDesign, selectSysQ, initSimulators, changeScenario, playFlow, pauseFlow, stepNextFlow, stepPrevFlow, resetFlow } from './modules/sysDesignModule.js';
 import { renderFlashcards, flipCard, markFlashcard } from './modules/flashcardsModule.js';
 import { renderCalculators, runCalculations } from './modules/calculatorsModule.js';
@@ -28,7 +29,16 @@ window.checkAnswer = checkAnswer;
 
 // Tab Navigation Manager
 export function switchTab(tabId) {
-  const tabs = ['tech-cases', 'system-design', 'flashcards', 'mock-interview', 'calculators', 'cheat-sheet', 'quiz'];
+  const tabs = [
+    'tech-cases', 
+    'tech-cheat-sheet', 
+    'system-design', 
+    'flashcards', 
+    'mock-interview', 
+    'calculators', 
+    'cheat-sheet', 
+    'quiz'
+  ];
   
   tabs.forEach(t => {
     const tabEl = document.getElementById('tab-' + t);
@@ -55,6 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tech-cases-sidebar'),
     document.getElementById('mobile-case-select')
   );
+
+  renderTechCheatSheet(document.getElementById('tab-tech-cheat-sheet'));
 
   renderSystemDesign(
     document.getElementById('system-design-content'),
