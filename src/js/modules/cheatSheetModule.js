@@ -19,7 +19,7 @@ export function renderCheatSheet(containerEl) {
             Capital One Enterprise Architecture & Trade-Offs
           </h2>
           <p class="text-xs text-slate-400 mt-1">
-            Production-grade comparisons for AWS compute, database engines, networking, streaming, and distributed design patterns.
+            Production-grade comparisons for AWS compute, database engines, networking, streaming, ACID guarantees, and distributed design patterns.
           </p>
         </div>
 
@@ -29,7 +29,7 @@ export function renderCheatSheet(containerEl) {
             type="text" 
             id="cheatsheet-search" 
             oninput="window.filterCheatSheet()" 
-            placeholder="Search Fargate, Kinesis, SQS, Redis, NLB..." 
+            placeholder="Search ACID, Fargate, Kinesis, Redis, WAL..." 
             class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-mono"
           />
           <svg class="w-4 h-4 text-slate-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,6 +42,9 @@ export function renderCheatSheet(containerEl) {
       <div class="flex flex-wrap items-center gap-2 border-b border-slate-800/80 pb-4">
         <button onclick="window.setCheatCategory('all')" id="cs-btn-all" class="cs-cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-cyan-500 text-slate-950 shadow-sm">
           🌟 All Topics
+        </button>
+        <button onclick="window.setCheatCategory('acid')" id="cs-btn-acid" class="cs-cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-900 text-slate-300 hover:text-white border border-slate-800">
+          🛡️ ACID & Postgres Guarantees
         </button>
         <button onclick="window.setCheatCategory('compute')" id="cs-btn-compute" class="cs-cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-900 text-slate-300 hover:text-white border border-slate-800">
           💻 AWS Compute Strategy
@@ -105,24 +108,122 @@ function renderCheatSheetContent() {
 
   const showAll = activeCategory === 'all';
 
-  // 1. Comparative Matrix Cards (Compute, Databases, Networking, Streaming, Kinesis vs SQS)
+  // 1. ACID Guarantees in PostgreSQL Section
+  if (showAll || activeCategory === 'acid') {
+    html += renderAcidSection();
+  }
+
+  // 2. Comparative Matrix Cards (Compute, Databases, Networking, Streaming, Kinesis vs SQS)
   cheatsheetData.comparisons.forEach(comp => {
     if (showAll || activeCategory === comp.id || (activeCategory === 'streaming' && (comp.id === 'streaming' || comp.id === 'kinesis-vs-sqs'))) {
       html += renderComparisonSection(comp);
     }
   });
 
-  // 2. System Design Architecture Patterns
+  // 3. System Design Architecture Patterns
   if (showAll || activeCategory === 'patterns') {
     html += renderPatternsSection();
   }
 
-  // 3. Latency Numbers & SLA Reference
+  // 4. Latency Numbers & SLA Reference
   if (showAll || activeCategory === 'latency') {
     html += renderLatencySection();
   }
 
   return html;
+}
+
+function renderAcidSection() {
+  const acid = cheatsheetData.acidPostgres;
+  if (!acid) return '';
+
+  return `
+    <div class="cs-searchable-card space-y-6">
+      <div class="border-b border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase border bg-emerald-500/10 text-emerald-400 border-emerald-500/30">
+            ${escapeHTML(acid.badge)}
+          </span>
+          <h3 class="text-base sm:text-lg font-bold text-white">${escapeHTML(acid.title)}</h3>
+        </div>
+        <span class="text-[11px] text-slate-400 font-mono">OLTP Transaction Compliance</span>
+      </div>
+
+      <!-- Overview Card -->
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block">Why ACID Matters in Banking Systems:</span>
+        <p class="text-xs text-slate-300 leading-relaxed">${escapeHTML(acid.overview)}</p>
+      </div>
+
+      <!-- 4 Core ACID Properties Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        ${acid.properties.map(p => `
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col justify-between space-y-3 hover:border-slate-700 transition-all">
+            <div class="space-y-2">
+              <div class="flex items-center gap-2 border-b border-slate-900 pb-2">
+                <span class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-sm font-extrabold font-mono">
+                  ${escapeHTML(p.letter)}
+                </span>
+                <div>
+                  <h4 class="text-sm font-extrabold text-white leading-none">${escapeHTML(p.name)}</h4>
+                  <span class="text-[10px] text-emerald-400 font-semibold mt-0.5 block">${escapeHTML(p.tagline)}</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Core Concept:</span>
+                <p class="text-xs text-slate-200 mt-0.5 leading-relaxed">${escapeHTML(p.concept)}</p>
+              </div>
+
+              <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 space-y-0.5">
+                <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block">Postgres Implementation:</span>
+                <p class="text-[11px] text-slate-300 leading-normal">${escapeHTML(p.postgresMechanism)}</p>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-900 bg-emerald-950/20 p-2.5 rounded-lg border border-emerald-900/30">
+              <span class="text-[10px] font-bold text-emerald-400 uppercase block">Capital One Banking Use Case:</span>
+              <p class="text-[11px] text-emerald-200 leading-tight mt-0.5">${escapeHTML(p.bankingUseCase)}</p>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- PostgreSQL Isolation Levels Table -->
+      <div class="space-y-3 pt-2">
+        <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+          <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">PostgreSQL Isolation Levels & Anomaly Prevention</span>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-900 text-slate-400 uppercase text-[10px] font-bold tracking-wider border-b border-slate-800">
+              <tr>
+                <th class="p-3">Isolation Level</th>
+                <th class="p-3">Dirty Read</th>
+                <th class="p-3">Non-Repeatable Read</th>
+                <th class="p-3">Phantom Read</th>
+                <th class="p-3">Write-Skew Anomaly</th>
+                <th class="p-3">Postgres Technical Notes</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/80 text-slate-200">
+              ${acid.isolationLevels.map(iso => `
+                <tr class="hover:bg-slate-900/50 transition-colors">
+                  <td class="p-3 font-extrabold text-emerald-400 font-mono">${escapeHTML(iso.level)}</td>
+                  <td class="p-3 font-mono font-bold text-emerald-400">${escapeHTML(iso.dirtyRead)}</td>
+                  <td class="p-3 font-mono font-bold ${iso.nonRepeatableRead === 'Prevented' ? 'text-emerald-400' : 'text-amber-400'}">${escapeHTML(iso.nonRepeatableRead)}</td>
+                  <td class="p-3 font-mono font-bold ${iso.phantomRead.includes('Prevented') ? 'text-emerald-400' : 'text-amber-400'}">${escapeHTML(iso.phantomRead)}</td>
+                  <td class="p-3 font-mono font-bold ${iso.writeSkew === 'Prevented' ? 'text-emerald-400' : 'text-rose-400'}">${escapeHTML(iso.writeSkew)}</td>
+                  <td class="p-3 text-slate-400 text-[11px]">${escapeHTML(iso.notes)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function renderComparisonSection(comp) {

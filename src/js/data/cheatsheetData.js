@@ -295,8 +295,63 @@ export const cheatsheetData = {
     }
   ],
 
+  // ACID Guarantees in PostgreSQL & Financial Databases
+  acidPostgres: {
+    title: "ACID Guarantees in PostgreSQL & Enterprise Financial Systems",
+    badge: "ACID & Transaction Guarantees",
+    color: "emerald",
+    overview: "ACID principles define the guarantees required for reliable transactional database processing. In financial ledger systems (like Capital One credit card processing), ACID guarantees that account balance debits, credits, and ledger transfers occur deterministically without corruption, race conditions, or partial data loss.",
+    properties: [
+      {
+        letter: "A",
+        name: "Atomicity",
+        tagline: "All or Nothing Execution",
+        concept: "A database transaction consists of one or more SQL statements. Either ALL operations succeed and commit together, or the entire transaction is rolled back with ZERO side effects.",
+        postgresMechanism: "Powered by the Write-Ahead Log (WAL) and transaction logs (pg_xact / pg_clog). Uncommitted in-memory changes are discarded on error or ROLLBACK.",
+        bankingUseCase: "When transferring $100 from Account A to Account B, DEBIT A and CREDIT B must commit atomically. If the system crashes midway, the transaction aborts and no money is lost."
+      },
+      {
+        letter: "C",
+        name: "Consistency",
+        tagline: "Valid State Transitions & Schema Constraints",
+        concept: "A transaction must transition the database from one valid state to another, strictly enforcing all schema invariants, foreign keys, unique keys, and check constraints.",
+        postgresMechanism: "Postgres evaluates CHECK constraints (e.g. balance >= 0), FOREIGN KEY relations, NOT NULL rules, and UNIQUE indexes during execution. Any violation triggers immediate abort.",
+        bankingUseCase: "Guarantees that an account balance can never drop below $0 or create orphaned transaction records without a valid customer ID."
+      },
+      {
+        letter: "I",
+        name: "Isolation",
+        tagline: "Concurrent Transaction Safety (MVCC & Isolation Levels)",
+        concept: "Concurrent transactions executing simultaneously must produce the exact same database state as if they were executed serially one after another.",
+        postgresMechanism: "Powered by Multi-Version Concurrency Control (MVCC). Readers do not block writers, and writers do not block readers. Supports 4 Isolation Levels: Read Committed (default), Repeatable Read, and Serializable (SSI via SIREAD locks).",
+        bankingUseCase: "Prevents race conditions where two simultaneous $500 card swipes double-spend a $600 balance (Write-Skew anomaly prevented by Serializable isolation)."
+      },
+      {
+        letter: "D",
+        name: "Durability",
+        tagline: "Permanent Storage & Zero Data Loss (RPO = 0)",
+        concept: "Once a transaction emits COMMIT and receives success acknowledgment, its changes are permanently recorded in non-volatile storage and survive any subsequent power outage or crash.",
+        postgresMechanism: "Enforced via Write-Ahead Log (WAL) & fsync(). In Amazon Aurora Postgres, WAL records are synchronously replicated across 6 storage nodes in 3 Availability Zones (AZs) before acknowledging commit success.",
+        bankingUseCase: "Guarantees that approved credit card authorizations are never lost or corrupted even if an entire AWS Availability Zone experiences total power failure."
+      }
+    ],
+    isolationLevels: [
+      { level: "Read Committed (Default)", dirtyRead: "Prevented", nonRepeatableRead: "Allowed", phantomRead: "Allowed", writeSkew: "Allowed", notes: "Default in Postgres. Each query sees data committed before query start." },
+      { level: "Repeatable Read", dirtyRead: "Prevented", nonRepeatableRead: "Prevented", phantomRead: "Prevented (in PG)", writeSkew: "Allowed", notes: "Snapshot isolation. Transaction sees data committed before transaction start." },
+      { level: "Serializable (SSI)", dirtyRead: "Prevented", nonRepeatableRead: "Prevented", phantomRead: "Prevented", writeSkew: "Prevented", notes: "Guarantees true serializability using SIREAD locks to detect write-skew dependencies." }
+    ]
+  },
+
   // System Design Architectural Patterns
   patterns: [
+    {
+      id: "acid-postgres-pattern",
+      title: "ACID Transactions (Postgres/Aurora) vs Eventual Consistency (DynamoDB)",
+      icon: "🛡️",
+      color: "emerald",
+      problem: "Using NoSQL eventual consistency databases for multi-table financial ledger accounting allows race conditions, phantom balances, and partial write failures.",
+      solution: "Use PostgreSQL / Aurora Postgres for transactional ledgers. ACID guarantees atomicity via WAL logs, integrity via CHECK constraints, concurrent isolation via MVCC, and durability via 6-way AZ WAL replication."
+    },
     {
       id: "kinesis-vs-sqs-pattern",
       title: "Stream Log (Kinesis/Kafka) vs Task Queue (SQS)",
